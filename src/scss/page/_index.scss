@@ -1,0 +1,26 @@
+@use "sass:color";
+
+body{
+
+    // Styles
+    background: var(--color-primary);
+    font-size: var(--font-size);
+    font-family: var(--font-mono);
+    color: var(--color-invert);
+
+    > header{
+        border-bottom: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+        a {
+            padding: 5px 7px;
+        }
+        .logo{
+            a {
+                padding: 5px 10px;
+            }
+        }
+    }
+
+    > main {
+        
+    }
+}

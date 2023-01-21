@@ -1,0 +1,75 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
+    'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
+    'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --font-size: 12px;
+
+    --color-primary: #ffffff;
+    --color-secondary: #f0f0f0;
+    --color-helper: #f5f5f5;
+    --color-invert: #000000;
+    --color-invert-rgb: 0, 0, 0;
+    --color-hover: #c3c3c3;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root{
+        --color-primary: #272b31;
+        --color-secondary: #17191c;
+        --color-helper: #0f1113;
+        --color-invert: #ffffff;
+        --color-invert-rgb: 255, 255, 255;
+        --color-hover: #666666;
+    }
+}
+
+
+$colors: "primary", "secondary", "helper", "invert", "hover", "util";
+
+@each $c in $colors {
+    .bg-#{$c} {
+        background-color: var(--color-#{$c});
+    }
+
+    .text-#{$c} {
+        color: var(--color-#{$c});
+    }
+}
+
+.d-flex {
+    display: flex;
+}
+
+a {
+    color: var(--color-invert);
+    text-decoration: none;
+
+    &:hover {
+        background: var(--color-hover);
+    }
+}
+
+
+
+// ========================================
+// Functions
+
+// HEX to RGB
+@function toRGB($hex) {
+    @return red($hex), green($hex), blue($hex);
+}
