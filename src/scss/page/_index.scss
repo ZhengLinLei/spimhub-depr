@@ -1,17 +1,106 @@
 @use "sass:color";
 
+
 body{
 
     // Styles
     background: var(--color-primary);
-    font-size: var(--font-size);
-    font-family: var(--font-mono);
     color: var(--color-invert);
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
 
+
+    // Dropdown menu
+    ul.pop-menu {
+        background: var(--color-primary);
+        border: 1px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+        list-style: none;
+        width: max-content;
+
+        li{
+            a {
+                padding: 5px 7px;
+                display: grid;
+                grid-template-columns: 1fr 150px;
+                align-items: center;
+
+                // second span
+                span:nth-child(2) {
+                    justify-self: end;
+                }
+
+                &:hover {
+                    span.muted {
+                        color: var(--color-invert) !important;
+                    }
+                }
+            }
+        }
+    }
+    // Dropdown menu
+    .menu {
+        position: fixed;
+        display: none;
+        z-index: 10;
+        width: max-content;
+        height: max-content;
+
+        &.active {
+            display: block;
+        }
+    }
     > header{
         border-bottom: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
-        a {
-            padding: 5px 7px;
+        display: flex;
+        justify-content: space-between;
+        z-index: 9;
+
+        > div.left, > div.right {
+            display: flex;
+            align-items: center;
+            position: relative;
+
+            a {
+                padding: 5px 7px;
+            }
+        }
+
+        > div.left {
+            a {
+                &:hover {
+                    & + ul {
+                        display: block;
+                    }
+                }
+            }
+
+            // Dropdown menu
+            ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                &:hover {
+                    display: block;
+
+                    /*
+                    <a>...</a>
+                    <ul>
+                        <li>
+                            <a>
+                                <span>...</span>
+                                <span class="muted">...</span>
+                            </a>
+                        </li>
+                    </ul>
+                    */
+                    // Select the previous <a> element
+                    + a {
+                        background: var(--color-hover);
+                    }
+                }
+            }
         }
         .logo{
             a {
@@ -21,6 +110,254 @@ body{
     }
 
     > main {
-        
+        $header-padding: 10px;
+        $header-padding-end: 20px;
+        $header-padding-start: 7px;
+
+        display: flex;
+        flex: 1;
+
+        a, .a {
+            padding: 5px 7px;
+        }
+
+        #opt-files, #opt-search, #opt-extensions, #main-editor, #main-runner, #main-extensions, #terminal {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        > header {
+            width: var(--explorer-size);
+            border-right: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+            background-color: var(--color-secondary);
+            display: flex;
+            position: relative;
+
+            #opt-files {
+                display: flex;
+                .runner a, .explorer .explorer-header {
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                }
+                .runner {
+                    a {
+                        padding: #{ $header-padding } #{ $header-padding-end } #{ $header-padding } #{ $header-padding-start };
+                        &:hover span:nth-child(2){
+                            color: var(--color-invert);
+                        }
+                    }
+                }
+                .explorer {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    .explorer-header {
+                        padding: 0 0 0 #{ $header-padding-start };
+
+                        > div {
+                            a{
+                                padding: 10px;
+
+                                &:hover {
+                                    color: var(--color-invert);
+                                }
+                            }
+                        }
+                    }
+                    .explorer-main{
+                        flex: 1;
+                    }
+                }
+            }
+        }
+        > main {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            #main-editor {
+                display: grid;
+                background-color: #{ rgba(var(--color-invert-rgb), 0.3) };
+                grid-template-columns: repeat(2, 50%);
+                grid-gap: 0.5px;
+
+                // If there is no four editor window
+                // the fourth one will ocupy two columns
+                &:not(:has(.editor-window.w-1)) {
+                    .editor-window:nth-child(1) {
+                        grid-column: span 2;
+                    }
+                }
+                &:not(:has(.editor-window.w-3)) {
+                    .editor-window:nth-child(3) {
+                        grid-column: span 2;
+                    }
+                }
+                .editor-window {
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+                    position: relative;
+                    .window-header {
+                        align-items: center;
+                        width: 100%;
+                        position: relative;
+                        .file-queue {
+                            display: flex;
+                            flex: 1;
+                            align-items: center;
+                            background-color: var(--color-secondary);
+                            padding-left: calc(var(--editor-padd) - 0.5px);
+                            overflow: scroll;
+                            div {
+                                display: flex;
+                                align-items: center;
+                                &:first-child {
+                                    border-left: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                                }
+                                .muted:hover {
+                                    color: var(--color-invert) !important;
+                                }
+                                &.active {
+                                    background-color: var(--color-primary);
+                                    a:first-child {
+                                        background: var(--color-primary);
+                                    }
+                                }
+                                &.not-saved {
+                                    a:first-child {
+                                        &::before {
+                                            content: "*";
+                                        }
+                                    }
+                                }
+                                border-right: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                            }
+                        }
+                        .execute {
+                            > a:first-child {
+                                // Succes color
+                                background-color: var(--color-success);
+                                &:hover {
+                                    background-color: var(--color-success-hover);
+                                }
+                            }
+                            > span {
+                                background-color: var(--color-primary);
+                            }
+                        }
+                    }
+                    .editor-file {
+                        flex: 1;
+                        position: relative;
+                        display: none;
+                        background-color: var(--color-primary);
+
+                        &.active {
+                            display: block;
+                        }
+
+                        .line-numbers-rows{
+                            z-index: 1;
+                            width: var(--editor-padd) !important;
+                            padding: var(--editor-inner-padd) 0 0 0 !important;
+                            text-align: right;
+                            height: min-content;
+                            border-right: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                            line-height: normal !important;
+                            background-color: var(--color-secondary);
+                            overflow: hidden;
+                            > span{
+                                counter-increment: linenumber;
+                                &:before{
+                                    content: counter(linenumber);
+                                    display: block;
+                                    color: var(--color-invert-muted);
+                                    padding: 0 5px;
+                                }
+                                &.active:before{
+                                    background-color: var(--color-invert);
+                                    color: var(--color-primary);
+                                }
+                            }
+                        }
+                        textarea{
+                            border: none;
+                            resize: none;
+                            outline: none;
+                            white-space: pre;
+                            z-index: 2;
+                            background-color: transparent;
+                            color: transparent;
+                            // color: rgba(rgb(255, 255, 255), 0.8);
+                            caret-color: var(--color-invert);
+                            padding: 10px 10px 10px calc(var(--editor-padd) + var(--editor-inner-padd)) !important;
+                        }
+                        pre{
+                            z-index: 0;
+                            margin: 0 !important;
+                            background-color: transparent !important;
+                            padding: 10px 10px 10px calc(var(--editor-padd) + var(--editor-inner-padd) - 5px) !important;                        
+                            code{
+                                color: #000000;
+                                text-shadow: none;
+                                line-height: 1.2 !important;
+
+                                p {
+                                    padding-left: 5px;
+                                    &.active {
+                                        background-color: var(--color-secondary);
+                                    }
+                                }
+                            }
+                        }
+                        textarea, pre, .line-numbers-rows{
+                            position: absolute;
+                            transition: all 0.5s, background-color 0s;
+                            line-height: 1.2 !important;
+                            top: 0;
+                            width: 100%;
+                            left: 0;
+                            height: 100%;
+                        }
+                    }
+                }
+            }
+
+            #terminal {
+                &.active{
+                    display: block;
+                }
+                height: var(--terminal-size);
+                border-top: 2px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                background-color: var(--color-primary);
+                position: relative;
+                scroll-behavior: smooth;
+                > header{
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    display: flex;
+                    width: 100%;
+                    justify-content: space-between;
+                    z-index: 2;
+                    align-items: center;
+                    background-color: var(--color-secondary);
+                    a{
+                        display: inline-block;
+                        border-right: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+    
+                        &:hover{
+                            background: var(--color-hover);
+                        }
+
+                        &.active{
+                            background-color: var(--color-primary);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -23,29 +23,433 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="./resource/logo/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
+    <!-- FONT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Red+Hat+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- CSS -->
     <link rel="stylesheet" href="./css/style.css">
-    <title>SpimHub v1.0.0 - Mips CPU Simulator - Zheng Lin Lei</title>
+    <!-- TITTLE -->
+    <title>SpimHub | Mips CPU Simulator</title>
 </head>
 <body>
     <header class="bg-secondary d-flex">
-        <div class="d-flex logo">
-            <a href="https://github.com/ZhengLinLei/spimhub/">[spimhub]</a>
+        <div class="left">
+            <div class="d-flex logo">
+                <a href="https://github.com/ZhengLinLei/spimhub/">[spimhub]</a>
+            </div>
+            <div class="d-flex">
+                <div>
+                    <a>[file]</a>
+                    <ul class="pop-menu">
+                        <li>
+                            <a href="./">
+                                <span>[new file]</span>
+                                <span class="muted">Alt + N</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[new folder]</span>
+                                <span class="muted">Alt + M</span>
+                            </a>
+                        </li>
+                        <li>
+                        <li>
+                            <a href="./">
+                                <span>[new window]</span>
+                                <span class="muted">Alt + W</span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="./">
+                                <span>[open file]</span>
+                                <span class="muted">Alt + O</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[open folder]</span>
+                                <span class="muted">Alt + P</span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="./">
+                                <span>[save]</span>
+                                <span class="muted">Ctrl + S</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[save as...]</span>
+                                <span class="muted">Alt + S</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <a href="./">[edit]</a>
+                    <ul class="pop-menu">
+                        <li>
+                            <a href="./">
+                                <span>[undo]</span>
+                                <span class="muted">Ctrl + Z</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[redo]</span>
+                                <span class="muted">Ctrl + Y</span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="./">
+                                <span>[cut]</span>
+                                <span class="muted">Ctrl + X</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[copy]</span>
+                                <span class="muted">Ctrl + C</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[paste]</span>
+                                <span class="muted">Ctrl + P</span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="./">
+                                <span>[find]</span>
+                                <span class="muted">Ctrl + F</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[replace]</span>
+                                <span class="muted">Alt + F</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <a href="./">[view]</a>
+                    <ul class="pop-menu">
+                        <li>
+                            <a href="./">
+                                <span>[i/o]</span>
+                                <span class="muted">Alt + I</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[terminal]</span>
+                                <span class="muted">Alt + T</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[console]</span>
+                                <span class="muted">Alt + J</span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="./">
+                                <span>[search]</span>
+                                <span class="muted"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[extensions]</span>
+                                <span class="muted"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[debug]</span>
+                                <span class="muted">Alt + D</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <a href="./">[terminal]</a>
+                    <ul class="pop-menu">
+                        <li>
+                            <a href="./">
+                                <span>[new terminal]</span>
+                                <span class="muted">Alt + T</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[close terminal]</span>
+                                <span class="muted"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[run file]</span>
+                                <span class="muted">Alt + R</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <a href="./">[help]</a>
+                    <ul class="pop-menu">
+                        <li>
+                            <a href="https://github.com/spimhub/issues">
+                                <span>[issues]</span>
+                                <span class="muted"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/spimhub/">
+                                <span>[about]</span>
+                                <span class="muted"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/spimhub/">
+                                <span>[contribute]</span>
+                                <span class="muted"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="d-flex">
-            <a href="./">[file]</a>
-            <a href="./">[edit]</a>
-            <a href="./">[view]</a>
-            <a href="./">[terminal]</a>
-            <a href="./">[help]</a>
+        <div class="right">
+            <div class="d-flex">
+                <a href="https://github.com/ZhengLinLei/spimhub/">[files]</a>
+                <a href="https://github.com/ZhengLinLei/spimhub/">[search]</a>
+                <a href="https://github.com/ZhengLinLei/spimhub/">[extensions]</a>
+                <a href="javascript:toggle_terminal();">[terminal]</a>
+            </div>
         </div>
     </header>
     <main>
-        <header>
-
+        <header id="main-folder">
+            <div id="opt-files">
+                <div class="runner">
+                    <a href="./">
+                        <span>[runner]</span>
+                        <span class="muted">Alt + R</span>
+                    </a>
+                </div>
+                <!-- <hr> -->
+                <div class="explorer">
+                    <div class="explorer-header d-flex align-center">
+                        <span>[project]</span>
+                        <div class="d-flex">
+                            <a href="./" class="muted">[file]</a>
+                            <a href="./" class="muted">[folder]</a>
+                        </div>
+                    </div>
+                    <div class="explorer-main" id="file-manager">
+                        
+                    </div>
+                </div>
+                <section id="file-manager-extra-menu" class="menu">
+                    <ul class="pop-menu">
+                        <li>
+                            <a href="./">
+                                <span>[new file]</span>
+                                <span class="muted">Alt + N</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[new folder]</span>
+                                <span class="muted">Alt + M</span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="./">
+                                <span>[open file]</span>
+                                <span class="muted">Alt + O</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[open folder]</span>
+                                <span class="muted">Alt + P</span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="./">
+                                <span>[save]</span>
+                                <span class="muted">Ctrl + S</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[save as...]</span>
+                                <span class="muted">Alt + S</span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="./">
+                                <span>[open runner]</span>
+                                <span class="muted">Alt + R</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[search]</span>
+                                <span class="muted"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+            <div id="opt-search"></div>
+            <div id="opt-extensions"></div>
         </header>
+        <main id="main-files">
+            <section id="main-editor" window-open="3">
+                <!-- EDITOR OPEN -->
+            </section>
+            <section id="file-editor-extra-menu" class="menu">
+                <ul class="pop-menu">
+                    <li>
+                        <a href="./">
+                            <span>[undo]</span>
+                            <span class="muted">Alt + Z</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./">
+                            <span>[redo]</span>
+                            <span class="muted">Alt + Y</span>
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a href="./">
+                            <span>[cut]</span>
+                            <span class="muted">Ctrl + X</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./">
+                            <span>[copy]</span>
+                            <span class="muted">Ctrl + C</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./">
+                            <span>[paste]</span>
+                            <span class="muted">Ctrl + V</span>
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a href="./">
+                            <span>[codesnap]</span>
+                            <span class="muted">#</span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- RUNNER -->
+            <section id="main-runner">
+
+            </section>
+            <section id="main-extensions">
+
+            </section>
+            <section id="terminal">
+                <header>
+                    <div class="d-flex">
+                        <a class="active" href="./">[terminal]</a>
+                        <a href="./">[debug console]</a>
+                    </div>
+                    <div>
+                        <a id="close-t">[close]</a>
+                    </div>
+                </header>
+                <main>
+                    <section id="terminal-main">
+
+                    </section>
+                    <section id="console-main">
+
+                    </section>
+                </main>
+                <section id="terminal-extra-menu" class="menu">
+                    <ul class="pop-menu">
+                        <li>
+                            <a href="./">
+                                <span>[select all]</span>
+                                <span class="muted">Ctrl + A</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[cut]</span>
+                                <span class="muted">Ctrl + X</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[copy]</span>
+                                <span class="muted">Ctrl + C</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[paste]</span>
+                                <span class="muted">Ctrl + V</span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="./">
+                                <span>[kill process]</span>
+                                <span class="muted"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[clear]</span>
+                                <span class="muted"></span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="./">
+                                <span>[close terminal]</span>
+                                <span class="muted"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+            </section>
+        </main>
     </main>
     <footer>
 
     </footer>
+
+    <!-- Index.js -->
+    <script src="./js/index.js"></script>
 </body>
 </html>
+
+<div class="w-0">
+    
+</div>
