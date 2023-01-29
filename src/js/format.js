@@ -36,9 +36,12 @@ class Format {
 
     /* Static functions */
     // ===================
-    NFC(code, formattedCode) {
+    RNFC(code, formattedCode) {
         // =================== 
         let __f_numbers = this._data.contains.regexDynamic.number;
+        let __f_builtin = this._data.builtin;
+
+        // =================== Process numbers and registers
         code.forEach((line, i1) => {
             line.forEach((word, i2) => {
 
@@ -47,7 +50,17 @@ class Format {
                 let _word = word.split(',');
 
                 _word = _word.map((w) => {
-                    let matches = w.match(__f_numbers);
+                    // Register first
+                    let matches = [];
+                    __f_builtin.forEach((builtin) => { if(w.includes(builtin)) matches.push(builtin) });
+                    
+                    // Remove duplicates
+                    [...new Set(matches)].sort().reverse().forEach((match) => {
+                        w = w.replaceAll(match, `<span class=__f_builtin>${match}</span>`);
+                    });
+
+                    // Then numbers
+                    matches = w.match(__f_numbers);
 
                     // Remove duplicates
                     [...new Set(matches)].sort().reverse()
@@ -191,8 +204,8 @@ class Format {
 
         let formattedCode = this.DestroyCode(code);
 
-        // Formate all numbers
-        code = this.NFC(code, formattedCode);
+        // Formate all registers and numbers        
+        code = this.RNFC(code, formattedCode);
 
         // Formate all static words first
         formattedCode = this.BFC(code, formattedCode);

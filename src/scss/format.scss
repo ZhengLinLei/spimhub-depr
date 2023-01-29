@@ -85,11 +85,6 @@ html {
     font-weight: var(--code-function-w);
     background-color: var(--code-function-bg);
 }
-.__f_builtin {
-    color: var(--code-variable);
-    font-weight: var(--code-variable-w);
-    background-color: var(--code-variable-bg);
-}
 .__f_keywords {
     color: var(--code-keyword);
     font-weight: var(--code-keyword-w);
@@ -109,6 +104,11 @@ html {
     color: var(--code-muted);
     font-weight: var(--code-muted-w);
     background-color: var(--code-muted-bg);
+}
+.__f_builtin, .__f_builtin * {
+    color: var(--code-variable);
+    font-weight: var(--code-variable-w);
+    background-color: var(--code-variable-bg);
 }
 
 // Everything into string with same style

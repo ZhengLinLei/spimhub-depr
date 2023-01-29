@@ -64,6 +64,22 @@ const __mipsasm_scope = () => {
 }
 // \b(?<!\$)(?:\b[2-9]_\d+|(?:\b\d+(?:\.\d+)?|\B\.\d+)(?:e-?\d+)?|\b0(?:[fd]_|x|b|o)[0-9a-f]+|&[0-9a-f]+)\b ---> Doesn't work in safari
 // Solution:
-//
-//      word.match(/\b(?:\b[2-9]_\d+|(?:\b\d+(?:\.\d+)?|\B\.\d+)(?:e-?\d+)?|\b0(?:[fd]_|x|b|o)[0-9a-f]+|&[0-9a-f]+)\b/g)
 //      
+//      -- 1 --
+//      Match the register first
+//      
+//      -- 2 --
+//      Match the number
+//      (?:\b\d+(?:\.\d+)?|\B\.\d+)(?:e-?\d+)?
+//      \b\d+(?:\.\d+)?
+//      \B\.\d+
+//      (?:e-?\d+)?
+//      
+//      -- Output --
+//      <span class="__f_builtin">$f<span class="__f_numbers">0</span></span>
+//
+//      -- 3 --
+//      Change css to make the register !important
+//      .__f_builtin, .__f_builtin * {
+//          color: #000 !important; 
+//      }       
