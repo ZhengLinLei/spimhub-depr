@@ -4,11 +4,24 @@
 // ================== //
 //  Global Variables  //
 // ================== //
-let WINDOW_EDITOR;
+let WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT;
 let toggle_terminal, create_file, create_window;
+
+let __pop_up = {
+    save_file : null
+}
 
 window.addEventListener('load', ()=> {
 
+    // ================== //
+    //  Global Variables  //
+    // ================== //
+    // SET TAB SIZE
+    TAB_SIZE = 4;
+    TAB_REGEX = /\t/g;
+
+    // SET FORMAT
+    FORMAT = new Format(__mipsasm_scope());
 
 
     const pop_menu = (e, menu)=> {
@@ -125,46 +138,65 @@ window.addEventListener('load', ()=> {
     // =============================
     // EDITORS
 
-    const focus_line = (textarea, delay=-1) => {
+    const focus_line = (textarea, delay=-1, reset = true) => {
         // Get parent
         let file_w = textarea.parentElement;
 
         // Get line index
         const index = textarea.value.substring(0, textarea.selectionStart).split("\n").length;
 
-        const lines = file_w.querySelector('.line-numbers-rows');
+        const lines = [file_w.querySelector('.line-numbers-rows'), file_w.querySelector('.export-code > code')];
 
         // Set line active
 
-        if((index + delay) < lines.children.length && !lines.children[index+delay].classList.contains('current')) {
-            // Clear lines class
-            unfocus_line(window);
-
-            // Set current line
-            lines.children[index+delay].classList.add('active');
+        if((index + delay) < lines[0].children.length && !lines[0].children[index+delay].classList.contains('active')) {
+            // Unfocus all lines
+            if (reset)  // -------> Only unfocus all lines if reset is true , 
+                        // ---      it means when the the user is writing and
+                        // ---      when onwrite the html is being updated so
+                        // ---      is not necessary to reset the lines.
+                unfocus_line(textarea);
+            // Focus current line
+            lines.forEach(el => el.children[index+delay].classList.add('active'));
         }
     }
-    const unfocus_line = (textarea, all = true) => {
-        if (all) {
+    const unfocus_line = (textarea, all = true, num = 0) => {
+        // Get parent
+        let file_w = textarea.parentElement;
+        const lines = [file_w.querySelector('.line-numbers-rows'), file_w.querySelector('.export-code > code')];
 
+        if (all) {
+            // Clear lines class
+            lines.forEach(el => {
+                for (let i = 0; i < el.children.length; i++) {
+                    el.children[i].classList.remove('active');
+                }
+            });
+        } else {
+            // Clear selected line
+            lines.forEach(el => el.children[num].classList.remove('active'));
         }
     };
-    const formate_code = (codeArr) => {
-        // Convert each line to html <p> tag
-        let code = codeArr.map((line, i)=> {
-            return `<p>${(line) ? line : " "}</p>`;
+
+    const formate_code = (code) => {
+        // Create <p> tags
+        // Escape html
+        code = code.map(line => { 
+            return line
+            .replaceAll(/</g, '&lt;')
+            .replaceAll(/>/g, '&gt;')
+            .replaceAll(/&/g, '&amp;')
         });
-
-        // Join all lines
-        code = code.join('');
-
-        // Return code
-        return code;
+        return FORMAT.formateCode(code);
     };
+
     const update_code = (textarea) => {
         // Get parent
         let file_w = textarea.parentElement;
         
+        // Replace tabs with spaces
+        if (TAB_REGEX.test(textarea.value)) textarea.value = textarea.value.replaceAll(TAB_REGEX, " ".repeat(TAB_SIZE));
+
         // Get code
         let code = textarea.value;
 
@@ -173,7 +205,19 @@ window.addEventListener('load', ()=> {
 
         // Get export code
         let export_code = file_w.querySelector('.export-code > code');
-        export_code.innerHTML = formate_code(_LINES);
+        export_code.innerHTML = formate_code(_LINES); // Formate code with format.js and postupdate with <p> tags
+
+        // Update line numbers
+        file_w.style
+        .setProperty('--editor-padd',
+            (_LINES.length >= 100) ?
+                (_LINES.length >= 1000) ? 
+                    (_LINES.length >= 10000) ?
+                        "55px"
+                    : "45px"
+                : "35px"
+            : "25px"
+        );
 
         // Get line numbers
         const lineNumbers = file_w.querySelector('.line-numbers-rows');
@@ -182,7 +226,7 @@ window.addEventListener('load', ()=> {
         // Check if window is focused
         if(textarea === document.activeElement){
             // Update line numbers
-            focus_line(textarea);
+            focus_line(textarea, -1, false);
         }
     };
 
@@ -355,6 +399,44 @@ window.addEventListener('load', ()=> {
             __f_textarea.tabindex = 0;
 
             __f_textarea.addEventListener('input', () => update_code(__f_textarea));
+            __f_textarea.addEventListener('mouseup', () =>  {
+                // Focus selected line
+                focus_line(__f_textarea)
+            });
+
+            __f_textarea.addEventListener('scroll', () => {
+                // Get and set x and y
+                __f_export_code.scrollTo(__f_textarea.scrollLeft, __f_textarea.scrollTop);
+                __f_line_numbers.scrollTo(__f_textarea.scrollLeft, __f_textarea.scrollTop);
+            });
+
+            __f_textarea.addEventListener('focusout', () => unfocus_line(__f_textarea));
+
+            __f_textarea.addEventListener('keydown', (e) => {
+                // Write tab on tab press
+                if(e.key == 'Tab' || e.keyCode == 9 || e.which == 9) {
+                    e.preventDefault();
+
+                    const start = __f_textarea.selectionStart;
+                    __f_textarea.value = __f_textarea.value.substring(0, start) + " ".repeat(TAB_SIZE) + __f_textarea.value.substring(__f_textarea.selectionEnd);
+                    // fix caret position
+                    __f_textarea.selectionStart = __f_textarea.selectionEnd = start + TAB_SIZE;
+
+                    // Update code
+                    update_code(__f_textarea);
+
+                }
+                // Update lines number if the user jump lines
+                if(e.key == 'ArrowUp' || e.keyCode == 38 || e.which == 38){
+                    // Overload line numbers fnc
+                    focus_line(__f_textarea, delay=-2);
+                }
+                
+                if(e.key == 'ArrowDown' || e.keyCode == 40 || e.which == 40){
+                    // Overload line numbers fnc
+                    focus_line(__f_textarea, delay=0);
+                }
+            });
 
 
             // Create export code
@@ -363,6 +445,9 @@ window.addEventListener('load', ()=> {
 
                 // Create code
                 let __f_code = document.createElement('code');
+                __f_code.setAttribute('aria-hidden', 'true');
+                __f_code.classList.add('language-mipsasm');
+                __f_code.innerHTML = '<p> </p>';
 
 
         // Append line number to line numbers
@@ -409,9 +494,38 @@ window.addEventListener('load', ()=> {
     // Create first window
     create_window();
 
+
+
+
+
+    // ======================= //
+    // SAVE FILES
+
+    let extras_pop_up = document.querySelector('footer#extra-pop-up');
+
+    // Save new file
+    __pop_up.save_file = () => {
+        extras_pop_up.classList.add('active');
+        extras_pop_up.querySelector('.filename-picker').classList.add('active');
+
+        // Add active class to extras pop-up
+        document.querySelector('#clicker-changer').classList.add('active');
+    }
+
     // ======================= //
     //  Close all opened tabs  //
     //  and menus on click     //
     // ======================= //
     document.addEventListener('click', close_all_menus);
+
+    // ======================= //
+    //  Close extras pop-up    //
+    //  on click               //
+    // ======================= //
+    document.querySelector('#clicker-changer').addEventListener('click', e => {
+        e.target.classList.remove('active');
+
+        // Remove active class from all extras
+        extras_pop_up.classList.remove('active');
+    });
 });

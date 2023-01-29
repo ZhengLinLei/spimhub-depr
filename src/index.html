@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,7 +19,7 @@
     <link rel="icon" type="image/png" sizes="96x96" href="./resource/logo/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="./resource/logo/favicon-16x16.png">
     <link rel="shortcut icon" href="./resource/logo/favicon.ico" type="image/x-icon">
-    <link rel="manifest" href="./manifest.json">
+    <!-- <link rel="manifest" href="./manifest.json"> -->
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="./resource/logo/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
@@ -28,6 +28,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Red+Hat+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
     <!-- CSS -->
+    <link rel="stylesheet" href="./css/format.css">
     <link rel="stylesheet" href="./css/style.css">
     <!-- TITTLE -->
     <title>SpimHub | Mips CPU Simulator</title>
@@ -251,7 +252,7 @@
                     <div class="explorer-header d-flex align-center">
                         <span>[project]</span>
                         <div class="d-flex">
-                            <a href="./" class="muted">[file]</a>
+                            <a href="javascript:__pop_up.save_file()" class="muted">[file]</a>
                             <a href="./" class="muted">[folder]</a>
                         </div>
                     </div>
@@ -441,15 +442,29 @@
             </section>
         </main>
     </main>
-    <footer>
-
+    <!-- Extras -->
+    <footer class="active" id="extra-pop-up">
+        <section class="filename-picker pop-up">
+            <header>
+                <div>[save file]</div>
+            </header>
+            <main>
+                <input type="text" placeholder="file">
+                <div>.asm</div>
+                <a href="./">[ok]</a>
+            </main>
+        </section>
     </footer>
-
+    <section id="clicker-changer" class="active">
+        <!-- When the user click this section, the footer extra option will pop-up -->
+    </section>
+    <!-- highlight.js -->
+    <script src="./js/format.js"></script>
+    <!-- mipsasm.js -->
+    <script src="./js/lang/mips.js"></script>
     <!-- Index.js -->
     <script src="./js/index.js"></script>
 </body>
 </html>
-
-<div class="w-0">
     
 </div>
