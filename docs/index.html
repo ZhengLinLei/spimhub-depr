@@ -340,6 +340,38 @@
             </div>
             <div id="opt-search"></div>
             <div id="opt-extensions"></div>
+
+            <style>
+                .preview {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    width: 400px;
+                    color: var(--color-invert);
+                    padding: 10px;
+                    opacity: .5;
+                    z-index: 99;
+                    background-color: rgba(var(--color-invert-rgb), 0.3);
+                    overflow: hidden;
+                }
+                .preview h1 {
+                    font-size: 18px;
+                    font-family: Arial, Helvetica, sans-serif !important;
+                    animation: rolling 10s infinite linear;
+                    white-space: nowrap;
+                }
+                @keyframes rolling {
+                    0% {
+                        transform: translateX(-105%);
+                    }
+                    100% {
+                        transform: translateX(110%);
+                    }
+                }
+            </style>
+            <section class="preview">
+                <h1>This is a preview mode - Not functional yet</h1>
+            </section>
         </header>
         <main id="main-files">
             <section id="main-editor" class="group-m" window-opened="0">
