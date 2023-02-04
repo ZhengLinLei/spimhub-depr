@@ -7,9 +7,8 @@
 let WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT;
 let toggle_terminal, create_file, create_window;
 
-let __pop_up = {
-    save_file : null
-}
+// Global functions
+let __pop_up, __group_h, __group_register;
 
 window.addEventListener('load', ()=> {
 
@@ -73,7 +72,7 @@ window.addEventListener('load', ()=> {
     //  Execute File Menu //
     // ================== //
     let execute_file = {
-        el: document.querySelector('#execute-file'),
+        el: [],
         menu: document.querySelector('#execute-file-extra-menu'),
     };
 
@@ -83,7 +82,7 @@ window.addEventListener('load', ()=> {
     let file_editor = {
         el: document.querySelector('#main-editor'),
         menu: document.querySelector('#file-editor-extra-menu'),
-        disabled: [execute_file.el],
+        disabled: execute_file.el,
     };
     // Add click event to file editor and open extra menu
     file_editor.el.addEventListener('contextmenu', (e)=> {
@@ -104,6 +103,9 @@ window.addEventListener('load', ()=> {
         menu: document.querySelector('#terminal-extra-menu'),
     };
     terminal_editor.disabled = [terminal_editor.close_dom];
+    terminal_editor.tab = terminal_editor.el.querySelectorAll('.tab');
+    terminal_editor.window = terminal_editor.el.querySelectorAll('.window');
+
 
     // Add click event to terminal and open extra menu
     terminal_editor.el.addEventListener('contextmenu', (e)=> {
@@ -114,20 +116,44 @@ window.addEventListener('load', ()=> {
         return pop_menu(e, terminal_editor.menu);
     });
 
+    // ================== //
+    //  Runner      Menu  //
+    // ================== //
+    let runner_editor = {
+        el: document.querySelector('#main-runner'),
+        menu: execute_file.menu,
+    }
 
+    // Add contextmenu event to runner_editor
+    runner_editor.el.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
 
-
+        return pop_menu(e, runner_editor.menu);
+    });
 
     // =============================
     // TERMINAL
 
-    toggle_terminal = (type=-1)=> {
+    toggle_terminal = (type=-1, window="terminal")=> {
+        // Toggle terminal
         if (type === -1)
             terminal_editor.el.classList.toggle('active');
         else if (type === 1)
             terminal_editor.el.classList.add('active');
         else if (type === 0)
             terminal_editor.el.classList.remove('active');
+
+        // Reject
+        if (!["terminal", "console", "output"].includes(window)) return;
+
+        // Disable terminal and console
+        [... terminal_editor.tab, ... terminal_editor.window].forEach(el => {
+            el.classList.remove('active');
+        });
+
+        // Active window
+        terminal_editor.el.querySelector(`header .${window}-tab`).classList.add('active');
+        terminal_editor.el.querySelector(`main #${window}-main`).classList.add('active');
     };
 
     // Close terminal
@@ -254,7 +280,12 @@ window.addEventListener('load', ()=> {
     //         </pre>
     //     </div>
     // </div>
-    create_window = () => {
+    create_window = (focus_editor = true) => {
+        // Focus editor window group
+        if(focus_editor)
+            __group_h.open_group('editor');
+
+
         // <div class="w-0 editor-window">
         //     <div class="window-header d-flex">
         //         <div class="file-queue">
@@ -298,8 +329,10 @@ window.addEventListener('load', ()=> {
                     // Create execute file
                     let __w_execute_file = document.createElement('a');
                     __w_execute_file.href = './';
-                    __w_execute_file.id = 'execute-file';
+                    __w_execute_file.classList.add('execute-file');
                     __w_execute_file.innerHTML = '[run]';
+                    // Add it to dom execution array
+                    execute_file.el.push(__w_execute_file);
 
                     // Create execute status
                     let __w_execute_status = document.createElement('span');
@@ -327,9 +360,12 @@ window.addEventListener('load', ()=> {
         // Update current window
         WINDOW_EDITOR.current++;
         WINDOW_EDITOR.active = WINDOW_EDITOR.current - 1;
+
+        // Update window attributes
+        __w.parentElement.setAttribute('window-opened', WINDOW_EDITOR.current);
     };
 
-    create_file = (__wnum = WINDOW_EDITOR.active) => {
+    create_file = (__wnum = WINDOW_EDITOR.active, name = "file", saved = false) => {
         // Get window
         let __w = WINDOW_EDITOR.windows[__wnum];
 
@@ -342,13 +378,13 @@ window.addEventListener('load', ()=> {
         let __fw = document.createElement('div');
         __fw.classList.add('active');
 
-        // if(Math.random() > 0.5) __fw.classList.add('not-saved');
+        if(!saved) __fw.classList.add('not-saved');
 
         __fw.classList.add(`w-${__wnum}-f-${WINDOW_EDITOR.files[`w${__wnum}`].length}`);
 
             // Create file name
             let __fw_name = document.createElement('a');
-            __fw_name.innerHTML = '[file.s]';
+            __fw_name.innerHTML = `[${name}.s]`;
 
             // Create file close
             let __fw_close = document.createElement('a');
@@ -491,10 +527,42 @@ window.addEventListener('load', ()=> {
         }
     }
 
-    // Create first window
-    create_window();
+
+    // ======================= //
+    //  GROUP CONTROLS    (editor, runner, extensions)     
+
+    let window_main = {
+        el: document.querySelector('#main-files'),
+        groups : {
+            editor: document.querySelector('#main-editor'),
+            runner: runner_editor.el,
+            extensions: document.querySelector('#main-extensions'),
+        },
+    }
+    __group_h = {
+        open: () => {
+            // Disable all groups
+            Object.keys(window_main.groups).forEach(el => {
+                window_main.groups[el].classList.remove('active');
+            });
+        },
+
+        open_group: (group) => {
+            let __groups = ['editor', 'runner', 'extensions'];
+
+            // Reject if group is not valid
+            if(!__groups.includes(group)) return;
 
 
+            // Open group
+            __group_h.open();
+            window_main.groups[group].classList.add('active');
+
+            // Update active group
+            __group_h.active = group;
+            
+        }
+    }
 
 
 
@@ -503,13 +571,65 @@ window.addEventListener('load', ()=> {
 
     let extras_pop_up = document.querySelector('footer#extra-pop-up');
 
-    // Save new file
-    __pop_up.save_file = () => {
-        extras_pop_up.classList.add('active');
-        extras_pop_up.querySelector('.filename-picker').classList.add('active');
+    // Open pop-up
+    __pop_up = {
+        open: () => {
+            extras_pop_up.classList.add('active');
+            document.querySelector('#clicker-changer').classList.add('active');
+        },
+    }
 
-        // Add active class to extras pop-up
-        document.querySelector('#clicker-changer').classList.add('active');
+    // Save new file
+    __pop_up._save = (type) => {
+        let __type = ['file', 'folder'];
+
+        // Reject if type is not valid
+        if(!__type.includes(type)) return;
+
+        __pop_up.open();
+        extras_pop_up.querySelector(`.create-${type}`).classList.add('active');
+    }
+
+
+    // ======================= //
+    // REGISTER LABEL CONTROL
+
+    let register_window = {
+        el: document.querySelector('#register-section'),
+        header: document.querySelector('#register-section header'),
+        tabs: {
+            register: document.querySelector('#register-section .tab.register'),
+            coproc1: document.querySelector('#register-section .tab.coproc1'),
+            coproc0: document.querySelector('#register-section .tab.coproc0'),
+        }
+    }
+    register_window.windows = {
+        register: register_window.el.querySelector('.runner-register'),
+        coproc1: register_window.el.querySelector('.runner-coproc1'),
+        coproc0: register_window.el.querySelector('.runner-coproc0'),
+    }
+
+    // Open register window
+    __group_register = {
+        open: () => {
+            // Disable all tabs
+            Object.keys(register_window.tabs).forEach(el => {
+                register_window.tabs[el].classList.remove('active');
+                register_window.windows[el].classList.remove('active');
+            });
+        },
+
+        open_tab: (tab) => {
+            let __tabs = ['register', 'coproc1', 'coproc0'];
+
+            // Reject if tab is not valid
+            if(!__tabs.includes(tab)) return;
+
+            // Open tab
+            __group_register.open();
+            register_window.tabs[tab].classList.add('active');
+            register_window.windows[tab].classList.add('active');
+        }
     }
 
     // ======================= //
@@ -525,7 +645,18 @@ window.addEventListener('load', ()=> {
     document.querySelector('#clicker-changer').addEventListener('click', e => {
         e.target.classList.remove('active');
 
+
         // Remove active class from all extras
         extras_pop_up.classList.remove('active');
+
+        for (let el of extras_pop_up.children) {
+            // Remove active class from all extras children
+            el.classList.remove('active');
+        }
     });
+
+
+
+    // Create first window
+    create_window(false);
 });

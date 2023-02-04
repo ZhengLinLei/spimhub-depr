@@ -10,8 +10,38 @@ body{
     width: 100vw;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-x: auto;
 
+    // Global style for header windows
+    header.cap {
+        background-color: var(--color-secondary);
+        padding: 7px;
+        border-bottom: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+    }
+    header.header-tab{
+        // position: absolute;
+        // top: 0;
+        // left: 0;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        z-index: 2;
+        align-items: center;
+        background-color: var(--color-secondary);
+        a{
+            display: inline-block;
+            border-right: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+
+            &:hover{
+                background: var(--color-hover);
+            }
+
+            &.active{
+                background-color: var(--color-primary);
+            }
+        }
+    }
 
     // Dropdown menu
     ul.pop-menu {
@@ -117,6 +147,7 @@ body{
 
         display: flex;
         flex: 1;
+        height: 100%;
 
         a, .a {
             padding: 5px 7px;
@@ -137,12 +168,12 @@ body{
 
             #opt-files {
                 display: flex;
-                .runner a, .explorer .explorer-header {
+                .runner a, .editor a, .explorer .explorer-header {
                     width: 100%;
                     display: flex;
                     justify-content: space-between;
                 }
-                .runner {
+                .runner, .editor {
                     a {
                         padding: #{ $header-padding } #{ $header-padding-end } #{ $header-padding } #{ $header-padding-start };
                         &:hover span:nth-child(2){
@@ -177,12 +208,26 @@ body{
             display: flex;
             flex-direction: column;
             flex: 1;
+            background-color: var(--color-helper);
+            width: calc(100% - var(--explorer-size));
+            
+            #main-editor, #main-runner, #main-extensions {
+                height: 100%;
+                overflow: hidden;
+            }
             #main-editor {
-                display: grid;
+                &.active {
+                    display: grid;
+                }
                 background-color: #{ rgba(var(--color-invert-rgb), 0.3) };
                 grid-template-columns: repeat(2, 50%);
                 grid-gap: 0.5px;
 
+                @for $i from 1 through 4 {
+                    .editor-window.w-#{$i} {
+                        z-index: $i;
+                    }
+                }
                 // If there is no four editor window
                 // the fourth one will ocupy two columns
                 &:not(:has(.editor-window.w-1)) {
@@ -190,9 +235,19 @@ body{
                         grid-column: span 2;
                     }
                 }
+                &:has(.editor-window.w-1) {
+                    .editor-window:nth-child(1) {
+                        grid-column: span 1;
+                    }
+                }
                 &:not(:has(.editor-window.w-3)) {
                     .editor-window:nth-child(3) {
                         grid-column: span 2;
+                    }
+                }
+                &:has(.editor-window.w-3) {
+                    .editor-window:nth-child(3) {
+                        grid-column: span 1;
                     }
                 }
                 .editor-window {
@@ -306,7 +361,7 @@ body{
 
                                 p {
                                     display: inline-block;
-                                    width: 100%;
+                                    width: 3000px;
                                     padding-left: 5px;
                                     &.active {
                                         background-color: var(--color-helper);
@@ -326,7 +381,127 @@ body{
                     }
                 }
             }
+            #main-runner {
+                &.active{
+                    display: flex;
+                }
+                flex-direction: column;
+                > main {
+                    display: flex;
+                    position: relative;
+                    flex: 1;
+                    background-color: var(--color-primary);
+                    height: 100%;
+                    > section {
+                        position: relative;
+                        overflow: hidden;
+                        .table-main {
+                            width: 100%;
+                            table {
+                                min-width: 100%;
+                                border-collapse: collapse;
+                                thead tr {
+                                    background-color: var(--color-secondary);
+                                    th {
+                                        text-align: center;
+                                        font-weight: 400;
+                                        padding: 10px;
+                                    }
+                                }
+                                tbody tr, thead tr {
+                                    border-bottom: 0.5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                                    th, td {
+                                        border-left: 0.5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                                        border-right: 0.5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                                        white-space: nowrap;
 
+                                        &:first-child {
+                                            border-left: none;
+                                        }
+
+                                        &:last-child {
+                                            border-right: none;
+                                        }
+                                    }
+                                }
+                                tbody {
+                                    tr {
+                                        &:nth-child(2n) {
+                                            background-color: var(--color-helper-light);
+                                        }
+                                        td {
+                                            text-align: end;
+                                            padding: 7px 10px;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        &:first-child {
+                            width: calc(100% - var(--register-section-size));
+                            display: flex;
+                            flex-direction: column;
+                            position: relative;
+                            > div {
+                                .table-main {
+                                    height: 100%;
+                                }
+                                &:first-child {
+                                    height: calc(100% - var(--data-segment-size));
+                                    .table-main {
+                                        overflow: auto;
+                                        table {
+                                            tbody tr, thead tr {
+                                                th, td {
+                                                    &:first-child {
+                                                        padding: 7px 0;
+                                                        text-align: center;
+                                                    }
+                                                }
+                                                td {
+                                                    text-align: start;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                &:last-child {
+                                    border-top: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                                    z-index: 9;
+                                    height: var(--data-segment-size);
+                                }
+                            }
+                        }
+                        &:last-child {
+                            border-left: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                            width: var(--register-section-size);
+                            > main {
+                                height: 100%;
+                                padding-bottom: var(--editor-footer-space);
+                                overflow: auto;
+                                .table-main {
+                                    display: none;
+                                    &.active {
+                                        display: block;
+                                    }
+                                    table {
+                                        thead tr {
+                                            border-top: 0.5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                                        }
+                                        tbody tr, thead tr {
+                                            th, td {
+                                                &:last-child {
+                                                    width: 100%;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             #terminal {
                 &.active{
                     display: block;
@@ -336,26 +511,15 @@ body{
                 background-color: var(--color-primary);
                 position: relative;
                 scroll-behavior: smooth;
-                > header{
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    display: flex;
+                > main {
                     width: 100%;
-                    justify-content: space-between;
-                    z-index: 2;
-                    align-items: center;
-                    background-color: var(--color-secondary);
-                    a{
-                        display: inline-block;
-                        border-right: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
-    
-                        &:hover{
-                            background: var(--color-hover);
-                        }
-
-                        &.active{
-                            background-color: var(--color-primary);
+                    height: calc(100% - 25px);
+                    display: flex;
+                    > section {
+                        display: none;
+                        flex: 1;
+                        &.active {
+                            display: block;
                         }
                     }
                 }
@@ -375,15 +539,7 @@ body{
         border: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
         border-top: 0;
 
-        > .pop-up {
-            > header {
-                background-color: var(--color-secondary);
-                padding: 7px;
-                border-bottom: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
-            }
-        }
-
-        .filename-picker {
+        .create-file, .create-folder {
             > main {
                 display: flex;
                 flex-wrap: nowrap;

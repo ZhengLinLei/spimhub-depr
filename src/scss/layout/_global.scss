@@ -25,7 +25,9 @@ html {
     --editor-inner-padd : 10px;
     --editor-footer-space : 100%;
 
-    --explorer-size: 300px;
+    --explorer-size: 250px;
+    --register-section-size: 35%;
+    --data-segment-size: 50%;
     --terminal-size: 45%;
 
     --layer-flash: rgba(0, 0, 0, 0.1);
@@ -33,6 +35,7 @@ html {
     --color-primary: #ffffff;
     --color-secondary: #f0f0f0;
     --color-helper: #f5f5f5;
+    --color-helper-light: #fbfbfb;
     --color-invert: #000000;
     --color-invert-rgb: 0, 0, 0;
     --color-muted: #989898;
@@ -47,6 +50,7 @@ html {
         --color-primary: #272b31;
         --color-secondary: #17191c;
         --color-helper: #0f1113;
+        --color-helper-light: #1a1e24;
         --color-invert: #ffffff;
         --color-invert-rgb: 255, 255, 255;
         --color-muted: #b3b3b3;
