@@ -4,8 +4,8 @@
 // ================== //
 //  Global Variables  //
 // ================== //
-let WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT;
-let toggle_terminal, create_file, create_window;
+let FILE_SYSTEM, ROOT_DIR, WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT;
+let toggle_terminal, create_file, create_window, remove_window;
 
 // Global functions
 let __pop_up, __group_h, __group_register;
@@ -15,6 +15,37 @@ window.addEventListener('load', ()=> {
     // ================== //
     //  Global Variables  //
     // ================== //
+
+
+    // ==========
+    // File system
+    //    \  \_____ FSKey-1.0
+    //     \________ FSPath-1.0
+    //
+    //      Explained: https://tinyurl.com/spimhub-filesystem
+    //
+    //        Git branch
+    //          \   \
+    //           \   \____ fskey1.0-dev
+    //            \________ fspath1.0-dev
+    //
+    // ==========
+    // MEMORY FILESYSTEM
+    FILE_SYSTEM = {
+        "/" : {
+            name: "[project]",
+            files: [],
+            folders: [],
+
+        }
+    }
+
+    // ROOT 
+    ROOT_DIR = {
+        cd: "/"
+    }
+
+
     // SET TAB SIZE
     TAB_SIZE = 4;
     TAB_REGEX = /\t/g;
@@ -209,9 +240,9 @@ window.addEventListener('load', ()=> {
         // Escape html
         code = code.map(line => { 
             return line
-            .replaceAll(/&/g, '&amp')
-            .replaceAll(/</g, '&lt')
-            .replaceAll(/>/g, '&gt')
+            .replaceAll(/&/g, '&amp;')
+            .replaceAll(/</g, '&lt;')
+            .replaceAll(/>/g, '&gt;')
             ;
         });
         return FORMAT.formateCode(code);
@@ -257,6 +288,10 @@ window.addEventListener('load', ()=> {
         }
     };
 
+    // Remove the window
+    remove_window = (w) => {
+        //
+    }
     // <div class="w-0 editor-window">
     //     <div class="window-header d-flex">
     //         <div class="file-queue">
@@ -282,6 +317,7 @@ window.addEventListener('load', ()=> {
     //         </pre>
     //     </div>
     // </div>
+    // Create a new window
     create_window = (focus_editor = true) => {
         // Focus editor window group
         if(focus_editor)
@@ -372,6 +408,7 @@ window.addEventListener('load', ()=> {
 
         // Update window attributes
         __w.parentElement.setAttribute('window-opened', WINDOW_EDITOR.current);
+        // __w.parentElement.id = `window-opened-${WINDOW_EDITOR.current}`; ----------------> Less convenient; Donot use it anymore
     };
 
     create_file = (__wnum = WINDOW_EDITOR.active, name = "file", saved = false) => {
