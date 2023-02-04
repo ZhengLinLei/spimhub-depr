@@ -251,6 +251,12 @@ body{
                     }
                 }
                 .editor-window {
+                    // Remove close button for first window
+                    &:first-child {
+                        .window-header .execute a.close-window {
+                            display: none;
+                        }
+                    }
                     display: flex;
                     flex-direction: column;
                     width: 100%;
@@ -259,11 +265,12 @@ body{
                         align-items: center;
                         width: 100%;
                         position: relative;
+                        background-color: var(--color-secondary);
+
                         .file-queue {
                             display: flex;
                             flex: 1;
                             align-items: center;
-                            background-color: var(--color-secondary);
                             // padding-left: calc(var(--editor-padd) - 0.5px);
                             overflow: scroll;
                             div {
@@ -280,8 +287,10 @@ body{
                                 }
                                 &.not-saved {
                                     a:first-child {
+                                        display: flex;
                                         &::before {
                                             content: "*";
+                                            white-space: nowrap;
                                         }
                                     }
                                 }

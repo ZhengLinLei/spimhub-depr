@@ -209,9 +209,10 @@ window.addEventListener('load', ()=> {
         // Escape html
         code = code.map(line => { 
             return line
-            .replaceAll(/</g, '&lt;')
-            .replaceAll(/>/g, '&gt;')
-            .replaceAll(/&/g, '&amp;')
+            .replaceAll(/&/g, '&amp')
+            .replaceAll(/</g, '&lt')
+            .replaceAll(/>/g, '&gt')
+            ;
         });
         return FORMAT.formateCode(code);
     };
@@ -267,6 +268,7 @@ window.addEventListener('load', ()=> {
     //         <div class="execute d-flex">
     //             <a href="./" id="execute-file">[run]</a>
     //             <span class="a bg-error">[status]</span>
+    //             <a href="./" id="close-file">[close]</a>
     //         </div>
     //     </div>
     //     <div class="f-0 editor-file">
@@ -339,9 +341,16 @@ window.addEventListener('load', ()=> {
                     __w_execute_status.classList.add('a');
                     __w_execute_status.innerHTML = '[status]';
 
+                    // Close window
+                    let __w_close = document.createElement('a');
+                    __w_close.href = './';
+                    __w_close.classList.add('close-window');
+                    __w_close.innerHTML = '[ x ]';
+
         // Append execute file and status to execute
         __w_execute.appendChild(__w_execute_file);
         __w_execute.appendChild(__w_execute_status);
+        __w_execute.appendChild(__w_close);
 
         // Append file queue to window header
         __w_header.appendChild(__w_file_queue);
