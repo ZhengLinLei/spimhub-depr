@@ -223,31 +223,21 @@ body{
                 grid-template-columns: repeat(2, 50%);
                 grid-gap: 0.5px;
 
-                @for $i from 1 through 4 {
+                @for $i from 1 through 3 {
                     .editor-window.w-#{$i} {
                         z-index: $i;
                     }
                 }
                 // If there is no four editor window
                 // the fourth one will ocupy two columns
-                &:not(:has(.editor-window.w-1)) {
-                    .editor-window:nth-child(1) {
+                &[window-opened="1"] {
+                    .w-0 {
                         grid-column: span 2;
                     }
                 }
-                &:has(.editor-window.w-1) {
-                    .editor-window:nth-child(1) {
-                        grid-column: span 1;
-                    }
-                }
-                &:not(:has(.editor-window.w-3)) {
-                    .editor-window:nth-child(3) {
+                &[window-opened="3"] {
+                    .w-2 {
                         grid-column: span 2;
-                    }
-                }
-                &:has(.editor-window.w-3) {
-                    .editor-window:nth-child(3) {
-                        grid-column: span 1;
                     }
                 }
                 .editor-window {
@@ -582,6 +572,6 @@ body{
         left: 0;
         width: 100vw;
         height: 100vh;
-        background-color: var(--layer-flash);
+        background-color: var(--layer-flash); // Layer with opacity to show that the app is blocked
     }
 }
