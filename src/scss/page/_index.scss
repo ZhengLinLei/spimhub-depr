@@ -2,6 +2,16 @@
 
 
 body{
+    &.row-resize{
+        &, *{
+            cursor: row-resize !important;
+        }
+    }
+    &.col-resize{
+        &, *{
+            cursor: col-resize !important;
+        }
+    }
 
     // Styles
     background: var(--color-primary);
@@ -196,8 +206,17 @@ body{
             width: var(--explorer-size);
             border-right: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
             background-color: var(--color-secondary);
-            display: flex;
+            display: none;
             position: relative;
+
+            &.active {
+                display: flex;
+            }
+
+            .scroll-x {
+                right: 0;
+                transform: translateX(2.5px);
+            }
 
             #opt-files {
                 display: flex;
@@ -621,7 +640,7 @@ body{
         border: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
         border-top: 0;
 
-        .create-file, .create-folder {
+        .prompt {
             > main {
                 > * {
                     padding: 10px;

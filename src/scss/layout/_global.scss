@@ -152,6 +152,19 @@ input {
     color: var(--color-muted);
 }
 
+.scroll-x, .scroll-y {
+    opacity: 0;
+    background-color: rgba(#000000, 1);
+    z-index: 99;
+    position: absolute;
+}
+.scroll-x {
+    height: 100%;
+    width: 5px;
+    cursor: col-resize;
+    top: 0;
+}
+
 // ========================================
 // Functions
 

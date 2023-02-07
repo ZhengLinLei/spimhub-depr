@@ -5,7 +5,9 @@
 //  Global Variables  //
 // ================== //
 let FILE_SYSTEM, ROOT_DIR, WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT;
-let toggle_terminal, create_file, create_window, remove_window, new_project, set_theme;
+let toggle_terminal, 
+    create_file, create_window, open_file, open_window,
+    remove_window, new_project, set_theme;
 
 // Global functions
 let __pop_up, __group_h, __group_register;
@@ -269,6 +271,80 @@ window.addEventListener('load', ()=> {
                 menus[i].classList.remove('active');
         }
     }
+
+    // ================== //
+    //  Scroll sections   //
+    // ================== //
+    // ==== RESIZE ====
+    // Get (x,y) position of event
+    const _getXY = (e) => {
+        if(e.type == 'touchstart' || e.type == 'touchmove' || e.type == 'touchend' || e.type == 'touchcancel'){
+            var evt = (typeof e.originalEvent === 'undefined') ? e : e.originalEvent;
+            var touch = evt.touches[0] || evt.changedTouches[0];
+
+            x = touch.pageX;
+            y = touch.pageY;
+        } else if (e.type == 'mousedown' || e.type == 'mouseup' || e.type == 'mousemove' || e.type == 'mouseover'|| e.type=='mouseout' || e.type=='mouseenter' || e.type=='mouseleave') {
+            x = e.clientX;
+            y = e.clientY;
+        }
+        return {x, y};
+    }
+    // Start resize
+    const _fncStartResize = (e, type) => {
+        let _Y = (type === "y");
+        // If the event is touchstart
+        let coords = _getXY(e);
+
+        let _PARENT = (_Y) ? terminal.parentElement.parentElement : document.querySelector('#terminal-fast-option');
+        // Resize terminal height
+        let _MAX = _Y ? window.innerHeight * 0.8 : window.innerWidth * 0.5;
+        let _MIN = _Y ? window.innerHeight * 0.2 : window.innerWidth * 0.1;
+        let _SIZE = _PARENT.getBoundingClientRect()[_Y ? "height" : "width"];
+        let _START = coords[type];
+        
+        const fncTouch = (e2) => {
+
+            // Remove if the event is passive
+            if(!['touchstart', 'touchmove', 'touchend', 'touchcancel'].includes(e.type)){
+                e2.preventDefault();
+            }
+            
+            // If the event is touchstart
+            let coordsM = _getXY(e2);
+
+            document.body.classList.add(_Y ? 'row-resize' : 'col-resize');
+
+            let _NEW_SIZE = _SIZE - (coordsM[type] - _START); // - (e.clientY - _START); ---> Because the height grows from bottom to top
+
+            if(_NEW_SIZE > _MIN && _NEW_SIZE < _MAX)
+                (_Y) 
+                ?
+                    _PARENT.style.height = `${_NEW_SIZE}px`
+                :
+                    (document.documentElement || document.querySelector(':root')).style.setProperty('--termOption', `${_NEW_SIZE}px`);
+        }
+        window.onmousemove = fncTouch;
+        window.ontouchmove = fncTouch;
+
+        window.onmouseup = () => _fncEndResize(type);
+        window.ontouchend = () => _fncEndResize(type);
+    };
+    // End resize
+    const _fncEndResize = (type) => {
+        let _Y = (type === "y");
+
+        document.body.classList.remove(_Y ? 'row-resize' : 'col-resize');
+
+        window.onmousemove = null;
+        window.ontouchmove = null;
+        window.onmouseup = null;
+        window.ontouchend = null;
+    };
+
+    ['mousedown','touchstart'].forEach( evt => {
+        document.querySelector('.scroll-x.header').addEventListener(evt, (e) => _fncStartResize(e, "x"));
+    });
 
     // ================== //
     //  File Manager Menu //
@@ -643,7 +719,7 @@ window.addEventListener('load', ()=> {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="javascript:__pop_up._save('folder')">
+                                    <a href="javascript:__pop_up._open('file')">
                                         <span>[open file]</span>
                                         <span>
                                             <span class="__s-win">Alt + O</span>
@@ -652,11 +728,11 @@ window.addEventListener('load', ()=> {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="javascript:create_window()">
-                                        <span>[new window]</span>
+                                    <a href="javascript:__pop_up._open('folder')">
+                                        <span>[open folder]</span>
                                         <span>
-                                            <span class="__s-win">Alt + W</span>
-                                            <span class="__s-mac">⌥ + W</span>
+                                            <span class="__s-win">Alt + P</span>
+                                            <span class="__s-mac">⌥ + P</span>
                                         </span>
                                     </a>
                                 </li>
@@ -898,7 +974,16 @@ window.addEventListener('load', ()=> {
 
         __pop_up.open();
         extras_pop_up.querySelector(`.create-${type}`).classList.add('active');
-    }
+    };
+    __pop_up._open = (type) => {
+        let __type = ['file', 'folder'];
+
+        // Reject if type is not valid
+        if(!__type.includes(type)) return;
+
+        __pop_up.open();
+        extras_pop_up.querySelector(`.open-${type}`).classList.add('active');
+    };
     // Ask remove current project
     __pop_up._new_project = (layer=false) => {
         if (!layer) {
