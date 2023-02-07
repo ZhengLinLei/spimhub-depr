@@ -26,6 +26,13 @@ html {
     --color-warning: #F7D794;
     --color-error: #ff8667;
 
+    --color-file: var(--color-invert);
+    --color-file-active: var(--color-invert);
+    --color-file-bg: var(--color-secondary);
+    --color-folder: var(var(--color-invert));
+    --color-folder-active: var(--color-invert);
+    --color-folder-bg: var(--color-secondary);
+
     // --------------------------------------
     //
     --code-muted : #a1a1a1; 

@@ -36,7 +36,7 @@ html {
     --code-variable-w : 400;
     --code-variable-bg : rgba(0, 0, 0, 0);
 
-    &.dark {
+    &[theme~="dark"], &[theme="dark"], &[theme=dark] {
         //
         --code-muted : var(--color-invert); 
         --code-muted-w : 400;

@@ -5,12 +5,135 @@
 //  Global Variables  //
 // ================== //
 let FILE_SYSTEM, ROOT_DIR, WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT;
-let toggle_terminal, create_file, create_window, remove_window;
+let toggle_terminal, create_file, create_window, remove_window, new_project, set_theme;
 
 // Global functions
 let __pop_up, __group_h, __group_register;
 
+const setup_dialog = {
+    i: 0,
+    content: [
+             `Hi 👋, you look new here. Awesome! \nWelcome to SpimHub!`,
+             `Let's start setting up the dev environment. \nIt will take a few seconds. \nAlso, you can skip this setup by reloading the page or by pressing [Esc] at any time.`,
+             `Please select your preferred editor theme (default: light mode). 💡 \nYou can change it or install different themes once the setting up is finished:`,
+             `SpimHub use a virtual filesystem to store your files in locaStorage (cookies). 🍪 \nYou can create new files, folders and save it in the virtual filesystem. \nYou can also download the project backup and load existing one.`,
+             `To do this SpimHub need you to activate your cookies for SpimHub. \nThis allow us to control the localStorage to save the files data.`,
+             `By the way, if you use SpimHub in a public computer, you can disable cookies to prevent other users to see your files. \nAnd if you are in incognito mode, cookies are disabled by default.`,
+             `SpimHub understands that you accept our cookie policy by continuing to use the editor`,
+             // Share link
+             `Lastly SpimHub hope you enjoy the editor and if you want to share it with your friends, you can use this link:`,
+             // Finish 
+             `That's all! 🎉 \nNow you can start using SpimHub, the page will reload and you will see the editor interface. \n\n\nEnjoy!`
+             ],
+    writing: false,
+    finished: false,
+    exception: [2, 7],
+    exception_callback: {
+        2: ()=> {
+            return `<div class="themes" style="margin-top: 10px"><a href="javascript:set_theme('light')">[light mode]</a> <a href="javascript:set_theme('dark')">[dark mode]</a></div>`;
+        },
+        7: ()=> {
+            return `<div class="themes" style="margin-top: 10px"><a href="https://ZhengLinLei.github.io/spimhub/" target="_blank">[https://ZhengLinLei.github.io/spimhub/]</a></div>`;
+        }
+    }
+};
+
+// Next dialog
+setup_dialog.next = (i)=> {
+    setup_dialog.writing = true;
+    let dialog_text = document.querySelector('#setup-init main pre.text');
+
+    // Write each letter from setup_dialog.content[i]
+    let j = 0;
+    let write = setInterval(()=> {
+        dialog_text.innerHTML += setup_dialog.content[i][j];
+        j++;
+        if (j >= setup_dialog.content[i].length) {
+            setup_dialog.writing = false;
+            clearInterval(write);
+            // Create all links
+            // dialog_text.innerHTML = dialog_text.innerHTML.replace(url_regex, ' <a href="$1" target="_blank">$1</a>');
+
+            // Add exception
+            dialog_text.innerHTML += (setup_dialog.exception.includes(i)) ? 
+                                        setup_dialog.exception_callback[i]() : "";
+            dialog_text.innerHTML += '\n\n<span class="muted">>> Press [Enter] to continue.</span>\n\n';
+        }
+    }, 50);
+
+};
+
+// Set theme
+set_theme = (theme)=> {
+
+    let themes = ['light', 'dark'];
+    if (!themes.includes(theme)) {
+        theme = 'light';
+    }
+    // Set theme
+    document.documentElement.setAttribute('theme', theme);
+
+    // Save theme
+    // localStorage.setItem('sh-theme', theme);
+};
+
+// ================== //
+//  GET USER OS DATA  //
+// ================== //
+// Check if the user is using a MACOS or Windows
+let isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+var isMacLike = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
+var isIOS = /(iPhone|iPod|iPad)/i.test(navigator.platform);
+
+// ================== //
+if (isMac || isMacLike || isIOS) {
+    // Mac OS
+    document.documentElement.setAttribute('pc', 'mac');
+} 
+
 window.addEventListener('load', ()=> {
+
+    // ================== //
+    // COOKIES WARNING    //
+    // ================== //
+    if (localStorage.getItem('sh-cookies') !== 'true' || !localStorage.getItem('sh-cookies')) {
+        // Enable cookies
+        localStorage.setItem('sh-cookies', 'true');
+
+        // Show cookies warning
+        let setup = document.querySelector('#setup-init');
+        setup.classList.add('active');
+
+
+        // Next dialog fnc
+        let __next = ()=> {
+            if (!setup_dialog.finished && !setup_dialog.writing) {
+                if (setup_dialog.i >= setup_dialog.content.length - 1) {
+                    setup_dialog.finished = true;
+                    document.location.reload();
+                }
+
+                setup_dialog.i++; // Next dialog
+                setup_dialog.next(setup_dialog.i);
+            }
+        };
+        // Show setup dialog
+        document.addEventListener('keydown', (e)=> {
+            if (e.key === 'Enter') {
+                __next();
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                document.location.reload();
+            }
+        });
+
+        // Show first dialog
+        setup_dialog.next(setup_dialog.i);
+    }
+
+    // Full screen
+    // document.documentElement.requestFullscreen();
 
     // ================== //
     //  Global Variables  //
@@ -30,20 +153,82 @@ window.addEventListener('load', ()=> {
     //            \________ fspath1.0-dev
     //
     // ==========
-    // MEMORY FILESYSTEM
-    FILE_SYSTEM = {
-        "/" : {
-            name: "[project]",
-            files: [],
-            folders: [],
 
-        }
+    // ==========
+    // FILESYSTEM : FSPath-1.0
+    // BRANCH     : fspath1.0-dev
+    // DATA       : 2023-02-05
+    //
+    // EXPLANATION
+    /*
+
+        /
+        |--> user
+        |    |----> zll
+        |            |---> filemio.js
+        |            |---> otherfile.js
+        |            |---> folder2
+        |            |        |---> gg.html
+        |            |
+        |            |---> folder
+        |                     |---> ... (more)
+        |
+        |--> otherFolder
+
+
+    let dir = {
+
+        "/": [],
+        "/user": [],
+        "/otherFolder": [],
+        "/user/zll": ["filemio.js", "otherfile.js"],
+        "/user/zll/folder2": ["gg.html"],
+        "/user/zll/folder": [... (more) ]
+
     }
+
+
+    ----UPDATED TEMPLATE
+    "/": {
+        name: "NAME",
+        files: {
+            "files1.asm": {
+                content: "DATA"
+            }
+        },
+        folders: ["FOLDER1", "FOLDER2"]
+    },
+    "/FOLDER1": {...}
+    "/FOLDER2": {...}
+
+    */
+
+    // MEMORY FILESYSTEM
+    /*
+        Will use localStorage memory or will create new one
+
+        1. localStorage --> sh-virtual-disk
+        2. new Object({})
+
+    */
+    FILE_SYSTEM = 
+        JSON.parse(localStorage.getItem('sh-virtual-disk'))         // First choice
+        ||
+        ({
+            "/" : {
+                name: "[project]",
+                files: {},
+                folders: []
+            }
+            
+        })
+    ;
 
     // ROOT 
     ROOT_DIR = {
-        cd: "/"
-    }
+        cd: "/",
+        dir: []
+    };
 
 
     // SET TAB SIZE
@@ -91,10 +276,11 @@ window.addEventListener('load', ()=> {
     // Add click event to file manager and open extra menu
     let file_manager = {
         el: document.querySelector('#file-manager'),
+        layer: document.querySelector('#file-manager > .explorer-main-layer'),
         menu: document.querySelector('#file-manager-extra-menu'),
     };
     // Add click event to file manager and open extra menu
-    file_manager.el.addEventListener('contextmenu', (e)=> {
+    file_manager.layer.addEventListener('contextmenu', (e)=> {
         e.preventDefault();
         return pop_menu(e, file_manager.menu);
     });
@@ -289,8 +475,37 @@ window.addEventListener('load', ()=> {
     };
 
     // Remove the window
-    remove_window = (w) => {
-        //
+    remove_window = (w=WINDOW_EDITOR.current-1, focus_editor = true) => {
+
+        // Focus editor window group
+        if(focus_editor)
+            __group_h.open_group('editor');
+
+        // > min windows
+        if (WINDOW_EDITOR.current <= 1) return;
+
+        // 
+        WINDOW_EDITOR.current --;
+        // Update window attributes
+        WINDOW_EDITOR.windows[w].parentElement.setAttribute('window-opened', WINDOW_EDITOR.current);
+
+        // Remove window from DOM
+        WINDOW_EDITOR.windows[w].remove();
+
+        // Remove Window from array
+        WINDOW_EDITOR.windows[w] = null;
+
+        // Remove files from window
+        WINDOW_EDITOR.files[`w${w}`] = [];
+
+        // If the same window is active will focus w0
+        if (WINDOW_EDITOR.active === w) {
+            // Focus w0
+            WINDOW_EDITOR.active = 0;
+        }
+
+        // Testing window_config
+        // console.log(WINDOW_EDITOR);
     }
     // <div class="w-0 editor-window">
     //     <div class="window-header d-flex">
@@ -370,7 +585,7 @@ window.addEventListener('load', ()=> {
                     __w_execute_file.classList.add('execute-file');
                     __w_execute_file.innerHTML = '[run]';
                     // Add it to dom execution array
-                    execute_file.el.push(__w_execute_file);
+                    // execute_file.el.push(... __w_execute_file);              -----> Not copied at all //TODO: Fix this 
 
                     // Create execute status
                     let __w_execute_status = document.createElement('span');
@@ -379,7 +594,7 @@ window.addEventListener('load', ()=> {
 
                     // Close window
                     let __w_close = document.createElement('a');
-                    __w_close.href = './';
+                    __w_close.href = `javascript:remove_window(${WINDOW_EDITOR.current})`;
                     __w_close.classList.add('close-window');
                     __w_close.innerHTML = '[ x ]';
 
@@ -399,16 +614,65 @@ window.addEventListener('load', ()=> {
         // Append window to editor
         WINDOW_EDITOR.parent.appendChild(__w);
 
-        // If empty file in current window, create new file
-        if (WINDOW_EDITOR.files[`w${WINDOW_EDITOR.current}`].length === 0)  create_file(WINDOW_EDITOR.current);
-
         // Update current window
         WINDOW_EDITOR.current++;
-        WINDOW_EDITOR.active = WINDOW_EDITOR.current - 1;
+        WINDOW_EDITOR.active = WINDOW_EDITOR.current-1;
+
+        // If empty file in current window, create new file
+        if (WINDOW_EDITOR.files[`w${WINDOW_EDITOR.current-1}`].length === 0)
+            __w.innerHTML += `
+                <div class="empty-window">
+                    <div class="empty-window-content">
+                        <div class="logo">
+                            <svg width="100" height="79" viewBox="0 0 100 79" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M72.5691 28.1201C68.8572 28.1201 65.8515 31.1294 65.8515 34.8395C65.8515 38.5497 68.8572 41.5589 72.5691 41.5589C76.2775 41.5589 79.2885 38.5497 79.2885 34.8395C79.2885 31.1294 76.2775 28.1201 72.5691 28.1201ZM28.2187 28.1201C24.505 28.1201 21.4994 31.1294 21.4994 34.8395C21.4994 38.5497 24.5068 41.5589 28.2187 41.5589C31.9289 41.5589 34.9363 38.5497 34.9363 34.8395C34.9363 31.1294 31.9289 28.1201 28.2187 28.1201ZM9.50678 19.6483C8.19512 18.3314 7.54195 16.6073 7.54195 14.8938C7.54195 13.1715 8.19512 11.4491 9.50678 10.1375C10.8255 8.82759 12.5408 8.17442 14.2613 8.17442C15.9837 8.17442 17.706 8.82759 19.0159 10.1375L17.4458 11.2969C26.5389 4.22528 37.9739 0 50.393 0C62.8158 0 74.2348 4.22351 83.3403 11.2969L81.7755 10.1428C83.0872 8.83113 84.8042 8.17796 86.5301 8.17796C88.2471 8.17796 89.9712 8.83113 91.2793 10.1428C92.5857 11.4615 93.2388 13.1839 93.2388 14.8973C93.2388 16.6214 92.591 18.342 91.2793 19.6537L92.8476 20.806C115.567 43.5237 76.8971 53.7533 76.8971 53.7533H23.8908C22.7756 53.7533 -16.3635 45.108 7.94022 20.806L9.50678 19.6483Z"/>
+                                <path d="M85.8273 77.7491C81.3135 77.7491 77.6547 74.0902 77.6547 69.5746C77.6547 65.0608 81.3135 61.402 85.8273 61.402C90.3412 61.402 94 65.0608 94 69.5746C94.0018 74.0902 90.3412 77.7491 85.8273 77.7491Z"/>
+                                <path d="M18.676 78.4925C14.1604 78.4925 10.5016 74.8336 10.5016 70.318C10.5016 65.8042 14.1604 62.1454 18.676 62.1454C23.1916 62.1454 26.8504 65.8042 26.8504 70.318C26.8504 74.8336 23.1916 78.4925 18.676 78.4925Z"/>
+                                <path d="M25.9406 55.442H75.019C75.019 55.442 51.225 63.62 25.9406 55.442Z"/>
+                            </svg>                        
+                        </div>
+                        <div class="text">
+                            <ul class="pop-menu">
+                                <li>
+                                    <a href="javascript:__pop_up._save('file')">
+                                        <span>[new file]</span>
+                                        <span>
+                                            <span class="__s-win">Alt + N</span>
+                                            <span class="__s-mac">⌥ + N</span>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:__pop_up._save('folder')">
+                                        <span>[open file]</span>
+                                        <span>
+                                            <span class="__s-win">Alt + O</span>
+                                            <span class="__s-mac">⌥ + O</span>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:create_window()">
+                                        <span>[new window]</span>
+                                        <span>
+                                            <span class="__s-win">Alt + W</span>
+                                            <span class="__s-mac">⌥ + W</span>
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
 
         // Update window attributes
         __w.parentElement.setAttribute('window-opened', WINDOW_EDITOR.current);
         // __w.parentElement.id = `window-opened-${WINDOW_EDITOR.current}`; ----------------> Less convenient; Donot use it anymore
+
+
+        // Testing window_config
+        // console.log(WINDOW_EDITOR);
     };
 
     create_file = (__wnum = WINDOW_EDITOR.active, name = "file", saved = false) => {
@@ -635,7 +899,13 @@ window.addEventListener('load', ()=> {
         __pop_up.open();
         extras_pop_up.querySelector(`.create-${type}`).classList.add('active');
     }
-
+    // Ask remove current project
+    __pop_up._new_project = (layer=false) => {
+        if (!layer) {
+            __pop_up.open();
+            extras_pop_up.querySelector(`.new-project`).classList.add('active');
+        }
+    }
 
     // ======================= //
     // REGISTER LABEL CONTROL

@@ -11,7 +11,6 @@ body{
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
-    overflow-x: auto;
 
     // Global style for header windows
     header.cap {
@@ -80,6 +79,40 @@ body{
 
         &.active {
             display: block;
+        }
+    }
+    .empty-window {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: 1;
+        background: var(--color-primary);
+        &, & > div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        svg {
+            path {
+                fill: var(--color-secondary);
+            }
+        }
+        ul {margin-top: 30px;
+            border: none;
+            li {
+                > a {
+                    > span {
+                        &:last-child * {
+                            color: var(--color-muted) !important;
+                        }
+        
+                        &:first-child {
+                            color: var(--color-invert-muted) !important;
+                        }
+                    }
+                }
+            }
         }
     }
     > header{
@@ -200,6 +233,54 @@ body{
                     }
                     .explorer-main{
                         flex: 1;
+                        position: relative;
+                        #x-root {
+                            position: relative;
+                            z-index: 2;
+                        }
+                        .explorer-folder {
+                            margin-left: var(--explorer-level-left);
+                            border-left: .5px solid rgba(var(--color-invert-rgb), 0.3);
+                            &.active {
+                                > .x-folder {
+                                    &::before {
+                                        content: "- ";
+                                    }
+                                }
+                                > ul {
+                                    display: block;
+                                }
+                            }
+                            > .x-folder {
+                                margin-left: calc(-1 * var(--explorer-level-left) - 0.5px);
+                                background-color: var(--color-folder-bg);
+                                color: var(--color-folder);
+                                &:hover {
+                                    color: var(--color-folder-active);
+                                }
+                                &::before {
+                                    content: "+ ";
+                                }
+                            }
+                            > ul {
+                                display: none;
+                            }
+                            .x-file {
+                                background-color: var(--color-file-bg);
+                                color: var(--color-file);
+                                &:hover {
+                                    color: var(--color-file-active);
+                                }
+                            }
+                        }
+                        .explorer-main-layer {
+                            position: absolute;
+                            width: 100%;
+                            height: 100%;
+                            top: 0;
+                            left: 0;
+                            z-index: 1;
+                        }
                     }
                 }
             }
@@ -256,6 +337,7 @@ body{
                         width: 100%;
                         position: relative;
                         background-color: var(--color-secondary);
+                        z-index: 2;
 
                         .file-queue {
                             display: flex;
@@ -305,6 +387,7 @@ body{
                         position: relative;
                         display: none;
                         background-color: var(--color-primary);
+                        z-index: 3;
 
                         &.active {
                             display: block;
@@ -540,10 +623,6 @@ body{
 
         .create-file, .create-folder {
             > main {
-                display: flex;
-                flex-wrap: nowrap;
-                position: relative;
-                justify-content: space-between;
                 > * {
                     padding: 10px;
                 }
@@ -554,6 +633,27 @@ body{
                     &:active, &:focus {
                         outline: none;
                     }
+                }
+            }
+        }
+
+        .alert, .prompt {
+            > main {
+                display: flex;
+                flex-wrap: nowrap;
+                position: relative;
+                justify-content: space-between;
+            }
+        }
+        .alert {
+            > main {
+                > * {
+                    padding: 10px;
+                }
+
+                > a {
+                    display: flex;
+                    align-items: center;
                 }
             }
         }
@@ -573,5 +673,46 @@ body{
         width: 100vw;
         height: 100vh;
         background-color: var(--layer-flash); // Layer with opacity to show that the app is blocked
+    }
+
+    #setup-init {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        background-color: var(--color-primary);
+        flex-direction: column;
+        display: none;
+        a {
+            display: inline-block;
+            padding: 5px 7px;
+        }
+        &.active {
+            display: flex;
+        }
+        main {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            line-height: 1.3;
+
+            pre {
+                display: inline;
+            }
+            .caret {
+                width: 1px;
+                display: inline-block;
+                background-color: transparent;
+                animation: caret 1s infinite linear;
+            }
+
+            @keyframes caret {
+                50% {
+                    background-color: var(--color-invert);
+                }
+            }
+        }
     }
 }

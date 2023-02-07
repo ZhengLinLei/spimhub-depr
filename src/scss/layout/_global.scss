@@ -26,6 +26,7 @@ html {
     --editor-footer-space : 100%;
 
     --explorer-size: 250px;
+    --explorer-level-left: 10px;
     --register-section-size: 35%;
     --data-segment-size: 50%;
     --terminal-size: 45%;
@@ -44,9 +45,16 @@ html {
     --color-success: #ADE792;
     --color-success-hover: #78b858;
     --color-warning: #F7D794;
-    --color-error: #ff8667;
+    --color-error: #fb341e;
 
-    &.dark {
+    --color-file: #6c6c6c;
+    --color-file-active: var(--color-invert);
+    --color-file-bg: var(--color-secondary);
+    --color-folder: var(var(--color-invert));
+    --color-folder-active: var(--color-invert);
+    --color-folder-bg: var(--color-secondary);
+
+    &[theme~="dark"], &[theme="dark"], &[theme=dark] {
         --color-primary: #272b31;
         --color-secondary: #17191c;
         --color-helper: #0f1113;
@@ -60,6 +68,29 @@ html {
         --color-success-hover: #50a06e;
         --color-warning: #b19456;
         --color-error: #ae2c2c;
+
+        --color-file: #c5c5c5;
+        --color-file-active: var(--color-invert);
+        --color-file-bg: var(--color-secondary);
+        --color-folder: var(var(--color-invert));
+        --color-folder-active: var(--color-invert);
+        --color-folder-bg: var(--color-secondary);
+    }
+
+    // Shortcuts
+    .__s-mac {
+        font-family: var(--font-sans);
+        font-weight: 300;
+    }
+    &[pc~="win"], &[pc="win"], &[pc=win] {
+        .__s-mac {
+            display: none;
+        }
+    }
+    &[pc~="mac"], &[pc="mac"], &[pc=mac] {
+        .__s-win {
+            display: none;
+        }
     }
 }
 
@@ -98,7 +129,7 @@ a {
     display: block;
 
     &:hover {
-        background: var(--color-hover);
+        background: var(--color-hover) !important;
     }
 }
 
@@ -107,6 +138,9 @@ hr{
     border-top: 0.5px solid #{ rgba(var(--color-invert-rgb), 0.3) } !important;
     background-color: transparent;
     height: 0px;
+}
+ul {
+    list-style: none;
 }
 
 input {

@@ -1,0 +1,27 @@
+Fri Dec 30 16:18:24 2022 -----  Project init 
+
+Sat Jan 21 16:18:24 2023 -----  Git init
+
+Thu Jan 26 16:29:00 2023 -----  First code preview
+
+Sun Jan 29 14:28:48 2023 -----  Regex in safari & firefox fixed (lookbehind not working in some browsers)
+                                    \    \________ branch: lookbehing-regex-fixing
+                                     \________________ commit: cd39a306c57215c95a159678a182ebbe6c48f490
+
+Sat Feb 04 16:21:33 2023 -----  First snapshot trailer preview
+                                    \     \________ dir: ./docs/index.html
+                                     \________________ commit: 4f849b7b4d3070c56811a0d7a679944864f48b46
+
+Sun Feb 05 00:44:31 2023 -----  Css grid fixed for other browsers that not supports :has() & :not()
+                                    \     \________ branch: firefox-grid-fixing
+                                     \________________ commit: 32a95fb03fc7e553e7c60c25ec63d2de5adc218d
+
+Sun Feb 05 13:08:00 2023 -----  Internal disk partition with localStorage in browsers, 5mb or 10mb limit. 
+                                    \     \________ explanation: https://tinyurl.com/spimhub-filesystem
+                                     \________________ options: ["FSKey-1.0", "FSPath-1.0"]
+                                                         \    \_____ FSKey-1.0
+                                                          \            \___ branch: fskey1.0-dev
+                                                           \__________ FSPath-1.0
+                                                                        \___ branch: fspath1.0-dev
+
+Tue Feb 07 16:18:24 2023 -----  Branch fspath1.0-dev merged with master
