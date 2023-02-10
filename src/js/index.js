@@ -1,17 +1,58 @@
+/* =========================================================================
+    SpimHub - A MIPS Assembly IDE for Web Browsers
 
+            _            _        _         _   _         _       _    _                  _        
+           / /\         /\ \     /\ \      /\_\/\_\ _    / /\    / /\ /\_\               / /\      
+          / /  \       /  \ \    \ \ \    / / / / //\_\ / / /   / / // / /         _    / /  \     
+         / / /\ \__   / /\ \ \   /\ \_\  /\ \/ \ \/ / // /_/   / / / \ \ \__      /\_\ / / /\ \    
+        / / /\ \___\ / / /\ \_\ / /\/_/ /  \____\__/ // /\ \__/ / /   \ \___\    / / // / /\ \ \   
+        \ \ \ \/___// / /_/ / // / /   / /\/________// /\ \___\/ /     \__  /   / / // / /\ \_\ \  
+         \ \ \     / / /__\/ // / /   / / /\/_// / // / /\/___/ /      / / /   / / // / /\ \ \___\ 
+     _    \ \ \   / / /_____// / /   / / /    / / // / /   / / /      / / /   / / // / /  \ \ \__/ 
+    /_/\__/ / /  / / /   ___/ / /__ / / /    / / // / /   / / /      / / /___/ / // / /____\_\ \   
+    \ \/___/ /  / / /   /\__\/_/___\\/_/    / / // / /   / / /      / / /____\/ // / /__________\  
+     \_____\/   \/_/    \/_________/        \/_/ \/_/    \/_/       \/_________/ \/_____________/  
+                                                                                               
+
+
+    © 2023 ZhengLinLei <zheng9112003@icloud.com>
+
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ ========================================================================== */
 
 
 // ================== //
 //  Global Variables  //
 // ================== //
 let FILE_SYSTEM, ROOT_DIR, WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT;
-let toggle_terminal, 
-    create_file, create_window, open_file, open_window,
+let toggle_terminal, toggle_opt,
+    create_file, create_window, open_file, open_window, focus_file,
     remove_window, new_project, set_theme;
 
 // Global functions
-let __pop_up, __group_h, __group_register;
+let __pop_up, __group_h, __group_register,
+    __new_file, __new_folder;
 
+// COOKIE ACTIVATED IN BROWSER
+let COOKIE_ACTIVATED = navigator.cookieEnabled;
+// ================== //
 const setup_dialog = {
     i: 0,
     content: [
@@ -19,7 +60,7 @@ const setup_dialog = {
              `Let's start setting up the dev environment. \nIt will take a few seconds. \nAlso, you can skip this setup by reloading the page or by pressing [Esc] at any time.`,
              `Please select your preferred editor theme (default: light mode). 💡 \nYou can change it or install different themes once the setting up is finished:`,
              `SpimHub use a virtual filesystem to store your files in locaStorage (cookies). 🍪 \nYou can create new files, folders and save it in the virtual filesystem. \nYou can also download the project backup and load existing one.`,
-             `To do this SpimHub need you to activate your cookies for SpimHub. \nThis allow us to control the localStorage to save the files data.`,
+             `To do this SpimHub need you to activate your cookies for SpimHub. \nThis allow us to control the localStorage to save the files data. 🔧 \n\n >> ` + (COOKIE_ACTIVATED ? "Cookies are already [ACTIVATED] in your browser." : "Cookies are [DISABLED] in your browser. Please consider to activate them. Otherwise you won't be able to save your files."),
              `By the way, if you use SpimHub in a public computer, you can disable cookies to prevent other users to see your files. \nAnd if you are in incognito mode, cookies are disabled by default.`,
              `SpimHub understands that you accept our cookie policy by continuing to use the editor`,
              // Share link
@@ -43,7 +84,8 @@ const setup_dialog = {
 // Next dialog
 setup_dialog.next = (i)=> {
     setup_dialog.writing = true;
-    let dialog_text = document.querySelector('#setup-init main pre.text');
+    let setup_main = document.querySelector('#setup-init main');
+    let dialog_text = setup_main.querySelector('main pre.text');
 
     // Write each letter from setup_dialog.content[i]
     let j = 0;
@@ -61,6 +103,9 @@ setup_dialog.next = (i)=> {
                                         setup_dialog.exception_callback[i]() : "";
             dialog_text.innerHTML += '\n\n<span class="muted">>> Press [Enter] to continue.</span>\n\n';
         }
+
+        // Scroll to bottom
+        setup_main.scrollTop = setup_main.scrollHeight;
     }, 50);
 
 };
@@ -117,6 +162,7 @@ window.addEventListener('load', ()=> {
 
                 setup_dialog.i++; // Next dialog
                 setup_dialog.next(setup_dialog.i);
+
             }
         };
         // Show setup dialog
@@ -200,8 +246,8 @@ window.addEventListener('load', ()=> {
         },
         folders: ["FOLDER1", "FOLDER2"]
     },
-    "/FOLDER1": {...}
-    "/FOLDER2": {...}
+    "/FOLDER1/": {...}
+    "/FOLDER2/": {...}
 
     */
 
@@ -220,7 +266,8 @@ window.addEventListener('load', ()=> {
             "/" : {
                 name: "[project]",
                 files: {},
-                folders: []
+                folders: [],
+                active: true
             }
             
         })
@@ -229,9 +276,198 @@ window.addEventListener('load', ()=> {
     // ROOT 
     ROOT_DIR = {
         cd: "/",
-        dir: []
+        dir: [],
+        clean_gui: (dir = "/") => {
+            let _parent = document.querySelector(`.explorer-folder[route="${dir}"] ul[route="${dir}"]`);
+            _parent.innerHTML = '';
+        }
     };
+    // Focus cd
+    ROOT_DIR.focus_dir = (dir = '/') => {
+        ROOT_DIR.cd = dir;
+        ROOT_DIR.dir = dir.split('/').filter((e) => e !== '');
+    }
+    // Get dir GUI
+    // ==========
+    ROOT_DIR._get_dir_tree = (dir = "/") => {
+        let result = {};
+        let folders = (FILE_SYSTEM[dir]) ? FILE_SYSTEM[dir].folders : [];
+    
+        folders.forEach(folder => {
+            result[folder] = ROOT_DIR._get_dir_tree(dir + folder + "/");
+        })
+    
+        return result;
+    }
+    /* ======================
 
+        STORAGE TREE
+
+        
+        Problem: Show the tree of filesystem (Only folders)
+
+        /
+        |--- docs
+        |      |--- libs
+        |      |--- layers
+        |--- src
+        |      |--- asm
+        |      |--- model
+        |      |--- controller
+        |      |--- resource
+        |--- public
+        |      |--- domain
+        |      |     |--- machine
+        |      |     |--- apache
+        |      |--- global
+        |--- credits
+            |--- licenses
+
+
+
+
+        Storage simulation:
+        
+        {
+            "/" : {
+                name: "[project]",
+                files: {},
+                folders: ["docs", "src", "public", "credits"]
+            },
+            "/docs/" : {
+                name: "[docs]",
+                files: {}
+                folders: ["libs", "layers"]
+            },
+            "/src/" : {
+                name: "[src]",
+                files: {}
+                folders: ["asm", "model", "controller", "resource"]
+            },
+            "/public/" : {
+                name: "[public]",
+                files: {}
+                folders: ["domain", "global"]
+            },
+            "/credits/" : {
+                name: "[credits]",
+                files: {}
+                folders: ["licenses"]
+            },
+            "/docs/libs/" : {
+                name: "[libs]",
+                files: {}
+                folders: []
+            },
+            "/docs/layers/" : {
+                ...
+            },
+            "/src/asm/" : {
+                ...
+            },
+            "/src/model/" : {
+                ...
+            },
+            ... 
+        }
+
+
+
+        Explained: https://tinyurl.com/spimhub-storagetree
+    */
+    ROOT_DIR.get_dir_gui = (dir = '/') => {
+        let folders = (FILE_SYSTEM[dir]) ? FILE_SYSTEM[dir].folders : [];
+        let files = (FILE_SYSTEM[dir]) ? Object.values(FILE_SYSTEM[dir].files) : [];
+
+        
+        // Sort name
+        folders.sort((a, b) => {
+            if (a.toLowerCase() < b.toLowerCase()) return -1;
+            if (a.toLowerCase() > b.toLowerCase()) return 1;
+            return 0;
+        });
+        files.sort((a, b) => {
+            if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+            if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+            return 0;
+        });
+
+        let _parent = document.querySelector(`.explorer-folder[route="${dir}"] ul[route="${dir}"]`);
+
+
+        // Folders
+        folders.forEach(folder => {
+            // <li>
+            //     <div class="explorer-folder" route="/docs">
+            //         <a onclick="this.parentElement.classList.toggle('active')" class="x-folder">[docs]</a>
+            //         <ul>
+            //             <li>
+            //                 <a class="x-file" href="./">readme.md</a>
+            //             </li>
+            //             <li>
+            //                 <a class="x-file" href="./">index.html</a>
+            //             </li>
+            //         </ul>
+            //     </div>
+            // </li>
+            let new_route = `${dir}${folder}/`;
+            let _folder_el = document.createElement('li');
+                let __folder_el_x = document.createElement('div');
+                __folder_el_x.classList.add('explorer-folder');
+                if (FILE_SYSTEM[new_route].active) __folder_el_x.classList.add('active');    // ------> If active is saved in memory
+                __folder_el_x.setAttribute('route', `${new_route}`);
+
+                    let __folder_el_x_a = document.createElement('a');
+                    __folder_el_x_a.classList.add('x-folder');
+                    __folder_el_x_a.innerHTML = `[${folder}]`;
+                    __folder_el_x_a.addEventListener('click', () => {
+                        // Focus folder directory
+                        ROOT_DIR.focus_dir(new_route);
+                        // Toggle active class
+                        __folder_el_x.classList.toggle('active');
+
+                        // Active folder
+                        FILE_SYSTEM[new_route].active = !FILE_SYSTEM[new_route].active;
+
+                    });
+                    __folder_el_x_a.addEventListener('contextmenu', (e) => {
+                        
+                        
+                    });
+
+                    let __folder_el_x_ul = document.createElement('ul');
+                    __folder_el_x_ul.setAttribute('route', `${new_route}`);
+
+                
+                __folder_el_x.appendChild(__folder_el_x_a);
+                __folder_el_x.appendChild(__folder_el_x_ul);
+
+            _folder_el.appendChild(__folder_el_x);
+            _parent.appendChild(_folder_el);
+
+            // Recursive
+            ROOT_DIR.get_dir_gui(new_route);
+        });
+
+        // Files
+        files.forEach(file => {
+            // Create file
+            let _file_el = document.createElement('li');
+                let _file_el_a = document.createElement('a');
+                _file_el_a.classList.add('x-file');
+                _file_el_a.innerHTML = file.name;
+                _file_el_a.addEventListener('click', () => {
+                    // Focus file directory
+                    ROOT_DIR.focus_dir(file.route);
+
+                    // Open file
+                    open_file(file);
+                });
+            
+            _file_el.appendChild(_file_el_a);
+            _parent.appendChild(_file_el);
+        });
+    }
 
     // SET TAB SIZE
     TAB_SIZE = 4;
@@ -290,20 +526,20 @@ window.addEventListener('load', ()=> {
         }
         return {x, y};
     }
-    // Start resize
-    const _fncStartResize = (e, type) => {
-        let _Y = (type === "y");
-        // If the event is touchstart
-        let coords = _getXY(e);
+    // Resize section
+    document.querySelector('.scroll-x.header').addEventListener('mousedown', (e)=> {
+        let _parent = opt_main.el;
 
-        let _PARENT = (_Y) ? terminal.parentElement.parentElement : document.querySelector('#terminal-fast-option');
+        let _xy = _getXY(e);
+
         // Resize terminal height
-        let _MAX = _Y ? window.innerHeight * 0.8 : window.innerWidth * 0.5;
-        let _MIN = _Y ? window.innerHeight * 0.2 : window.innerWidth * 0.1;
-        let _SIZE = _PARENT.getBoundingClientRect()[_Y ? "height" : "width"];
-        let _START = coords[type];
-        
-        const fncTouch = (e2) => {
+        let _MAX = window.innerWidth / 2;
+        let _MIN = 100;
+        let _SIZE = _parent.getBoundingClientRect()["width"];
+        let _START = _xy['x'];
+
+        // Add mousemove event
+        window.onmousemove = (e2) => {
 
             // Remove if the event is passive
             if(!['touchstart', 'touchmove', 'touchend', 'touchcancel'].includes(e.type)){
@@ -313,37 +549,38 @@ window.addEventListener('load', ()=> {
             // If the event is touchstart
             let coordsM = _getXY(e2);
 
-            document.body.classList.add(_Y ? 'row-resize' : 'col-resize');
+            document.body.classList.add('col-resize');
 
-            let _NEW_SIZE = _SIZE - (coordsM[type] - _START); // - (e.clientY - _START); ---> Because the height grows from bottom to top
+            let _NEW_SIZE = _SIZE + (coordsM['x'] - _START); // - (e.clientY - _START); ---> Because the width grows to the right
 
-            if(_NEW_SIZE > _MIN && _NEW_SIZE < _MAX)
-                (_Y) 
-                ?
-                    _PARENT.style.height = `${_NEW_SIZE}px`
-                :
-                    (document.documentElement || document.querySelector(':root')).style.setProperty('--termOption', `${_NEW_SIZE}px`);
-        }
-        window.onmousemove = fncTouch;
-        window.ontouchmove = fncTouch;
+            if(_NEW_SIZE > _MIN && _NEW_SIZE < _MAX){
+                // _parent.classList.add('active');
+                (document.documentElement || document.querySelector(':root')).style.setProperty('--explorer-size', `${_NEW_SIZE}px`);
+            }
+            
+            // Close if NEW_SIZE is less than MIN
+            if(_NEW_SIZE < _MIN - (_MIN / 2)){
+                _parent.classList.remove('active');
+            }else {
+                _parent.classList.add('active');
+            }
+            
+        };
+        window.onmouseup = () => {
+            document.body.classList.remove('col-resize');
 
-        window.onmouseup = () => _fncEndResize(type);
-        window.ontouchend = () => _fncEndResize(type);
-    };
-    // End resize
-    const _fncEndResize = (type) => {
-        let _Y = (type === "y");
+            window.onmousemove = null;
+            window.ontouchmove = null;
+            window.onmouseup = null;
+            window.ontouchend = null;
 
-        document.body.classList.remove(_Y ? 'row-resize' : 'col-resize');
+            // Save terminal height and option width
 
-        window.onmousemove = null;
-        window.ontouchmove = null;
-        window.onmouseup = null;
-        window.ontouchend = null;
-    };
-
-    ['mousedown','touchstart'].forEach( evt => {
-        document.querySelector('.scroll-x.header').addEventListener(evt, (e) => _fncStartResize(e, "x"));
+            // localStorage.setItem(
+            //     _Y ? 'terminalHeight' : 'terminalOptWidth',
+            //     _Y ? terminal.parentElement.parentElement.getBoundingClientRect().height : document.querySelector('#terminal-fast-option').getBoundingClientRect().width
+            // );
+        };
     });
 
     // ================== //
@@ -359,6 +596,10 @@ window.addEventListener('load', ()=> {
     file_manager.layer.addEventListener('contextmenu', (e)=> {
         e.preventDefault();
         return pop_menu(e, file_manager.menu);
+    });
+    // Add click event to focus root '/'
+    file_manager.layer.addEventListener('mousedown', (e)=> {
+        ROOT_DIR.focus_dir('/');
     });
 
     // ================== //
@@ -455,6 +696,40 @@ window.addEventListener('load', ()=> {
     });
 
     // =============================
+    // OPT MAIN
+
+    let opt_main = {
+        el: document.querySelector('#main-folder'),
+        opt_files: document.querySelector('#opt-files'),
+        opt_search: document.querySelector('#opt-search'),
+        opt_extensions: document.querySelector('#opt-extensions'),
+        tab: ['opt-files', 'opt-search', 'opt-extensions']
+    };
+
+    toggle_opt = (type=-1, window="files")=> {
+        // Toggle header
+        if (type === -1) {
+            if (opt_main.el.classList.contains(`opt-${window}`)) {
+                opt_main.el.classList.toggle('active');
+            }
+        }else if (type === 1)
+            opt_main.el.classList.add('active');
+        else if (type === 0)
+            opt_main.el.classList.remove('active');
+
+        // Reject
+        if (!["files", "search", "extensions"].includes(window)) return;
+
+        // Disable terminal and console
+        [... opt_main.tab].forEach(el => {
+            opt_main.el.classList.remove(el);
+        });
+
+        // Active window
+        opt_main.el.classList.add(`opt-${window}`);
+    };
+
+    // =============================
     // EDITORS
 
     const focus_line = (textarea, delay=-1, reset = true) => {
@@ -510,7 +785,7 @@ window.addEventListener('load', ()=> {
         return FORMAT.formateCode(code);
     };
 
-    const update_code = (textarea) => {
+    const update_code = (textarea, metadata, file) => {
         // Get parent
         let file_w = textarea.parentElement;
         
@@ -547,6 +822,15 @@ window.addEventListener('load', ()=> {
         if(textarea === document.activeElement){
             // Update line numbers
             focus_line(textarea, -1, false);
+        }
+
+        // Update metadata
+        metadata.content = code;
+
+        if (metadata.content !== file.content) {
+            metadata.__fw.classList.add('not-saved');
+        } else {
+            metadata.__fw.classList.remove('not-saved');
         }
     };
 
@@ -751,7 +1035,20 @@ window.addEventListener('load', ()=> {
         // console.log(WINDOW_EDITOR);
     };
 
-    create_file = (__wnum = WINDOW_EDITOR.active, name = "file", saved = false) => {
+    create_file = (file = {name : 'file.asm', route : '/', content : ''}, __wnum = WINDOW_EDITOR.active) => {
+        let __fw = document.createElement('div');
+        let __f = document.createElement('div');
+
+        // Create file metadata
+        let metadata = {
+            name: file.name,
+            route: file.route,
+            saved: false,
+            content: file.content,
+            __fw,
+            __f
+
+        }
         // Get window
         let __w = WINDOW_EDITOR.windows[__wnum];
 
@@ -761,21 +1058,48 @@ window.addEventListener('load', ()=> {
         // </div>
 
         // Create file wrapper to insert in queue
-        let __fw = document.createElement('div');
         __fw.classList.add('active');
 
-        if(!saved) __fw.classList.add('not-saved');
+        // if(!saved) __fw.classList.add('not-saved');
 
         __fw.classList.add(`w-${__wnum}-f-${WINDOW_EDITOR.files[`w${__wnum}`].length}`);
 
             // Create file name
             let __fw_name = document.createElement('a');
-            __fw_name.innerHTML = `[${name}.s]`;
+            __fw_name.innerHTML = `[${file.name}]`;
+            __fw_name.addEventListener('click', () => {
+                // Focus
+                focus_file(__wnum, metadata);
+            });
 
             // Create file close
             let __fw_close = document.createElement('a');
             __fw_close.classList.add('muted');
             __fw_close.innerHTML = 'x';
+            __fw_close.addEventListener('click', () => {
+                // Close __fw
+                __fw.remove();
+
+
+                let i = WINDOW_EDITOR.files[`w${__wnum}`].indexOf(metadata);
+
+                // Remove file from files array
+                WINDOW_EDITOR.files[`w${__wnum}`].splice(i, 1);
+
+                // Remove file from window
+                __f.remove();
+
+                if (metadata.__fw.classList.contains('active')) {
+                    // Focus on last file
+                    if (WINDOW_EDITOR.files[`w${__wnum}`].length !== 0) {
+                        if (i > 0)
+                            focus_file(__wnum, WINDOW_EDITOR.files[`w${__wnum}`][i-1]);
+                        else if(i == 0)
+                            focus_file(__wnum, WINDOW_EDITOR.files[`w${__wnum}`][i]);
+                    }
+                }
+
+            });
         
         // Append file name and close to file wrapper
         __fw.appendChild(__fw_name);
@@ -797,7 +1121,6 @@ window.addEventListener('load', ()=> {
         // </div>
 
         // Create file
-        let __f = document.createElement('div');
         __f.classList.add(`f-${WINDOW_EDITOR.files[`w${__wnum}`].length}`);
         __f.classList.add('editor-file');
         __f.classList.add('active');
@@ -812,6 +1135,8 @@ window.addEventListener('load', ()=> {
 
             // Create textarea
             let __f_textarea = document.createElement('textarea');
+            __f_textarea.value = file.content;
+
             __f_textarea.classList.add('textarea-main');
             __f_textarea.spellcheck = false;
             __f_textarea.outline = 'none';
@@ -820,7 +1145,7 @@ window.addEventListener('load', ()=> {
             __f_textarea.setAttribute('aria-label', 'SpimHub');
             __f_textarea.tabindex = 0;
 
-            __f_textarea.addEventListener('input', () => update_code(__f_textarea));
+            __f_textarea.addEventListener('input', () => update_code(__f_textarea, metadata, file));
             __f_textarea.addEventListener('mouseup', () =>  {
                 // Focus selected line
                 focus_line(__f_textarea)
@@ -845,7 +1170,7 @@ window.addEventListener('load', ()=> {
                     __f_textarea.selectionStart = __f_textarea.selectionEnd = start + TAB_SIZE;
 
                     // Update code
-                    update_code(__f_textarea);
+                    update_code(__f_textarea, metadata, file);
 
                 }
                 // Update lines number if the user jump lines
@@ -886,17 +1211,47 @@ window.addEventListener('load', ()=> {
         // Append file to window
         __w.appendChild(__f);
 
+        // Focus file
+        focus_file(__wnum, metadata);
+
+        // Update current file
+        WINDOW_EDITOR.files[`w${__wnum}`].push(metadata);
+
+        // Focus editor window group
+         __group_h.open_group('editor');
+
+        // Update code if value is not empty
+        if(file.content !== '') update_code(__f_textarea);
+    }
+
+    focus_file = (w, file) => {
         // Update active file
-        WINDOW_EDITOR.files[`w${__wnum}`].forEach(el => {
-            el.forEach(e => {
+        WINDOW_EDITOR.files[`w${w}`].forEach(el => {
+            [el.__fw, el.__f].forEach(e => {
                 e.classList.remove('active');
             });
         });
 
-        // Update current file
-        WINDOW_EDITOR.files[`w${__wnum}`].push([__fw, __f]);
+        // Update active file
+        [file.__fw, file.__f].forEach(e => {
+            e.classList.add('active');
+        });
+    };
     
-    }
+    open_file = (file) => {
+        // If file is already open
+        let opened = WINDOW_EDITOR.files[`w${WINDOW_EDITOR.active}`].find(el => (el.route + el.name) == (file.route + file.name));
+
+        if (opened){
+            // Focus file
+            focus_file(WINDOW_EDITOR.active, opened);
+            return;
+        }
+
+        // Create file window
+        create_file(file);
+    };
+
     WINDOW_EDITOR = {
         parent: document.querySelector('#main-editor'),
         max: 4,
@@ -911,6 +1266,108 @@ window.addEventListener('load', ()=> {
             w2: [],
             w3: [],
         }
+    }
+
+    __new_file = (filename, route) => {
+        if (!filename || !route || !FILE_SYSTEM[route]) return false;
+
+        let warning = document.querySelector('section#warning');
+        // If filename is not valid
+        // If file already exists
+        let files = Object.values(FILE_SYSTEM[route].files).map(el => el.name);
+        if (!filename.match(/^[a-zA-Z0-9_\-\.]+$/) || files.includes(filename)){
+            if (files.includes(filename)){
+                warning.innerHTML = `<p>File "[${filename}]" already exists.</p>`;
+            }else {
+                warning.innerHTML = `<p>Filename "[${filename}]" is invalid.</p>`;
+            }
+            warning.classList.add('active');
+            setTimeout(() => {
+                warning.classList.remove('active');
+            }, 10000);
+            return false;
+        }
+
+        // Import it into filesystem
+        let _file = {
+            name: filename,
+            route: route,
+            content: '',
+            saved: true,
+        }
+
+        // Add file to filesystem
+        FILE_SYSTEM[route].files[filename] = _file;
+
+        // Clean GUI
+        ROOT_DIR.clean_gui('/');
+
+        // Create folders
+        ROOT_DIR.get_dir_gui('/');
+
+        // Set new route
+        ROOT_DIR.focus_dir(route);
+
+        // Open file
+        create_file(_file);
+        
+        return true;
+    }
+
+    // <li>
+    //     <div class="explorer-folder" route="/docs">
+    //         <a onclick="this.parentElement.classList.toggle('active')" class="x-folder">[docs]</a>
+    //         <ul>
+    //             <li>
+    //                 <a class="x-file" href="./">readme.md</a>
+    //             </li>
+    //             <li>
+    //                 <a class="x-file" href="./">index.html</a>
+    //             </li>
+    //         </ul>
+    //     </div>
+    // </li>
+    __new_folder = (foldername, route) => {
+        if (!foldername || !route) return false;
+
+        // If folder already exists
+        if (FILE_SYSTEM[route].folders.includes(foldername)){
+            let warning = document.querySelector('section#warning');
+
+            warning.innerHTML = `<p>Folder "[${foldername}]" already exists.</p>`;
+            warning.classList.add('active');
+            setTimeout(() => {
+                warning.classList.remove('active');
+            }, 10000);
+            return false;
+        }
+
+        // Import it into filesystem
+        let _folder = {
+            name: `[${foldername}]`,
+            files: {},
+            folders: [],
+            active: true,
+        }
+
+        let new_route = `${route}${foldername}/`;
+
+        // Add folder to filesystem
+        // Parent folder
+        FILE_SYSTEM[route].folders.push(foldername);
+        // Current folder
+        FILE_SYSTEM[new_route] = _folder;
+
+        // Clean GUI
+        ROOT_DIR.clean_gui('/');
+
+        // Create folders
+        ROOT_DIR.get_dir_gui('/');
+
+        // Set new route
+        ROOT_DIR.focus_dir(new_route);
+
+        return true;
     }
 
 
@@ -963,6 +1420,18 @@ window.addEventListener('load', ()=> {
             extras_pop_up.classList.add('active');
             document.querySelector('#clicker-changer').classList.add('active');
         },
+        close: e => {
+            e.target.classList.remove('active');
+
+
+            // Remove active class from all extras
+            extras_pop_up.classList.remove('active');
+
+            for (let el of extras_pop_up.children) {
+                // Remove active class from all extras children
+                el.classList.remove('active');
+            }
+        }
     }
 
     // Save new file
@@ -974,6 +1443,7 @@ window.addEventListener('load', ()=> {
 
         __pop_up.open();
         extras_pop_up.querySelector(`.create-${type}`).classList.add('active');
+        extras_pop_up.querySelector(`.create-${type} input`).focus();
     };
     __pop_up._open = (type) => {
         let __type = ['file', 'folder'];
@@ -991,6 +1461,70 @@ window.addEventListener('load', ()=> {
             extras_pop_up.querySelector(`.new-project`).classList.add('active');
         }
     }
+
+    // ======================= //
+    // NEW 
+    let new_dir = {
+        file: {
+            el: extras_pop_up.querySelector('a[action="new-file"]'),
+            input: extras_pop_up.querySelector('.create-file input'),
+            create: () => {
+                // Get input value
+                let filename = new_dir.file.input.value + '.asm';
+        
+                // Reject if filename is empty
+                if(filename == '') return;
+        
+                // FNC
+                if (__new_file(filename, (ROOT_DIR.cd || '/'))) {
+            
+                    // Reset input value
+                    new_dir.file.input.value = '';
+            
+                    // Close pop-up
+                    __pop_up.close({target: document.querySelector('#clicker-changer')});
+                };
+            }
+        },
+        folder: {
+            el: extras_pop_up.querySelector('a[action="new-folder"]'),
+            input: extras_pop_up.querySelector('.create-folder input'),
+            create: () => {
+                // Get input value
+                let foldername = new_dir.folder.input.value;
+
+                // Reject if foldername is empty
+                if(foldername == '') return;
+
+                // FNC
+                if (__new_folder(foldername, (ROOT_DIR.cd || '/'))) {
+
+                    // Reset input value
+                    new_dir.folder.input.value = '';
+
+                    // Close pop-up
+                    __pop_up.close({target: document.querySelector('#clicker-changer')});
+                }
+            }
+        },
+    }
+
+    // Create new file
+    new_dir.file.el.addEventListener('click', new_dir.file.create);
+    let input_enter = (e, fnc) => {
+        if (e.keyCode == 13 || e.key == 'Enter') {
+            e.preventDefault();
+            fnc();
+        }else {
+            document.getElementById('warning').classList.remove('active');
+        }
+    }
+    new_dir.file.input.addEventListener('keydown', e => input_enter(e, new_dir.file.create));
+
+    // Create new folder
+    new_dir.folder.el.addEventListener('click', new_dir.folder.create);
+    new_dir.folder.input.addEventListener('keydown', e => input_enter(e, new_dir.folder.create));
+    
 
     // ======================= //
     // REGISTER LABEL CONTROL
@@ -1043,18 +1577,7 @@ window.addEventListener('load', ()=> {
     //  Close extras pop-up    //
     //  on click               //
     // ======================= //
-    document.querySelector('#clicker-changer').addEventListener('click', e => {
-        e.target.classList.remove('active');
-
-
-        // Remove active class from all extras
-        extras_pop_up.classList.remove('active');
-
-        for (let el of extras_pop_up.children) {
-            // Remove active class from all extras children
-            el.classList.remove('active');
-        }
-    });
+    document.querySelector('#clicker-changer').addEventListener('click', __pop_up.close);
 
 
 

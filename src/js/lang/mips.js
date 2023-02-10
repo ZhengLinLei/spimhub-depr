@@ -1,3 +1,48 @@
+/*
+
+    Mips keywords Regex (https://www.mrc.uidaho.edu/mrc/people/jff/digital/MIPSir.html)                                                                                              
+                                                                                                         
+    RRRRRRRRRRRRRRRRR   EEEEEEEEEEEEEEEEEEEEEE       GGGGGGGGGGGGGEEEEEEEEEEEEEEEEEEEEEEXXXXXXX       XXXXXXX
+    R::::::::::::::::R  E::::::::::::::::::::E    GGG::::::::::::GE::::::::::::::::::::EX:::::X       X:::::X
+    R::::::RRRRRR:::::R E::::::::::::::::::::E  GG:::::::::::::::GE::::::::::::::::::::EX:::::X       X:::::X
+    RR:::::R     R:::::REE::::::EEEEEEEEE::::E G:::::GGGGGGGG::::GEE::::::EEEEEEEEE::::EX::::::X     X::::::X
+      R::::R     R:::::R  E:::::E       EEEEEEG:::::G       GGGGGG  E:::::E       EEEEEEXXX:::::X   X:::::XXX
+      R::::R     R:::::R  E:::::E            G:::::G                E:::::E                X:::::X X:::::X   
+      R::::RRRRRR:::::R   E::::::EEEEEEEEEE  G:::::G                E::::::EEEEEEEEEE       X:::::X:::::X    
+      R:::::::::::::RR    E:::::::::::::::E  G:::::G    GGGGGGGGGG  E:::::::::::::::E        X:::::::::X     
+      R::::RRRRRR:::::R   E:::::::::::::::E  G:::::G    G::::::::G  E:::::::::::::::E        X:::::::::X     
+      R::::R     R:::::R  E::::::EEEEEEEEEE  G:::::G    GGGGG::::G  E::::::EEEEEEEEEE       X:::::X:::::X    
+      R::::R     R:::::R  E:::::E            G:::::G        G::::G  E:::::E                X:::::X X:::::X   
+      R::::R     R:::::R  E:::::E       EEEEEEG:::::G       G::::G  E:::::E       EEEEEEXXX:::::X   X:::::XXX
+    RR:::::R     R:::::REE::::::EEEEEEEE:::::E G:::::GGGGGGGG::::GEE::::::EEEEEEEE:::::EX::::::X     X::::::X
+    R::::::R     R:::::RE::::::::::::::::::::E  GG:::::::::::::::GE::::::::::::::::::::EX:::::X       X:::::X
+    R::::::R     R:::::RE::::::::::::::::::::E    GGG::::::GGG:::GE::::::::::::::::::::EX:::::X       X:::::X
+    RRRRRRRR     RRRRRRREEEEEEEEEEEEEEEEEEEEEE       GGGGGG   GGGGEEEEEEEEEEEEEEEEEEEEEEXXXXXXX       XXXXXXX
+                                                                                                         
+                                                                                                  
+    
+    © 2023 ZhengLinLei <zheng9112003@icloud.com>
+
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 const __mipsasm_scope = () => {
     return {
         meta : [

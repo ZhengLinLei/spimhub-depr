@@ -207,6 +207,7 @@ body{
             border-right: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
             background-color: var(--color-secondary);
             display: none;
+            overflow-x: hidden;
             position: relative;
 
             &.active {
@@ -218,8 +219,22 @@ body{
                 transform: translateX(2.5px);
             }
 
+            $opt : 'files', 'search', 'extensions';
+            @each $opt in $opt {
+                &.opt-#{$opt} {
+                    #opt-#{$opt} {
+                        display: flex;
+                    }
+                }
+            }
+
+            #opt-files, #opt-search, #opt-extensions {
+                min-width: var(--explorer-child-size);
+                width: 100%;
+            }
+
             #opt-files {
-                display: flex;
+                display: none;
                 .runner a, .editor a, .explorer .explorer-header {
                     width: 100%;
                     display: flex;
@@ -323,7 +338,7 @@ body{
                 grid-template-columns: repeat(2, 50%);
                 grid-gap: 0.5px;
 
-                @for $i from 1 through 3 {
+                @for $i from 0 through 3 {
                     .editor-window.w-#{$i} {
                         z-index: $i;
                     }
@@ -372,8 +387,8 @@ body{
                                 }
                                 &.active {
                                     background-color: var(--color-primary);
-                                    a:first-child {
-                                        background: var(--color-primary);
+                                    a:first-child, a:first-child:hover {
+                                        background: var(--color-primary) !important;
                                     }
                                 }
                                 &.not-saved {
@@ -568,7 +583,7 @@ body{
                                 }
                                 &:last-child {
                                     border-top: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
-                                    z-index: 9;
+                                    z-index: 2;
                                     height: var(--data-segment-size);
                                 }
                             }
@@ -713,7 +728,7 @@ body{
         }
         main {
             flex: 1;
-            padding: 20px;
+            padding: 20px 20px 100px 20px;
             overflow: auto;
             line-height: 1.3;
 
@@ -731,6 +746,37 @@ body{
                 50% {
                     background-color: var(--color-invert);
                 }
+            }
+        }
+    }
+
+    // Warning
+    #warning {
+        position: fixed;
+        z-index: 99;
+        right: 20px;
+        bottom: 20px;
+        padding: 10px 20px;
+        display: none;
+        min-width: 300px;
+        background-color: var(--color-error);
+        color: var(--color-primary);
+        // font-weight: bold;
+
+        &.active {
+            display: block;
+            animation: dissapear 10s forwards;
+        }
+
+        @keyframes dissapear {
+            0% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
             }
         }
     }

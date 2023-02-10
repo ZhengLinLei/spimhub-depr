@@ -39,7 +39,7 @@
     <!-- Index.js -->
     <script src="./js/index.js"></script>
     <!-- TITTLE -->
-    <title>SpimHub | Mips CPU Simulator</title>
+    <title>SpimHub - Mips CPU Simulator</title>
 </head>
 <body>
     <header class="bg-secondary d-flex">
@@ -348,15 +348,15 @@
         </div>
         <div class="right">
             <div class="d-flex">
-                <a href="https://github.com/ZhengLinLei/spimhub/">[files]</a>
-                <a href="https://github.com/ZhengLinLei/spimhub/">[search]</a>
-                <a href="https://github.com/ZhengLinLei/spimhub/">[extensions]</a>
+                <a href="javascript:toggle_opt(-1)">[files]</a>
+                <a href="javascript:toggle_opt(-1, 'search')">[search]</a>
+                <a href="javascript:toggle_opt(-1, 'extensions')">[extensions]</a>
                 <a href="javascript:toggle_terminal();">[terminal]</a>
             </div>
         </div>
     </header>
     <main>
-        <header id="main-folder" class="active">
+        <header id="main-folder" class="active opt-files">
             <!-- Scroll x -->
             <div class="scroll-x header"></div>
             <!-- Sections -->
@@ -390,6 +390,11 @@
                     </div>
                     <div class="explorer-main" id="file-manager">
                         <div id="x-root" class="explorer-folder active" route="/">
+                            <ul route="/">
+                                <!-- ROOT FILES -->
+                            </ul>
+                        </div>
+                        <!-- <div id="x-root" class="explorer-folder active" route="/">
                             <ul>
                                 <li>
                                     <div class="explorer-folder" route="/.git">
@@ -454,7 +459,7 @@
                                     <a class="x-file" href="./">readme.md</a>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                         <!-- Context loader -->
                         <div class="explorer-main-layer" route="/"></div>
                     </div>
@@ -1250,7 +1255,7 @@
             <main>
                 <input type="text" placeholder="file">
                 <div>.asm</div>
-                <a href="./">[ok]</a>
+                <a action="new-file">[ok]</a>
             </main>
         </section>
         <section class="create-folder pop-up prompt">
@@ -1259,7 +1264,7 @@
             </header>
             <main>
                 <input type="text" placeholder="folder">
-                <a href="./">[ok]</a>
+                <a action="new-folder">[ok]</a>
             </main>
         </section>
         <section class="open-file pop-up prompt">
@@ -1290,6 +1295,10 @@
             </main>
         </section>
     </footer>
+    <!-- Warning -->
+    <section id="warning" class="no-select">
+        <span>Foldername or filename already exist.</span>
+    </section>
     <section id="clicker-changer">
         <!-- When the user click this section, the footer extra option will pop-up -->
     </section>
@@ -1301,6 +1310,7 @@
             <pre class="text"><span class="muted"><u>>> Reload the page to skip the setup.</u></span><br><br><br><br></pre><span class="caret no-select">&nbsp;</span>
         </main>
     </section>
+    
 </body>
 
 </html>
