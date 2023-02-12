@@ -46,8 +46,8 @@ body{
                 background: var(--color-hover);
             }
 
-            &.active{
-                background-color: var(--color-primary);
+            &.active, &.active:hover{
+                background-color: var(--color-primary) !important;
             }
         }
     }
@@ -58,6 +58,7 @@ body{
         border: 1px solid #{ rgba(var(--color-invert-rgb), 0.3) };
         list-style: none;
         width: max-content;
+        z-index: 9;
 
         li{
             a {
@@ -83,7 +84,7 @@ body{
     .menu {
         position: fixed;
         display: none;
-        z-index: 10;
+        z-index: 99;
         width: max-content;
         height: max-content;
 
@@ -306,6 +307,13 @@ body{
                                     color: var(--color-file-active);
                                 }
                             }
+
+                            .x-folder, .x-file {
+                                border: .5px solid transparent;
+                                &.focus {
+                                    border: .5px solid rgba(var(--color-invert-rgb), 0.3);
+                                }
+                            }
                         }
                         .explorer-main-layer {
                             position: absolute;
@@ -371,17 +379,20 @@ body{
                         width: 100%;
                         position: relative;
                         background-color: var(--color-secondary);
-                        z-index: 2;
+                        z-index: 3;
 
                         .file-queue {
                             display: flex;
                             flex: 1;
                             align-items: center;
                             // padding-left: calc(var(--editor-padd) - 0.5px);
-                            overflow: scroll;
-                            div {
+                            overflow: visible;
+                            > div {
                                 display: flex;
                                 align-items: center;
+                                overflow: visible;
+                                position: relative;
+
                                 .muted:hover {
                                     color: var(--color-invert) !important;
                                 }
@@ -401,6 +412,26 @@ body{
                                     }
                                 }
                                 border-right: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+
+                                // Show route when hover
+                                &::after {
+                                    content: attr(route);
+                                    position: absolute;
+                                    left: 0;
+                                    top: 100%;
+                                    white-space: nowrap;
+                                    padding: 2px;
+                                    z-index: 999;
+                                    background-color: var(--color-primary);
+                                    border: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                                    display: none;
+                                }
+
+                                &:hover {
+                                    &::after {
+                                        display: block;
+                                    }
+                                }
                             }
                         }
                         .execute {
@@ -408,7 +439,7 @@ body{
                                 // Succes color
                                 background-color: var(--color-success);
                                 &:hover {
-                                    background-color: var(--color-success-hover);
+                                    background-color: var(--color-success-hover) !important;
                                 }
                             }
                             > span {
@@ -421,7 +452,7 @@ body{
                         position: relative;
                         display: none;
                         background-color: var(--color-primary);
-                        z-index: 3;
+                        z-index: 2;
 
                         &.active {
                             display: block;
@@ -502,6 +533,25 @@ body{
                     display: flex;
                 }
                 flex-direction: column;
+                > .cap {
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .title {
+                        padding: 0 7px;
+                    }
+                    a {
+                        padding: 7px;
+                        &.run-all {
+                            background-color: var(--color-success);
+                            &:hover {
+                                background-color: var(--color-success-hover) !important;
+                            }
+                        }
+                    }
+                }
                 > main {
                     display: flex;
                     position: relative;
@@ -623,7 +673,7 @@ body{
                     display: block;
                 }
                 height: var(--terminal-size);
-                border-top: 2px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                border-top: 1px solid #{ rgba(var(--color-invert-rgb), 0.3) };
                 background-color: var(--color-primary);
                 position: relative;
                 scroll-behavior: smooth;

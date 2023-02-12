@@ -43,12 +43,50 @@
 // ================== //
 let FILE_SYSTEM, ROOT_DIR, WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT;
 let toggle_terminal, toggle_opt,
-    create_file, create_window, open_file, open_window, focus_file,
-    remove_window, new_project, set_theme;
+    create_file, create_window, open_file, open_folder, open_window, focus_file, check_file, check_folder, copy_path,
+    remove_window, new_project, set_theme,
+    html_open, html_delete, html_rename;
 
 // Global functions
 let __pop_up, __group_h, __group_register,
-    __new_file, __new_folder;
+    __new_file, __new_folder, __rename_file, __rename_folder, __delete_file, __delete_folder;
+
+function getRelativePath(source, target) {
+    if (source == target) return "./";
+
+    var sep = (source.indexOf("/") !== -1) ? "/" : "\\",
+        targetArr = target.split(sep),
+        sourceArr = source.split(sep),
+        filename = targetArr.pop(),
+        targetPath = targetArr.join(sep),
+        relativePath = "";
+    
+    while (targetPath.indexOf(sourceArr.join(sep)) === -1) {
+        sourceArr.pop();
+        relativePath += ".." + sep;
+    }
+    
+    var relPathArr = targetArr.slice(sourceArr.length);
+    relPathArr.length && (relativePath += relPathArr.join(sep) + sep);
+    
+    return relativePath + filename;
+}
+
+let COPY_CLIPBOARD = (data) => {
+    try {
+        navigator.clipboard.writeText(data);
+        return;
+    } catch (e) {
+        let input = document.createElement('input');
+        document.body.appendChild(input);
+        input.value = data;
+        input.focus();
+        input.select();
+        input.setSelectionRange(0, 99999);
+        document.execCommand('Copy');
+        input.remove();
+    }
+}
 
 // COOKIE ACTIVATED IN BROWSER
 let COOKIE_ACTIVATED = navigator.cookieEnabled;
@@ -136,7 +174,8 @@ var isIOS = /(iPhone|iPod|iPad)/i.test(navigator.platform);
 if (isMac || isMacLike || isIOS) {
     // Mac OS
     document.documentElement.setAttribute('pc', 'mac');
-} 
+}
+
 
 window.addEventListener('load', ()=> {
 
@@ -178,6 +217,82 @@ window.addEventListener('load', ()=> {
 
         // Show first dialog
         setup_dialog.next(setup_dialog.i);
+    }
+
+    // ================== //
+    //  HTML EVENTS       //
+    // ================== //
+    let menu_dir_opt = {
+        file: document.querySelector('#file-option-menu'),
+        folder: document.querySelector('#folder-option-menu')
+    };
+
+    copy_path = (content="abs", type='file') => {
+        let contents = ['abs', 'rel'];
+        let types = ['file', 'folder'];
+        
+        if (!types.includes(type) || !contents.includes(content)) return;
+
+        let _parent = menu_dir_opt[type];
+        let _route = _parent.getAttribute('route');
+
+        if (content === 'rel') {
+            // _route = getRelativePath(ROOT_DIR.cd, _route);      ------------> //!Not Operative
+        }
+
+        // Copy path to clipboard
+        COPY_CLIPBOARD(_route);
+    }
+
+    let get_html_data = (type) => {
+        let _parent = menu_dir_opt[type];
+
+        // Get data route and files from parentNode
+        let _route = _parent.getAttribute('route');
+        let _files = _parent.getAttribute('file');
+
+        // Get file from filesystem
+        let folder = FILE_SYSTEM[_route];
+        let file = FILE_SYSTEM[_route].files[_files];
+
+        return {
+            _route,
+            _files,
+            folder,
+            file
+        };
+    }
+
+    html_open = (type) => {
+        let types = ['file', 'folder'];
+        if (!types.includes(type)) return;
+
+        let { _route, _files, folder, file } = get_html_data(type);
+
+        // Open x
+        if (type === 'file')
+            open_file(file);
+        else 
+            open_folder(folder);
+    }
+    html_delete = (type) => {
+        let types = ['file', 'folder'];
+        if (!types.includes(type)) return;
+
+        let { _route, _files, folder, file } = get_html_data(type);
+
+        let name = (type === 'file') ? file.name : folder.name;
+        // Delete x
+        __pop_up._delete(type, name, _route, _files);
+    }
+    html_rename = (type) => {
+        let types = ['file', 'folder'];
+        if (!types.includes(type)) return;
+
+        let { _route, _files, folder, file } = get_html_data(type);
+
+        // Rename x
+        __pop_up._rename(type, _route, _files);
     }
 
     // Full screen
@@ -259,10 +374,9 @@ window.addEventListener('load', ()=> {
         2. new Object({})
 
     */
-    FILE_SYSTEM = 
-        JSON.parse(localStorage.getItem('sh-virtual-disk'))         // First choice
-        ||
-        ({
+    FILE_SYSTEM = (localStorage.getItem('sh-virtual-disk')) ?
+         JSON.parse(localStorage.getItem('sh-virtual-disk')) :
+         ({
             "/" : {
                 name: "[project]",
                 files: {},
@@ -429,10 +543,25 @@ window.addEventListener('load', ()=> {
                         // Active folder
                         FILE_SYSTEM[new_route].active = !FILE_SYSTEM[new_route].active;
 
+                        // Focus folder directory in GUI
+                        focus_target(__folder_el_x_a);
+
                     });
                     __folder_el_x_a.addEventListener('contextmenu', (e) => {
+                        // Open context menu
+                        e.preventDefault();
                         
-                        
+                        // Focus folder directory
+                        ROOT_DIR.focus_dir(new_route);
+
+                        // Open context menu
+                        let menu = document.querySelector('#folder-option-menu');
+                        menu.setAttribute('route', new_route);
+
+                        pop_menu(e, menu);
+
+                        // Focus folder directory in GUI
+                        focus_target(__folder_el_x_a);
                     });
 
                     let __folder_el_x_ul = document.createElement('ul');
@@ -462,12 +591,53 @@ window.addEventListener('load', ()=> {
 
                     // Open file
                     open_file(file);
+
+                    // Focus file in GUI
+                    focus_target(_file_el_a);
+                });
+                _file_el_a.addEventListener('contextmenu', (e) => {
+                    // Open context menu
+                    e.preventDefault();
+                    
+                    // Focus folder directory
+                    ROOT_DIR.focus_dir(file.route);
+
+                    // Open context menu
+                    let menu = document.querySelector('#file-option-menu');
+                    menu.setAttribute('route', file.route);
+                    menu.setAttribute('file', file.name);
+
+                    pop_menu(e, menu);
+
+                    // Focus folder directory in GUI
+                    focus_target(_file_el_a);
                 });
             
             _file_el.appendChild(_file_el_a);
             _parent.appendChild(_file_el);
         });
     }
+
+    // Focus target x-file or x-folder
+    const focus_target = (target) => {
+
+        // Remove all focus
+        remove_focus();
+
+        // Focus target
+        target.classList.add('focus');
+    };
+
+    const remove_focus = (e) => {
+        if (e) 
+            if (e.target.classList.contains('focus')) return;
+
+        // Remove all focus
+        let _focus = document.querySelectorAll('.focus');
+        _focus.forEach(focus => {
+            focus.classList.remove('focus');
+        });
+    };
 
     // SET TAB SIZE
     TAB_SIZE = 4;
@@ -1063,6 +1233,7 @@ window.addEventListener('load', ()=> {
         // if(!saved) __fw.classList.add('not-saved');
 
         __fw.classList.add(`w-${__wnum}-f-${WINDOW_EDITOR.files[`w${__wnum}`].length}`);
+        __fw.setAttribute('route', `~${file.route + file.name}`);
 
             // Create file name
             let __fw_name = document.createElement('a');
@@ -1183,6 +1354,11 @@ window.addEventListener('load', ()=> {
                     // Overload line numbers fnc
                     focus_line(__f_textarea, delay=0);
                 }
+
+                // Prevent MacOS add dot after double space
+                if (isMac || isMacLike || isIOS) {
+                    // If the user enter double space
+                }
             });
 
 
@@ -1252,6 +1428,68 @@ window.addEventListener('load', ()=> {
         create_file(file);
     };
 
+    open_folder = (folder) => {
+        // Get all files
+        let files = Object.values(folder.files);
+
+        // Open all files
+        files.forEach(file => {
+            open_file(file);
+        });
+    };
+    // Check if exist and open file
+    check_file = (route, open = true) => {
+        // Extract filename
+        let filename = route.split('/').pop();
+
+        // Extract route
+        route = route.replace(filename, '');
+
+        // If file exists
+        let file = ((FILE_SYSTEM[route] || {}).files || {})[filename];
+        if (file && file.name == filename){
+            // Open file
+            if (open)
+                open_file(file);
+
+            
+            return file;
+        }else {
+            let warning = document.querySelector('section#warning');
+            warning.innerHTML = `<p>File [${route + filename}] not found.</p>`;
+            warning.classList.add('active');
+            setTimeout(() => {
+                warning.classList.remove('active');
+            }, 10000);
+        }
+
+        return false;
+    }
+
+    // Check if exist and open folder
+    check_folder = (route, open = true) => {
+        // Check if folder exists
+        let folder = FILE_SYSTEM[route];
+
+        if (folder) {
+            // Open folder
+            if (open)
+                open_folder(folder);
+
+            return folder;
+        }else {
+            let warning = document.querySelector('section#warning');
+            warning.innerHTML = `<p>Folder [${route}] not found.</p>`;
+            warning.classList.add('active');
+            setTimeout(() => {
+                warning.classList.remove('active');
+            }, 10000);
+        }
+
+        return false;
+    }
+
+
     WINDOW_EDITOR = {
         parent: document.querySelector('#main-editor'),
         max: 4,
@@ -1298,6 +1536,8 @@ window.addEventListener('load', ()=> {
 
         // Add file to filesystem
         FILE_SYSTEM[route].files[filename] = _file;
+        // Active route
+        FILE_SYSTEM[route].active = true;
 
         // Clean GUI
         ROOT_DIR.clean_gui('/');
@@ -1355,6 +1595,8 @@ window.addEventListener('load', ()=> {
         // Add folder to filesystem
         // Parent folder
         FILE_SYSTEM[route].folders.push(foldername);
+        FILE_SYSTEM[route].active = true;
+
         // Current folder
         FILE_SYSTEM[new_route] = _folder;
 
@@ -1370,7 +1612,118 @@ window.addEventListener('load', ()=> {
         return true;
     }
 
+    __rename_file = (filename, route, file) => {
+        if (!filename || !route || !file) return false;
 
+        let warning = document.querySelector('section#warning');
+        // If filename is not valid
+        // If file already exists
+        let files = Object.values(FILE_SYSTEM[route].files).map(el => el.name);
+        if (!filename.match(/^[a-zA-Z0-9_\-\.]+$/) || files.includes(filename)){
+            if (files.includes(filename)){
+                warning.innerHTML = `<p>File "[${filename}]" already exists.</p>`;
+            }else {
+                warning.innerHTML = `<p>Filename "[${filename}]" is invalid.</p>`;
+            }
+            warning.classList.add('active');
+            setTimeout(() => {
+                warning.classList.remove('active');
+            }, 10000);
+            return false;
+        }
+
+        // Rename file
+        FILE_SYSTEM[route].files[filename] = FILE_SYSTEM[route].files[file];
+        delete FILE_SYSTEM[route].files[file];
+
+        // Change Name
+        FILE_SYSTEM[route].files[filename].name = filename;
+
+        // Clean GUI
+        ROOT_DIR.clean_gui('/');
+
+        // Create folders
+        ROOT_DIR.get_dir_gui('/');
+
+        // Set new route
+        ROOT_DIR.focus_dir(route);
+
+        return true;
+    }
+
+    __rename_folder = (foldername, route) => {
+        let parentPath = route.split('/').slice(0, -2).join('/') + '/';
+        let oldName = route.split('/').slice(-2)[0];
+
+        if (!foldername || !route || !FILE_SYSTEM[parentPath]) return false;
+
+        if (FILE_SYSTEM[parentPath].folders.includes(foldername)){
+            let warning = document.querySelector('section#warning');
+
+            warning.innerHTML = `<p>Folder "[${foldername}]" already exists.</p>`;
+            warning.classList.add('active');
+            setTimeout(() => {
+                warning.classList.remove('active');
+            }, 10000);
+            return false;
+        }
+
+        // Rename folder
+        let i = FILE_SYSTEM[parentPath].folders.indexOf(oldName);
+        FILE_SYSTEM[parentPath].folders[i] = foldername;
+
+        // Rename route
+        let new_route = `${parentPath}${foldername}/`;
+        FILE_SYSTEM[new_route] = FILE_SYSTEM[route];
+        delete FILE_SYSTEM[route];
+
+        // Change Name
+        FILE_SYSTEM[new_route].name = `[${foldername}]`;
+
+        // Clean GUI
+        ROOT_DIR.clean_gui('/');
+
+        // Create folders
+        ROOT_DIR.get_dir_gui('/');
+ 
+        // Set new route
+        ROOT_DIR.focus_dir(new_route);
+ 
+        return true;
+    }
+
+    __delete_file = (route, file) => {
+        delete FILE_SYSTEM[route].files[file];
+
+        // Clean GUI
+        ROOT_DIR.clean_gui('/');
+        // Create folders
+        ROOT_DIR.get_dir_gui('/');
+
+        return true;
+    }
+
+    __delete_folder = (route) => {
+
+        delete FILE_SYSTEM[route];
+        // Delete folder from parent
+        let parentPath = route.split('/').slice(0, -2).join('/') + '/';
+        let foldername = route.split('/').slice(-2)[0];
+
+        let i = FILE_SYSTEM[parentPath].folders.indexOf(foldername);
+        delete FILE_SYSTEM[parentPath].folders[i];
+
+        // FOCUS PARENT
+        ROOT_DIR.focus_dir(parentPath);
+
+        // Clean GUI
+        ROOT_DIR.clean_gui('/');
+
+        // Create folders
+        ROOT_DIR.get_dir_gui('/');   
+        
+        return true;
+    }
     // ======================= //
     //  GROUP CONTROLS    (editor, runner, extensions)     
 
@@ -1427,10 +1780,14 @@ window.addEventListener('load', ()=> {
             // Remove active class from all extras
             extras_pop_up.classList.remove('active');
 
+            // Remove warning
+            document.getElementById('warning').classList.remove('active');
+
             for (let el of extras_pop_up.children) {
                 // Remove active class from all extras children
                 el.classList.remove('active');
             }
+
         }
     }
 
@@ -1453,12 +1810,48 @@ window.addEventListener('load', ()=> {
 
         __pop_up.open();
         extras_pop_up.querySelector(`.open-${type}`).classList.add('active');
+        extras_pop_up.querySelector(`.open-${type} input`).focus();
     };
+    __pop_up._rename = (type, route, file) => {
+        let __type = ['file', 'folder'];
+
+        // Reject if type is not valid
+        if(!__type.includes(type)) return;
+
+        __pop_up.open();
+        extras_pop_up.querySelector(`.rename-${type}`).classList.add('active');
+        extras_pop_up.querySelector(`.rename-${type}`).setAttribute('route', route);
+        if (type == 'file') extras_pop_up.querySelector(`.rename-${type}`).setAttribute('file', file);
+
+        extras_pop_up.querySelector(`.rename-${type} input`).focus();
+    }
     // Ask remove current project
     __pop_up._new_project = (layer=false) => {
         if (!layer) {
             __pop_up.open();
             extras_pop_up.querySelector(`.new-project`).classList.add('active');
+        }
+    }
+
+    // Ask for delete file or folder
+    __pop_up._delete = (type, name, route, file) => {
+
+        __pop_up.open();
+        let elem = extras_pop_up.querySelector(`.delete-item`);
+        elem.classList.add('active');
+        elem.setAttribute('route', route);
+        elem.setAttribute('file', file);
+        elem.setAttribute('type', type);
+
+        extras_pop_up.querySelector(`.delete-item .item-name`).innerHTML = name;
+    }
+
+    let input_enter = (e, fnc) => {
+        if (e.keyCode == 13 || e.key == 'Enter') {
+            e.preventDefault();
+            fnc();
+        }else {
+            document.getElementById('warning').classList.remove('active');
         }
     }
 
@@ -1511,20 +1904,170 @@ window.addEventListener('load', ()=> {
 
     // Create new file
     new_dir.file.el.addEventListener('click', new_dir.file.create);
-    let input_enter = (e, fnc) => {
-        if (e.keyCode == 13 || e.key == 'Enter') {
-            e.preventDefault();
-            fnc();
-        }else {
-            document.getElementById('warning').classList.remove('active');
-        }
-    }
     new_dir.file.input.addEventListener('keydown', e => input_enter(e, new_dir.file.create));
 
     // Create new folder
     new_dir.folder.el.addEventListener('click', new_dir.folder.create);
     new_dir.folder.input.addEventListener('keydown', e => input_enter(e, new_dir.folder.create));
     
+    // ======================= //
+    // RENAME
+
+    let rename_dir = {
+        file: {
+            el: extras_pop_up.querySelector('a[action="rename-file"]'),
+            input: extras_pop_up.querySelector('.rename-file input'),
+            parent: extras_pop_up.querySelector('.rename-file'),
+        },
+        folder: {
+            el: extras_pop_up.querySelector('a[action="rename-folder"]'),
+            input: extras_pop_up.querySelector('.rename-folder input'),
+            parent: extras_pop_up.querySelector('.rename-folder'),
+        },
+    }
+
+    rename_dir.folder.rename = () => {
+        // Get input value
+        let foldername = rename_dir.folder.input.value;
+        // Get Route
+        let route = rename_dir.folder.parent.getAttribute('route');
+
+        // Reject if foldername is empty
+        if(foldername == '') return;
+
+        // FNC
+        if (__rename_folder(foldername, route)) {
+
+            // Reset input value
+            rename_dir.folder.input.value = '';
+
+            // Close pop-up
+            __pop_up.close({target: document.querySelector('#clicker-changer')});
+        }
+    }
+
+    rename_dir.file.rename = () => {
+        // Get input value
+        let filename = rename_dir.file.input.value;
+        // Get Route
+        let route = rename_dir.file.parent.getAttribute('route');
+        // Get File
+        let file = rename_dir.file.parent.getAttribute('file');
+
+        // Reject if filename is empty
+        if(filename == '') return;
+
+        // Add extension
+        filename += '.asm';
+
+        // FNC
+        if (__rename_file(filename, route, file)) {
+
+            // Reset input value
+            rename_dir.file.input.value = '';
+
+            // Close pop-up
+            __pop_up.close({target: document.querySelector('#clicker-changer')});
+        }
+    }
+
+    // Rename file
+    rename_dir.file.el.addEventListener('click', rename_dir.file.rename);
+    rename_dir.file.input.addEventListener('keydown', e => input_enter(e, rename_dir.file.rename));
+
+    // Rename folder
+    rename_dir.folder.el.addEventListener('click', rename_dir.folder.rename);
+    rename_dir.folder.input.addEventListener('keydown', e => input_enter(e, rename_dir.folder.rename));
+
+
+    // ======================= //
+    // OPEN
+
+    let open_dir = {
+        file: {
+            el: extras_pop_up.querySelector('a[action="open-file"]'),
+            input: extras_pop_up.querySelector('.open-file input'),
+            open: () => {
+                // Get input value
+                let filename = open_dir.file.input.value;
+
+                // Reject if filename is empty
+                if(filename == '') return;
+
+                // Check if filename start with '/', if not, add it
+                if (filename[0] != '/') filename = '/' + filename;
+                // Check if filename end with '.asm', if not, add it
+                if (filename.slice(-4) != '.asm') filename += '.asm';
+
+                // FNC
+                if (check_file(filename)) {
+                    // Reset input value
+                    open_dir.file.input.value = '';
+
+                    // Close pop-up
+                    __pop_up.close({target: document.querySelector('#clicker-changer')});
+                }
+            }
+        },
+        folder: {
+            el: extras_pop_up.querySelector('a[action="open-folder"]'),
+            input: extras_pop_up.querySelector('.open-folder input'),
+            open: () => {
+                // Get input value
+                let folderroute = open_dir.folder.input.value;
+
+                // Reject if folderroute is empty
+                if(folderroute == '') return;
+
+                // Check if route start with '/', if not, add it
+                if (folderroute[0] != '/') folderroute = '/' + folderroute;
+                // Check if route end with '/', if not, add it
+                if (folderroute[folderroute.length - 1] != '/') folderroute += '/';
+
+                // FNC
+                if (check_folder(folderroute)) {
+                    // Reset input value
+                    open_dir.folder.input.value = '';
+
+                    // Close pop-up
+                    __pop_up.close({target: document.querySelector('#clicker-changer')});
+                }
+            },
+        }
+    }
+    // Open file
+    open_dir.file.el.addEventListener('click', open_dir.file.open);
+    open_dir.file.input.addEventListener('keydown', e => input_enter(e, open_dir.file.open));
+
+    // Open folder
+    open_dir.folder.el.addEventListener('click', open_dir.folder.open);
+    open_dir.folder.input.addEventListener('keydown', e => input_enter(e, open_dir.folder.open));
+
+    // ======================= //
+    // DELETE
+
+    let delete_dir = () => {
+        let el = extras_pop_up.querySelector('.delete-item');
+
+        // Get Route
+        let route = el.getAttribute('route');
+        // Get File
+        let file = el.getAttribute('file');
+        // Get type
+        let type = el.getAttribute('type');
+
+        // FNC
+        let r = (type === 'file') ? __delete_file(route, file) : __delete_folder(route);
+
+        if (r) {
+            // Close pop-up
+            __pop_up.close({target: document.querySelector('#clicker-changer')});
+        }
+    }
+
+    // Delete
+    extras_pop_up.querySelector('a[action="delete-item"]').addEventListener('click', delete_dir);
+
 
     // ======================= //
     // REGISTER LABEL CONTROL
@@ -1570,8 +2113,14 @@ window.addEventListener('load', ()=> {
     // ======================= //
     //  Close all opened tabs  //
     //  and menus on click     //
+    //  and focus elements     //
     // ======================= //
-    document.addEventListener('click', close_all_menus);
+    document.addEventListener('click', (e) => {
+        // Close focused x-files and x-folders
+        remove_focus(e);
+        // Close all opened tabs
+        close_all_menus(e);
+    });
 
     // ======================= //
     //  Close extras pop-up    //
@@ -1580,6 +2129,12 @@ window.addEventListener('load', ()=> {
     document.querySelector('#clicker-changer').addEventListener('click', __pop_up.close);
 
 
+    // ======================= //
+    //  INIT                   //
+    // ======================= //
+
+    // Init filesystem GUI
+    ROOT_DIR.get_dir_gui('/');
 
     // Create first window
     create_window(false);

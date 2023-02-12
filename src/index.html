@@ -394,72 +394,6 @@
                                 <!-- ROOT FILES -->
                             </ul>
                         </div>
-                        <!-- <div id="x-root" class="explorer-folder active" route="/">
-                            <ul>
-                                <li>
-                                    <div class="explorer-folder" route="/.git">
-                                        <a onclick="this.parentElement.classList.toggle('active')" class="x-folder">[.git]</a>
-                                        <ul>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="explorer-folder" route="/build">
-                                        <a onclick="this.parentElement.classList.toggle('active')" class="x-folder">[build]</a>
-                                        <ul>
-                                            <li>
-                                                <div class="explorer-folder" route="/build/layer">
-                                                    <a onclick="this.parentElement.classList.toggle('active')" class="x-folder">[layer]</a>
-                                                    <ul>
-                                                        <li>
-                                                            <a class="x-file" href="./">1.asm</a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="x-file" href="./">2.asm</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="explorer-folder" route="/build/pages">
-                                                    <a onclick="this.parentElement.classList.toggle('active')" class="x-folder">[pages]</a>
-                                                    <ul>
-                                                        <li>
-                                                            <a class="x-file" href="./">index.asm</a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="x-file" href="./">game.asm</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <a class="x-file" href="./">start.asm</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="explorer-folder" route="/docs">
-                                        <a onclick="this.parentElement.classList.toggle('active')" class="x-folder">[docs]</a>
-                                        <ul>
-                                            <li>
-                                                <a class="x-file" href="./">readme.md</a>
-                                            </li>
-                                            <li>
-                                                <a class="x-file" href="./">index.html</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a class="x-file" href="./">index.asm</a>
-                                </li>
-                                <li>
-                                    <a class="x-file" href="./">readme.md</a>
-                                </li>
-                            </ul>
-                        </div> -->
                         <!-- Context loader -->
                         <div class="explorer-main-layer" route="/"></div>
                     </div>
@@ -536,6 +470,88 @@
                             <a href="./">
                                 <span>[search]</span>
                                 <span class="muted"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+                <section id="folder-option-menu" class="menu">
+                    <ul class="pop-menu">
+                        <li>
+                            <a href="javascript:html_open('folder')">
+                                <span>[open folder]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="javascript:copy_path('abs', 'folder')">
+                                <span>[copy path]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:copy_path('rel', 'folder')">
+                                <span>[copy relative path]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="javascript:html_rename('folder')">
+                                <span>[rename folder]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:html_delete('folder')">
+                                <span>[delete folder]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+                <section id="file-option-menu" class="menu">
+                    <ul class="pop-menu">
+                        <li>
+                            <a href="javascript:html_open('file')">
+                                <span>[open file]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="javascript:copy_path('abs', 'file')">
+                                <span>[copy path]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:copy_path('rel', 'file')">
+                                <span>[copy relative path]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="javascript:html_rename('file')">
+                                <span>[rename file]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:html_delete('file')">
+                                <span>[delete file]</span>
+                                <span class="muted">
+                                </span>
                             </a>
                         </li>
                     </ul>
@@ -624,13 +640,19 @@
             <!-- RUNNER -->
             <section id="main-runner" class="group-m active">
                 <header class="cap">
-                    <div>[runner] [mips executer]</div>
+                    <div class="title"> >_ mips executer</div>
+                    <div>
+                        <div class="run d-flex">
+                            <a href="./" class="run-step">[run step]</a>
+                            <a href="./" class="run-all">[run all]</a>
+                        </div>
+                    </div>
                 </header>
                 <main>
                     <section id="data-section">
                         <div>
                             <header class="cap">
-                                <div>[text segment]</div>
+                                <div> >_ text segment</div>
                             </header>
                             <main class="table-main">
                                 <table>
@@ -668,7 +690,7 @@
                         </div>
                         <div>
                             <header class="cap">
-                                <div>[data segment]</div>
+                                <div> >_ data segment</div>
                             </header>
                             <main class="table-main">
                                 <table>
@@ -1267,13 +1289,32 @@
                 <a action="new-folder">[ok]</a>
             </main>
         </section>
+        <section class="rename-file pop-up prompt">
+            <header class="cap">
+                <div>[rename file]</div>
+            </header>
+            <main>
+                <input type="text" placeholder="file">
+                <div>.asm</div>
+                <a action="rename-file">[ok]</a>
+            </main>
+        </section>
+        <section class="rename-folder pop-up prompt">
+            <header class="cap">
+                <div>[rename folder]</div>
+            </header>
+            <main>
+                <input type="text" placeholder="folder">
+                <a action="rename-folder">[ok]</a>
+            </main>
+        </section>
         <section class="open-file pop-up prompt">
             <header class="cap">
                 <div>[open file]</div>
             </header>
             <main>
                 <input type="text" placeholder="/root/folder/file.asm">
-                <a href="./">[ok]</a>
+                <a action="open-file">[ok]</a>
             </main>
         </section>
         <section class="open-folder pop-up prompt">
@@ -1282,16 +1323,25 @@
             </header>
             <main>
                 <input type="text" placeholder="/root/folder/">
-                <a href="./">[ok]</a>
+                <a action="open-folder">[ok]</a>
             </main>
         </section>
         <section class="new-project pop-up alert">
             <header class="cap">
-                <div>[new-project]</div>
+                <div>[new project]</div>
             </header>
             <main>
                 <span>This action will <span class="text-error"><b>destroy</b></span> all your saved data</span>
-                <a href="./">[ok]</a>
+                <a action="new-project">[ok]</a>
+            </main>
+        </section>
+        <section class="delete-item pop-up alert">
+            <header class="cap">
+                <div>[delete]</div>
+            </header>
+            <main>
+                <span>Are you sure you want to delete <span class="item-name">project</span>?</span>
+                <a action="delete-item">[ok]</a>
             </main>
         </section>
     </footer>

@@ -65,7 +65,7 @@ html {
         --color-muted: #b3b3b3;
         --color-invert-muted: #cfcfcf;
         --color-hover: #666666;
-        --color-success: #68B984;
+        --color-success: #3eac64;
         --color-success-hover: #50a06e;
         --color-warning: #b19456;
         --color-error: #ae2c2c;
@@ -156,7 +156,7 @@ input {
 .scroll-x, .scroll-y {
     opacity: 0;
     background-color: rgba(#000000, 1);
-    z-index: 99;
+    z-index: 90;
     position: absolute;
 }
 .scroll-x {
