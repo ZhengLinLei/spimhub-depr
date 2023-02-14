@@ -182,7 +182,8 @@ window.addEventListener('load', ()=> {
     // ================== //
     // COOKIES WARNING    //
     // ================== //
-    if (localStorage.getItem('sh-cookies') !== 'true' || !localStorage.getItem('sh-cookies')) {
+    let ENABLE_COOKIE_WARNING = false;
+    if (ENABLE_COOKIE_WARNING && (localStorage.getItem('sh-cookies') !== 'true' || !localStorage.getItem('sh-cookies'))) {
         // Enable cookies
         // localStorage.setItem('sh-cookies', 'true');
         localStorage.removeItem('sh-cookies');

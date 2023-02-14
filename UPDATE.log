@@ -31,3 +31,5 @@ Tue Feb 14 09:30:00 2023 -----  Happy Valentine's Day <3  --- Second snapshot tr
                                      \________________ commit: 99a4ca40ac0037b3fa4c4ac66e78052eea883bbd
                                                             \___ branch: fspath1.0-dev ---> merged with master
                                                                     \___ New added: GUI_TREEVIEW: https://tinyurl.com/spimhub-storagetree
+
+Tue Feb 14 17:36:00 2023 -----  Second snapshot trailer preview localStorage fixed in fspath1.0-dev branch and added new features: [create files and folders by opening contextmenu in files or folders]
