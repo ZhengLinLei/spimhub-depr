@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en" pc="win" theme="light" member="user">
 
 <head>
     <meta charset="UTF-8">
@@ -29,14 +29,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Red+Hat+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
     <!-- CSS -->
-    <style>
-        html{--code-muted: #a1a1a1;--code-muted-w: 400;--code-muted-bg: rgba(0, 0, 0, 0);--code-comment: #708090;--code-comment-w: 400;--code-comment-bg: rgba(0, 0, 0, 0);--code-string: #690;--code-string-w: 400;--code-string-bg: rgba(0, 0, 0, 0);--code-char: #690;--code-char-w: 400;--code-char-bg: rgba(0, 0, 0, 0);--code-number: #905;--code-number-w: 400;--code-number-bg: rgba(0, 0, 0, 0);--code-operator: #905;--code-operator-w: 400;--code-operator-bg: rgba(0, 0, 0, 0);--code-keyword: #b600b3;--code-keyword-w: 500;--code-keyword-bg: rgba(0, 0, 0, 0);--code-function: #DD4A68;--code-function-w: 400;--code-function-bg: rgba(0, 0, 0, 0);--code-variable: #e90;--code-variable-w: 400;--code-variable-bg: rgba(0, 0, 0, 0)}html.dark{--code-muted: var(--color-invert);--code-muted-w: 400;--code-muted-bg: rgba(0, 0, 0, 0);--code-comment: #8292a2;--code-comment-w: 400;--code-comment-bg: rgba(0, 0, 0, 0);--code-string: #a6e22e;--code-string-w: 400;--code-string-bg: rgba(0, 0, 0, 0);--code-char: #a6e22e;--code-char-w: 400;--code-char-bg: rgba(0, 0, 0, 0);--code-number: #ae81ff;--code-number-w: 400;--code-number-bg: rgba(0, 0, 0, 0);--code-operator: #ae81ff;--code-operator-w: 400;--code-operator-bg: rgba(0, 0, 0, 0);--code-keyword: #55e3ff;--code-keyword-w: 500;--code-keyword-bg: rgba(0, 0, 0, 0);--code-function: #e6db74;--code-function-w: 400;--code-function-bg: rgba(0, 0, 0, 0);--code-variable: #fd971f;--code-variable-w: 400;--code-variable-bg: rgba(0, 0, 0, 0)}.__f_meta{color:var(--code-function);font-weight:var(--code-function-w);background-color:var(--code-function-bg)}.__f_keywords{color:var(--code-keyword);font-weight:var(--code-keyword-w);background-color:var(--code-keyword-bg)}.__f_numbers{color:var(--code-number);font-weight:var(--code-number-w);background-color:var(--code-number-bg)}.__f_operators{color:var(--code-operator);font-weight:var(--code-operator-w);background-color:var(--code-operator-bg)}.__f_punctuation{color:var(--code-muted);font-weight:var(--code-muted-w);background-color:var(--code-muted-bg)}.__f_builtin,.__f_builtin *{color:var(--code-variable);font-weight:var(--code-variable-w);background-color:var(--code-variable-bg)}.__f_strings,.__f_strings *{color:var(--code-string);font-weight:var(--code-string-w);background-color:var(--code-string-bg)}.__f_chars,.__f_chars *{color:var(--code-char);font-weight:var(--code-char-w);background-color:var(--code-char-bg)}.__f_comment,.__f_comment_block,.__f_comment *{color:var(--code-comment) !important;font-weight:var(--code-comment-w) !important;background-color:var(--code-comment-bg) !important}/*# sourceMappingURL=format.css.map */
-        *{margin:0;padding:0;box-sizing:border-box;font-size:var(--font-size);font-family:var(--font-mono)}html{--font-mono: "Courier New", "Red Hat Mono", "Cutive Mono", Courier, ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Fira Mono", "Droid Sans Mono", monospace;--font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";--font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;--font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";--font-size: 12px;--editor-padd: 25px;--editor-inner-padd: 10px;--editor-footer-space: 100%;--explorer-size: 250px;--register-section-size: 35%;--data-segment-size: 50%;--terminal-size: 45%;--layer-flash: rgba(0, 0, 0, 0.1);--color-primary: #ffffff;--color-secondary: #f0f0f0;--color-helper: #f5f5f5;--color-helper-light: #fbfbfb;--color-invert: #000000;--color-invert-rgb: 0, 0, 0;--color-muted: #989898;--color-invert-muted: #323232;--color-hover: #c3c3c3;--color-success: #ADE792;--color-success-hover: #78b858;--color-warning: #F7D794;--color-error: #ff8667}html.dark{--color-primary: #272b31;--color-secondary: #17191c;--color-helper: #0f1113;--color-helper-light: #1a1e24;--color-invert: #ffffff;--color-invert-rgb: 255, 255, 255;--color-muted: #b3b3b3;--color-invert-muted: #cfcfcf;--color-hover: #666666;--color-success: #68B984;--color-success-hover: #50a06e;--color-warning: #b19456;--color-error: #ae2c2c}.bg-primary{background-color:var(--color-primary)}.text-primary{color:var(--color-primary)}.bg-secondary{background-color:var(--color-secondary)}.text-secondary{color:var(--color-secondary)}.bg-helper{background-color:var(--color-helper)}.text-helper{color:var(--color-helper)}.bg-invert{background-color:var(--color-invert)}.text-invert{color:var(--color-invert)}.bg-hover{background-color:var(--color-hover)}.text-hover{color:var(--color-hover)}.bg-util{background-color:var(--color-util)}.text-util{color:var(--color-util)}.bg-muted{background-color:var(--color-muted)}.text-muted{color:var(--color-muted)}.bg-success{background-color:var(--color-success)}.text-success{color:var(--color-success)}.bg-success-hover{background-color:var(--color-success-hover)}.text-success-hover{color:var(--color-success-hover)}.bg-warning{background-color:var(--color-warning)}.text-warning{color:var(--color-warning)}.bg-error{background-color:var(--color-error)}.text-error{color:var(--color-error)}.d-flex{display:flex}.align-center{align-items:center}.no-select{-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}a{color:var(--color-invert);text-decoration:none;cursor:pointer;display:block}a:hover{background:var(--color-hover)}hr{border:0;border-top:.5px solid rgba(var(--color-invert-rgb), 0.3) !important;background-color:rgba(0,0,0,0);height:0px}input{caret-color:var(--color-invert);color:var(--color-invert)}.muted{color:var(--color-muted)}body{background:var(--color-primary);color:var(--color-invert);height:100vh;width:100vw;display:flex;flex-direction:column;overflow-x:hidden;overflow-x:auto}body header.cap{background-color:var(--color-secondary);padding:7px;border-bottom:.5px solid rgba(var(--color-invert-rgb), 0.3)}body header.header-tab{display:flex;width:100%;justify-content:space-between;z-index:2;align-items:center;background-color:var(--color-secondary)}body header.header-tab a{display:inline-block;border-right:.5px solid rgba(var(--color-invert-rgb), 0.3)}body header.header-tab a:hover{background:var(--color-hover)}body header.header-tab a.active{background-color:var(--color-primary)}body ul.pop-menu{background:var(--color-primary);border:1px solid rgba(var(--color-invert-rgb), 0.3);list-style:none;width:-webkit-max-content;width:-moz-max-content;width:max-content}body ul.pop-menu li a{padding:5px 7px;display:grid;grid-template-columns:1fr 150px;align-items:center}body ul.pop-menu li a span:nth-child(2){justify-self:end}body ul.pop-menu li a:hover span.muted{color:var(--color-invert) !important}body .menu{position:fixed;display:none;z-index:10;width:-webkit-max-content;width:-moz-max-content;width:max-content;height:-webkit-max-content;height:-moz-max-content;height:max-content}body .menu.active{display:block}body>header{border-bottom:.5px solid rgba(var(--color-invert-rgb), 0.3);display:flex;justify-content:space-between;z-index:9}body>header>div.left,body>header>div.right{display:flex;align-items:center;position:relative}body>header>div.left a,body>header>div.right a{padding:5px 7px}body>header>div.left a:hover+ul{display:block}body>header>div.left ul{display:none;position:absolute;top:100%}body>header>div.left ul:hover{display:block}body>header>div.left ul:hover+a{background:var(--color-hover)}body>header .logo a{padding:5px 10px}body>main{display:flex;flex:1;height:100%}body>main a,body>main .a{padding:5px 7px}body>main #opt-files,body>main #opt-search,body>main #opt-extensions,body>main #main-editor,body>main #main-runner,body>main #main-extensions,body>main #terminal{display:none;flex-direction:column;flex:1}body>main>header{width:var(--explorer-size);border-right:.5px solid rgba(var(--color-invert-rgb), 0.3);background-color:var(--color-secondary);display:flex;position:relative}body>main>header #opt-files{display:flex}body>main>header #opt-files .runner a,body>main>header #opt-files .editor a,body>main>header #opt-files .explorer .explorer-header{width:100%;display:flex;justify-content:space-between}body>main>header #opt-files .runner a,body>main>header #opt-files .editor a{padding:10px 20px 10px 7px}body>main>header #opt-files .runner a:hover span:nth-child(2),body>main>header #opt-files .editor a:hover span:nth-child(2){color:var(--color-invert)}body>main>header #opt-files .explorer{flex:1;display:flex;flex-direction:column}body>main>header #opt-files .explorer .explorer-header{padding:0 0 0 7px}body>main>header #opt-files .explorer .explorer-header>div a{padding:10px}body>main>header #opt-files .explorer .explorer-header>div a:hover{color:var(--color-invert)}body>main>header #opt-files .explorer .explorer-main{flex:1}body>main>main{display:flex;flex-direction:column;flex:1;background-color:var(--color-helper);width:calc(100% - var(--explorer-size))}body>main>main #main-editor,body>main>main #main-runner,body>main>main #main-extensions{height:100%;overflow:hidden}body>main>main #main-editor{background-color:rgba(var(--color-invert-rgb), 0.3);grid-template-columns:repeat(2, 50%);grid-gap:.5px}body>main>main #main-editor.active{display:grid}body>main>main #main-editor .editor-window.w-1{z-index:1}body>main>main #main-editor .editor-window.w-2{z-index:2}body>main>main #main-editor .editor-window.w-3{z-index:3}body>main>main #main-editor .editor-window.w-4{z-index:4}body>main>main #main-editor:not(:has(.editor-window.w-1)) .editor-window:nth-child(1){grid-column:span 2}body>main>main #main-editor:has(.editor-window.w-1) .editor-window:nth-child(1){grid-column:span 1}body>main>main #main-editor:not(:has(.editor-window.w-3)) .editor-window:nth-child(3){grid-column:span 2}body>main>main #main-editor:has(.editor-window.w-3) .editor-window:nth-child(3){grid-column:span 1}body>main>main #main-editor .editor-window{display:flex;flex-direction:column;width:100%;position:relative}body>main>main #main-editor .editor-window:first-child .window-header .execute a.close-window{display:none}body>main>main #main-editor .editor-window .window-header{align-items:center;width:100%;position:relative;background-color:var(--color-secondary)}body>main>main #main-editor .editor-window .window-header .file-queue{display:flex;flex:1;align-items:center;overflow:scroll}body>main>main #main-editor .editor-window .window-header .file-queue div{display:flex;align-items:center;border-right:.5px solid rgba(var(--color-invert-rgb), 0.3)}body>main>main #main-editor .editor-window .window-header .file-queue div .muted:hover{color:var(--color-invert) !important}body>main>main #main-editor .editor-window .window-header .file-queue div.active{background-color:var(--color-primary)}body>main>main #main-editor .editor-window .window-header .file-queue div.active a:first-child{background:var(--color-primary)}body>main>main #main-editor .editor-window .window-header .file-queue div.not-saved a:first-child{display:flex}body>main>main #main-editor .editor-window .window-header .file-queue div.not-saved a:first-child::before{content:"*";white-space:nowrap}body>main>main #main-editor .editor-window .window-header .execute>a:first-child{background-color:var(--color-success)}body>main>main #main-editor .editor-window .window-header .execute>a:first-child:hover{background-color:var(--color-success-hover)}body>main>main #main-editor .editor-window .window-header .execute>span{background-color:var(--color-primary)}body>main>main #main-editor .editor-window .editor-file{flex:1;position:relative;display:none;background-color:var(--color-primary)}body>main>main #main-editor .editor-window .editor-file.active{display:block}body>main>main #main-editor .editor-window .editor-file .line-numbers-rows{z-index:1;width:var(--editor-padd) !important;padding:var(--editor-inner-padd) 0 var(--editor-footer-space) 0 !important;text-align:right;height:-webkit-min-content;height:-moz-min-content;height:min-content;border-right:.5px solid rgba(var(--color-invert-rgb), 0.3);border-top:.5px solid rgba(var(--color-invert-rgb), 0.3);line-height:normal !important;background-color:var(--color-secondary);overflow:hidden}body>main>main #main-editor .editor-window .editor-file .line-numbers-rows>span{counter-increment:linenumber}body>main>main #main-editor .editor-window .editor-file .line-numbers-rows>span:before{content:counter(linenumber);display:block;color:var(--color-invert-muted);padding:0 5px}body>main>main #main-editor .editor-window .editor-file .line-numbers-rows>span.active:before{background-color:var(--color-invert);color:var(--color-primary)}body>main>main #main-editor .editor-window .editor-file textarea{border:none;resize:none;outline:none;white-space:pre;z-index:2;background-color:rgba(0,0,0,0);color:rgba(0,0,0,0);caret-color:var(--color-invert);padding:10px 5px var(--editor-footer-space) calc(var(--editor-padd) + var(--editor-inner-padd)) !important}body>main>main #main-editor .editor-window .editor-file pre{overflow:auto;z-index:0;margin:0 !important;background-color:rgba(0,0,0,0) !important;padding:10px 5px var(--editor-footer-space) calc(var(--editor-padd) + var(--editor-inner-padd) - 5px) !important}body>main>main #main-editor .editor-window .editor-file pre code{color:var(--color-invert);text-shadow:none;line-height:1.2 !important}body>main>main #main-editor .editor-window .editor-file pre code p{display:inline-block;width:3000px;padding-left:5px}body>main>main #main-editor .editor-window .editor-file pre code p.active{background-color:var(--color-helper)}body>main>main #main-editor .editor-window .editor-file textarea,body>main>main #main-editor .editor-window .editor-file pre,body>main>main #main-editor .editor-window .editor-file .line-numbers-rows{position:absolute;transition:all .5s,background-color 0s;line-height:1.2 !important;top:0;width:100%;left:0;height:100%}body>main>main #main-runner{flex-direction:column}body>main>main #main-runner.active{display:flex}body>main>main #main-runner>main{display:flex;position:relative;flex:1;background-color:var(--color-primary);height:100%}body>main>main #main-runner>main>section{position:relative;overflow:hidden}body>main>main #main-runner>main>section .table-main{width:100%}body>main>main #main-runner>main>section .table-main table{min-width:100%;border-collapse:collapse}body>main>main #main-runner>main>section .table-main table thead tr{background-color:var(--color-secondary)}body>main>main #main-runner>main>section .table-main table thead tr th{text-align:center;font-weight:400;padding:10px}body>main>main #main-runner>main>section .table-main table tbody tr,body>main>main #main-runner>main>section .table-main table thead tr{border-bottom:.5px solid rgba(var(--color-invert-rgb), 0.3)}body>main>main #main-runner>main>section .table-main table tbody tr th,body>main>main #main-runner>main>section .table-main table tbody tr td,body>main>main #main-runner>main>section .table-main table thead tr th,body>main>main #main-runner>main>section .table-main table thead tr td{border-left:.5px solid rgba(var(--color-invert-rgb), 0.3);border-right:.5px solid rgba(var(--color-invert-rgb), 0.3);white-space:nowrap}body>main>main #main-runner>main>section .table-main table tbody tr th:first-child,body>main>main #main-runner>main>section .table-main table tbody tr td:first-child,body>main>main #main-runner>main>section .table-main table thead tr th:first-child,body>main>main #main-runner>main>section .table-main table thead tr td:first-child{border-left:none}body>main>main #main-runner>main>section .table-main table tbody tr th:last-child,body>main>main #main-runner>main>section .table-main table tbody tr td:last-child,body>main>main #main-runner>main>section .table-main table thead tr th:last-child,body>main>main #main-runner>main>section .table-main table thead tr td:last-child{border-right:none}body>main>main #main-runner>main>section .table-main table tbody tr:nth-child(2n){background-color:var(--color-helper-light)}body>main>main #main-runner>main>section .table-main table tbody tr td{text-align:end;padding:7px 10px}body>main>main #main-runner>main>section:first-child{width:calc(100% - var(--register-section-size));display:flex;flex-direction:column;position:relative}body>main>main #main-runner>main>section:first-child>div .table-main{height:100%}body>main>main #main-runner>main>section:first-child>div:first-child{height:calc(100% - var(--data-segment-size))}body>main>main #main-runner>main>section:first-child>div:first-child .table-main{overflow:auto}body>main>main #main-runner>main>section:first-child>div:first-child .table-main table tbody tr th:first-child,body>main>main #main-runner>main>section:first-child>div:first-child .table-main table tbody tr td:first-child,body>main>main #main-runner>main>section:first-child>div:first-child .table-main table thead tr th:first-child,body>main>main #main-runner>main>section:first-child>div:first-child .table-main table thead tr td:first-child{padding:7px 0;text-align:center}body>main>main #main-runner>main>section:first-child>div:first-child .table-main table tbody tr td,body>main>main #main-runner>main>section:first-child>div:first-child .table-main table thead tr td{text-align:start}body>main>main #main-runner>main>section:first-child>div:last-child{border-top:.5px solid rgba(var(--color-invert-rgb), 0.3);z-index:9;height:var(--data-segment-size)}body>main>main #main-runner>main>section:last-child{border-left:.5px solid rgba(var(--color-invert-rgb), 0.3);width:var(--register-section-size)}body>main>main #main-runner>main>section:last-child>main{height:100%;padding-bottom:var(--editor-footer-space);overflow:auto}body>main>main #main-runner>main>section:last-child>main .table-main{display:none}body>main>main #main-runner>main>section:last-child>main .table-main.active{display:block}body>main>main #main-runner>main>section:last-child>main .table-main table thead tr{border-top:.5px solid rgba(var(--color-invert-rgb), 0.3)}body>main>main #main-runner>main>section:last-child>main .table-main table tbody tr th:last-child,body>main>main #main-runner>main>section:last-child>main .table-main table tbody tr td:last-child,body>main>main #main-runner>main>section:last-child>main .table-main table thead tr th:last-child,body>main>main #main-runner>main>section:last-child>main .table-main table thead tr td:last-child{width:100%}body>main>main #terminal{height:var(--terminal-size);border-top:2px solid rgba(var(--color-invert-rgb), 0.3);background-color:var(--color-primary);position:relative;scroll-behavior:smooth}body>main>main #terminal.active{display:block}body>main>main #terminal>main{width:100%;height:calc(100% - 25px);display:flex}body>main>main #terminal>main>section{display:none;flex:1}body>main>main #terminal>main>section.active{display:block}body>footer{position:fixed;top:0;left:50%;transform:translateX(-50%);width:600px;height:auto;z-index:12;background-color:var(--color-primary);border:.5px solid rgba(var(--color-invert-rgb), 0.3);border-top:0}body>footer .create-file>main,body>footer .create-folder>main{display:flex;flex-wrap:nowrap;position:relative;justify-content:space-between}body>footer .create-file>main>*,body>footer .create-folder>main>*{padding:10px}body>footer .create-file>main input,body>footer .create-folder>main input{border:0;width:80%;background-color:var(--color-primary)}body>footer .create-file>main input:active,body>footer .create-file>main input:focus,body>footer .create-folder>main input:active,body>footer .create-folder>main input:focus{outline:none}body>footer,body>#clicker-changer,body>footer .pop-up{display:none}body>footer.active,body>#clicker-changer.active,body>footer .pop-up.active{display:block}body #clicker-changer{position:fixed;z-index:11;top:0;left:0;width:100vw;height:100vh;background-color:var(--layer-flash)}/*# sourceMappingURL=style.css.map */
-    </style>
+    <link rel="stylesheet" href="./css/format.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- JS -->
+    <!-- highlight.js -->
+    <script src="./js/format.js"></script>
+    <!-- mipsasm.js -->
+    <script src="./js/lang/mips.js"></script>
+    <!-- Index.js -->
+    <script src="./js/index.js"></script>
     <!-- TITTLE -->
-    <title>SpimHub | Mips CPU Simulator</title>
+    <title>SpimHub - Mips CPU Simulator</title>
 </head>
-
 <body>
     <header class="bg-secondary d-flex">
         <div class="left">
@@ -50,20 +54,29 @@
                         <li>
                             <a href="javascript:__pop_up._save('file')">
                                 <span>[new file]</span>
-                                <span class="muted">Alt + N</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + N</span>
+                                    <span class="__s-mac">⌥  + N</span>
+                                </span>
                             </a>
                         </li>
                         <li>
                             <a href="javascript:__pop_up._save('folder')">
                                 <span>[new folder]</span>
-                                <span class="muted">Alt + M</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + M</span>
+                                    <span class="__s-mac">⌥  + M</span>
+                                </span>
                             </a>
                         </li>
-                        <li>
+                        <hr>
                         <li>
                             <a href="javascript:create_window()">
                                 <span>[new window]</span>
-                                <span class="muted">Alt + W</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + W</span>
+                                    <span class="__s-mac">⌥  + W</span>
+                                </span>
                             </a>
                         </li>
                         <li>
@@ -74,28 +87,77 @@
                         </li>
                         <hr>
                         <li>
-                            <a href="./">
+                            <a href="javascript:__pop_up._open('file')">
                                 <span>[open file]</span>
-                                <span class="muted">Alt + O</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + O</span>
+                                    <span class="__s-mac">⌥  + O</span>
+                                </span>
                             </a>
                         </li>
                         <li>
-                            <a href="./">
+                            <a href="javascript:__pop_up._open('folder')">
                                 <span>[open folder]</span>
-                                <span class="muted">Alt + P</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + P</span>
+                                    <span class="__s-mac">⌥  + P</span>
+                                </span>
                             </a>
                         </li>
                         <hr>
                         <li>
                             <a href="./">
                                 <span>[save]</span>
-                                <span class="muted">Ctrl + S</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + S</span>
+                                    <span class="__s-mac">⌥  + S</span>
+                                </span>
                             </a>
                         </li>
                         <li>
                             <a href="./">
-                                <span>[save as...]</span>
-                                <span class="muted">Alt + S</span>
+                                <span>[save all]</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + A</span>
+                                    <span class="__s-mac">⌥  + A</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[close all]</span>
+                                <span class="muted">
+                                    <span class="__s-win">Ctrl + W</span>
+                                    <span class="__s-mac">⌘ + W</span>
+                                </span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="./">
+                                <span>[save project]</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + X</span>
+                                    <span class="__s-mac">⌥  + ⇧ + S</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:__pop_up._new_project()">
+                                <span>[new project]</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + Y</span>
+                                    <span class="__s-mac">⌥  + ⇧ + N</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./">
+                                <span>[open project]</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + Z</span>
+                                    <span class="__s-mac">⌥  + ⇧ + O</span>
+                                </span>
                             </a>
                         </li>
                     </ul>
@@ -106,45 +168,66 @@
                         <li>
                             <a href="./">
                                 <span>[undo]</span>
-                                <span class="muted">Ctrl + Z</span>
+                                <span class="muted">
+                                    <span class="__s-win">Ctrl + Z</span>
+                                    <span class="__s-mac">⌘ + Z</span>
+                                </span>
                             </a>
                         </li>
                         <li>
                             <a href="./">
                                 <span>[redo]</span>
-                                <span class="muted">Ctrl + Y</span>
+                                <span class="muted">
+                                    <span class="__s-win">Ctrl + Y</span>
+                                    <span class="__s-mac">⌘ + ⇧ + Z</span>
+                                </span>
                             </a>
                         </li>
                         <hr>
                         <li>
                             <a href="./">
                                 <span>[cut]</span>
-                                <span class="muted">Ctrl + X</span>
+                                <span class="muted">
+                                    <span class="__s-win">Ctrl + X</span>
+                                    <span class="__s-mac">⌘ + X</span>
+                                </span>
                             </a>
                         </li>
                         <li>
                             <a href="./">
                                 <span>[copy]</span>
-                                <span class="muted">Ctrl + C</span>
+                                <span class="muted">
+                                    <span class="__s-win">Ctrl + C</span>
+                                    <span class="__s-mac">⌘ + C</span>
+                                </span>
                             </a>
                         </li>
                         <li>
                             <a href="./">
                                 <span>[paste]</span>
-                                <span class="muted">Ctrl + P</span>
+                                <span class="muted">
+                                    <span class="__s-win">Ctrl + V</span>
+                                    <span class="__s-mac">⌘ + V</span>
+                                </span>
                             </a>
                         </li>
                         <hr>
                         <li>
                             <a href="./">
                                 <span>[find]</span>
-                                <span class="muted">Ctrl + F</span>
+                                <span class="muted">
+                                    <span class="__s-win">Ctrl + F</span>
+                                    <span class="__s-mac">⌘ + F</span>
+                                </span>
                             </a>
                         </li>
                         <li>
                             <a href="./">
                                 <span>[replace]</span>
-                                <span class="muted">Alt + F</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + F</span>
+                                    <span class="__s-mac">⌥ + F</span>
+                                </span>
                             </a>
                         </li>
                     </ul>
@@ -155,19 +238,28 @@
                         <li>
                             <a href="javascript:toggle_terminal(1, 'output')">
                                 <span>[i/o]</span>
-                                <span class="muted">Alt + I</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + I</span>
+                                    <span class="__s-mac">⌥  + I</span>
+                                </span>
                             </a>
                         </li>
                         <li>
                             <a href="javascript:toggle_terminal(1)">
                                 <span>[terminal]</span>
-                                <span class="muted">Alt + T</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + T</span>
+                                    <span class="__s-mac">⌥  + T</span>
+                                </span>
                             </a>
                         </li>
                         <li>
                             <a href="javascript:toggle_terminal(1, 'console')">
                                 <span>[console]</span>
-                                <span class="muted">Alt + J</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + J</span>
+                                    <span class="__s-mac">⌥  + J</span>
+                                </span>
                             </a>
                         </li>
                         <hr>
@@ -186,7 +278,10 @@
                         <li>
                             <a href="./">
                                 <span>[debug]</span>
-                                <span class="muted">Alt + D</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + D</span>
+                                    <span class="__s-mac">⌥  + D</span>
+                                </span>
                             </a>
                         </li>
                     </ul>
@@ -197,7 +292,10 @@
                         <li>
                             <a href="javascript:toggle_terminal(1)">
                                 <span>[new terminal]</span>
-                                <span class="muted">Alt + T</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + T</span>
+                                    <span class="__s-mac">⌥  + T</span>
+                                </span>
                             </a>
                         </li>
                         <li>
@@ -209,7 +307,10 @@
                         <li>
                             <a href="./">
                                 <span>[run file]</span>
-                                <span class="muted">Alt + R</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + R</span>
+                                    <span class="__s-mac">⌥  + ⇧ + R</span>
+                                </span>
                             </a>
                         </li>
                     </ul>
@@ -247,26 +348,35 @@
         </div>
         <div class="right">
             <div class="d-flex">
-                <a href="https://github.com/ZhengLinLei/spimhub/">[files]</a>
-                <a href="https://github.com/ZhengLinLei/spimhub/">[search]</a>
-                <a href="https://github.com/ZhengLinLei/spimhub/">[extensions]</a>
+                <a href="javascript:toggle_opt(-1)">[files]</a>
+                <a href="javascript:toggle_opt(-1, 'search')">[search]</a>
+                <a href="javascript:toggle_opt(-1, 'extensions')">[extensions]</a>
                 <a href="javascript:toggle_terminal();">[terminal]</a>
             </div>
         </div>
     </header>
     <main>
-        <header id="main-folder">
+        <header id="main-folder" class="active opt-files">
+            <!-- Scroll x -->
+            <div class="scroll-x header"></div>
+            <!-- Sections -->
             <div id="opt-files">
                 <div class="runner">
                     <a href="javascript:__group_h.open_group('runner')">
                         <span>[runner]</span>
-                        <span class="muted">Alt + R</span>
+                        <span class="muted">
+                            <span class="__s-win">Alt + R</span>
+                            <span class="__s-mac">⌥  + R</span>
+                        </span>
                     </a>
                 </div>
                 <div class="editor">
                     <a href="javascript:__group_h.open_group('editor')">
                         <span>[editor]</span>
-                        <span class="muted">Alt + E</span>
+                        <span class="muted">
+                            <span class="__s-win">Alt + E</span>
+                            <span class="__s-mac">⌥  + E</span>
+                        </span>
                     </a>
                 </div>
                 <!-- <hr> -->
@@ -279,7 +389,13 @@
                         </div>
                     </div>
                     <div class="explorer-main" id="file-manager">
-
+                        <div id="x-root" class="explorer-folder active" route="/">
+                            <ul route="/">
+                                <!-- ROOT FILES -->
+                            </ul>
+                        </div>
+                        <!-- Context loader -->
+                        <div class="explorer-main-layer" route="/"></div>
                     </div>
                 </div>
                 <section id="file-manager-extra-menu" class="menu">
@@ -287,46 +403,67 @@
                         <li>
                             <a href="javascript:__pop_up._save('file')">
                                 <span>[new file]</span>
-                                <span class="muted">Alt + N</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + N</span>
+                                    <span class="__s-mac">⌥  + N</span>
+                                </span>
                             </a>
                         </li>
                         <li>
                             <a href="javascript:__pop_up._save('folder')">
                                 <span>[new folder]</span>
-                                <span class="muted">Alt + M</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + M</span>
+                                    <span class="__s-mac">⌥  + M</span>
+                                </span>
                             </a>
                         </li>
                         <hr>
                         <li>
-                            <a href="./">
+                            <a href="javascript:__pop_up._open('file')">
                                 <span>[open file]</span>
-                                <span class="muted">Alt + O</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + O</span>
+                                    <span class="__s-mac">⌥  + O</span>
+                                </span>
                             </a>
                         </li>
                         <li>
-                            <a href="./">
+                            <a href="javascript:__pop_up._open('folder')">
                                 <span>[open folder]</span>
-                                <span class="muted">Alt + P</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + P</span>
+                                    <span class="__s-mac">⌥  + P</span>
+                                </span>
                             </a>
                         </li>
                         <hr>
                         <li>
                             <a href="./">
                                 <span>[save]</span>
-                                <span class="muted">Ctrl + S</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + S</span>
+                                    <span class="__s-mac">⌥  + S</span>
+                                </span>
                             </a>
                         </li>
                         <li>
                             <a href="./">
-                                <span>[save as...]</span>
-                                <span class="muted">Alt + S</span>
+                                <span>[save all]</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + A</span>
+                                    <span class="__s-mac">⌥  + A</span>
+                                </span>
                             </a>
                         </li>
                         <hr>
                         <li>
                             <a href="./">
                                 <span>[open runner]</span>
-                                <span class="muted">Alt + R</span>
+                                <span class="muted">
+                                    <span class="__s-win">Alt + R</span>
+                                    <span class="__s-mac">⌥  + R</span>
+                                </span>
                             </a>
                         </li>
                         <li>
@@ -337,10 +474,91 @@
                         </li>
                     </ul>
                 </section>
+                <section id="folder-option-menu" class="menu">
+                    <ul class="pop-menu">
+                        <li>
+                            <a href="javascript:html_open('folder')">
+                                <span>[open folder]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="javascript:copy_path('abs', 'folder')">
+                                <span>[copy path]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:copy_path('rel', 'folder')">
+                                <span>[copy relative path]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="javascript:html_rename('folder')">
+                                <span>[rename folder]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:html_delete('folder')">
+                                <span>[delete folder]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+                <section id="file-option-menu" class="menu">
+                    <ul class="pop-menu">
+                        <li>
+                            <a href="javascript:html_open('file')">
+                                <span>[open file]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="javascript:copy_path('abs', 'file')">
+                                <span>[copy path]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:copy_path('rel', 'file')">
+                                <span>[copy relative path]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a href="javascript:html_rename('file')">
+                                <span>[rename file]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:html_delete('file')">
+                                <span>[delete file]</span>
+                                <span class="muted">
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
             </div>
             <div id="opt-search"></div>
             <div id="opt-extensions"></div>
-
             <style>
                 .preview {
                     position: fixed;
@@ -382,39 +600,57 @@
                     <li>
                         <a href="./">
                             <span>[undo]</span>
-                            <span class="muted">Alt + Z</span>
+                            <span class="muted">
+                                <span class="__s-win">Ctrl + Z</span>
+                                <span class="__s-mac">⌘ + Z</span>
+                            </span>
                         </a>
                     </li>
                     <li>
                         <a href="./">
                             <span>[redo]</span>
-                            <span class="muted">Alt + Y</span>
+                            <span class="muted">
+                                <span class="__s-win">Ctrl + Y</span>
+                                <span class="__s-mac">⌥  + ⇧ + Z</span>
+                            </span>
                         </a>
                     </li>
                     <hr>
                     <li>
                         <a href="./">
                             <span>[cut]</span>
-                            <span class="muted">Ctrl + X</span>
+                            <span class="muted">
+                                <span class="__s-win">Ctrl + X</span>
+                                <span class="__s-mac">⌘ + X</span>
+                            </span>
                         </a>
                     </li>
                     <li>
                         <a href="./">
                             <span>[copy]</span>
-                            <span class="muted">Ctrl + C</span>
+                            <span class="muted">
+                                <span class="__s-win">Ctrl + C</span>
+                                <span class="__s-mac">⌘ + C</span>
+                            </span>
                         </a>
                     </li>
                     <li>
                         <a href="./">
                             <span>[paste]</span>
-                            <span class="muted">Ctrl + V</span>
+                            <span class="muted">
+                                <span class="__s-win">Ctrl + V</span>
+                                <span class="__s-mac">⌘ + V</span>
+                            </span>
                         </a>
                     </li>
                     <hr>
                     <li>
                         <a href="javascript:create_window()">
                             <span>[new window]</span>
-                            <span class="muted">Alt + W</span>
+                            <span class="muted">
+                                <span class="__s-win">Alt + W</span>
+                                <span class="__s-mac">⌥ + W</span>
+                            </span>
                         </a>
                     </li>
                     <li>
@@ -435,13 +671,19 @@
             <!-- RUNNER -->
             <section id="main-runner" class="group-m active">
                 <header class="cap">
-                    <div>[runner] [mips executer]</div>
+                    <div class="title"> >_ mips executer</div>
+                    <div>
+                        <div class="run d-flex">
+                            <a href="./" class="run-step">[run step]</a>
+                            <a href="./" class="run-all">[run all]</a>
+                        </div>
+                    </div>
                 </header>
                 <main>
                     <section id="data-section">
                         <div>
                             <header class="cap">
-                                <div>[text segment]</div>
+                                <div> >_ text segment</div>
                             </header>
                             <main class="table-main">
                                 <table>
@@ -479,7 +721,7 @@
                         </div>
                         <div>
                             <header class="cap">
-                                <div>[data segment]</div>
+                                <div> >_ data segment</div>
                             </header>
                             <main class="table-main">
                                 <table>
@@ -1059,39 +1301,97 @@
     </main>
     <!-- Extras -->
     <footer id="extra-pop-up">
-        <section class="create-file pop-up">
+        <section class="create-file pop-up prompt">
             <header class="cap">
                 <div>[create file]</div>
             </header>
             <main>
                 <input type="text" placeholder="file">
                 <div>.asm</div>
-                <a href="./">[ok]</a>
+                <a action="new-file">[ok]</a>
             </main>
         </section>
-        <section class="create-folder pop-up">
+        <section class="create-folder pop-up prompt">
             <header class="cap">
                 <div>[create folder]</div>
             </header>
             <main>
                 <input type="text" placeholder="folder">
-                <a href="./">[ok]</a>
+                <a action="new-folder">[ok]</a>
+            </main>
+        </section>
+        <section class="rename-file pop-up prompt">
+            <header class="cap">
+                <div>[rename file]</div>
+            </header>
+            <main>
+                <input type="text" placeholder="file">
+                <div>.asm</div>
+                <a action="rename-file">[ok]</a>
+            </main>
+        </section>
+        <section class="rename-folder pop-up prompt">
+            <header class="cap">
+                <div>[rename folder]</div>
+            </header>
+            <main>
+                <input type="text" placeholder="folder">
+                <a action="rename-folder">[ok]</a>
+            </main>
+        </section>
+        <section class="open-file pop-up prompt">
+            <header class="cap">
+                <div>[open file]</div>
+            </header>
+            <main>
+                <input type="text" placeholder="/root/folder/file.asm">
+                <a action="open-file">[ok]</a>
+            </main>
+        </section>
+        <section class="open-folder pop-up prompt">
+            <header class="cap">
+                <div>[open folder]</div>
+            </header>
+            <main>
+                <input type="text" placeholder="/root/folder/">
+                <a action="open-folder">[ok]</a>
+            </main>
+        </section>
+        <section class="new-project pop-up alert">
+            <header class="cap">
+                <div>[new project]</div>
+            </header>
+            <main>
+                <span>This action will <span class="text-error"><b>destroy</b></span> all your saved data</span>
+                <a action="new-project">[ok]</a>
+            </main>
+        </section>
+        <section class="delete-item pop-up alert">
+            <header class="cap">
+                <div>[delete]</div>
+            </header>
+            <main>
+                <span>Are you sure you want to delete <span class="item-name">project</span>?</span>
+                <a action="delete-item">[ok]</a>
             </main>
         </section>
     </footer>
+    <!-- Warning -->
+    <section id="warning" class="no-select">
+        <span>Foldername or filename already exist.</span>
+    </section>
     <section id="clicker-changer">
         <!-- When the user click this section, the footer extra option will pop-up -->
     </section>
-    <!-- highlight.js -->
-    <!-- mipsasm.js -->
-    <script>
-        class Format{static capitalize(string){return string.charAt(0).toUpperCase()+string.slice(1)}static capitalizeAll(string){return string.split(" ").map(word=>this.capitalize(word)).join(" ")}constructor(getLang){if(null==getLang||getLang==={})return console.error("Please enter specific language scope regex"),!1;this._data=getLang}get data(){return this._data}set data(value){this._data=value}DestroyCode(code){return code.map(code=>code.map(()=>null))}JoinCode(code){return code.map(line=>`<p>${line||" "}</p>`).join("\n")}RNFC(code,formattedCode){let __f_numbers=this._data.contains.regexDynamic.number,__f_builtin=this._data.builtin;return code.forEach((line,i1)=>{line.forEach((word,i2)=>{let _word=word.split(",");_word=_word.map(w=>{let matches=[];return __f_builtin.forEach(builtin=>{w.includes(builtin)&&matches.push(builtin)}),[...new Set(matches)].sort().reverse().forEach(match=>{w=w.replaceAll(match,`<span class=__f_builtin>${match}</span>`)}),matches=w.match(__f_numbers),[...new Set(matches)].sort().reverse().forEach(match=>{w=w.replaceAll(match,`<span class=__f_numbers>${match}</span>`)}),w}),code[i1][i2]=_word.join(",")})}),code}BFC(code,formattedCode){let __staticWords={__f_meta:this._data.meta,__f_keywords:this._data.keywords,__f_builtin:this._data.builtin};return Object.keys(__staticWords).forEach(key=>{code.forEach((line,index)=>{line.forEach((word,index2)=>{if(null===formattedCode[index][index2]){let html=null;if("__f_meta"===key)__staticWords[key].includes(word)&&(html=`<span class=__f_meta>${word}</span>`);else if("__f_keywords"===key)__staticWords[key].test(word)&&(html=`<span class=__f_keywords>${word}</span>`);else if("__f_builtin"===key){html=word;let matches=[];__staticWords.__f_builtin.forEach(builtin=>{word.includes(builtin)&&matches.push(builtin)}),matches=[...new Set(matches)].sort().reverse(),matches.forEach(match=>{html=html.replaceAll(match,`<span class=__f_builtin>${match}</span>`)})}formattedCode[index][index2]=html}})})}),formattedCode}AFC(code,formattedCode){let __dynamicWords={__f_strings:this._data.contains.regexDynamic.string,__f_chars:this._data.contains.regexDynamic.char,__f_punctuation:this._data.contains.regexStatic.punctuation,__f_operators:this._data.contains.regexStatic.operator};return formattedCode=formattedCode.map(line=>{let pushMatches=[];return Object.keys(__dynamicWords).forEach(key=>{let matches=line.match(__dynamicWords[key]);matches&&matches.forEach(match=>{pushMatches.push({match:match,key:key})})}),pushMatches=pushMatches.filter((v,i,a)=>a.findIndex(v2=>v2.match===v.match)===i),pushMatches.length>0&&pushMatches.forEach(match=>{line=line.replaceAll(match.match,`<span class=${match.key}>${match.match}</span>`)}),line})}FC(code,formattedCode){return formattedCode.map(line=>line.join(" ")).map(line=>{let comment=line.match(this._data.comments);if(null!==comment){let commentIndex=line.indexOf(comment[0]),commentWord,commentWordFormated=`<span class=__f_comment>${line.slice(commentIndex)}</span>`;return line.slice(0,commentIndex)+commentWordFormated}return line})}NullCopyCode(code,formattedCode){return code.forEach((line,index)=>{line.forEach((word,index2)=>{null===formattedCode[index][index2]&&(formattedCode[index][index2]=word)})}),formattedCode}formateCode(codeArr){let code=codeArr.map(code=>code.split(" ")),formattedCode=this.DestroyCode(code);return code=this.RNFC(code,formattedCode),formattedCode=this.BFC(code,formattedCode),formattedCode=this.NullCopyCode(code,formattedCode),formattedCode=this.FC(code,formattedCode),formattedCode=this.AFC(code,formattedCode),formattedCode=this.JoinCode(formattedCode),formattedCode}}
-        const __mipsasm_scope=()=>({meta:[".2byte",".4byte",".align",".ascii",".asciiz",".balign",".byte",".code",".data",".else",".end",".endif",".endm",".endr",".equ",".err",".exitm",".extern",".global",".globl",".hword",".if",".ifdef",".ifndef",".include",".irp",".long",".macro",".rept",".req",".section",".set",".skip",".space",".text",".word",".ltorg"],builtin:["$31","$30","$29","$28","$27","$26","$25","$24","$23","$22","$21","$20","$19","$18","$17","$16","$15","$14","$13","$12","$11","$10","$9","$8","$7","$6","$5","$4","$3","$2","$1","$0","$zero","$at","$v0","$v1","$a0","$a1","$a2","$a3","$a4","$a5","$a6","$a7","$t0","$t1","$t2","$t3","$t4","$t5","$t6","$t7","$t8","$t9","$s0","$s1","$s2","$s3","$s4","$s5","$s6","$s7","$s8","$k0","$k1","$gp","$sp","$fp","$ra","$f31","$f30","$f29","$f28","$f27","$f26","$f25","$f24","$f23","$f22","$f21","$f20","$f19","$f18","$f17","$f16","$f15","$f14","$f13","$f12","$f11","$f10","$f9","$f8","$f7","$f6","$f5","$f4","$f3","$f2","$f2","$f1","$f0","Context","Random","EntryLo0","EntryLo1","Context","PageMask","Wired","EntryHi","HWREna","BadVAddr","Count","Compare","SR","IntCtl","SRSCtl","SRSMap","Cause","EPC","PRId","EBase","Config","Config1","Config2","Config3","LLAddr","Debug","DEPC","DESAVE","CacheErr","ECC","ErrorEPC","TagLo","DataLo","TagHi","DataHi","WatchLo","WatchHi","PerfCtl","PerfCnt"],keywords:/^\b(addi?u?|andi|b[al]?|beql?|bgez(al)?l?|bgtzl?|blezl?|bltz(al)?l?|bnel?|cl[oz]|divu?|ext|ins|j(al)?|jalr(\\.hb)?|jr(\\.hb)?|lbu?|lhu?|ll|lui|lw[lr]?|maddu?|l[ai]|mfhi|mflo|movn|movz|move|msubu?|mthi|mtlo|mul|multu?|nop|nor|ori?|rotrv?|sb|sc|se[bh]|sh|sllv?|slti?u?|srav?|srlv?|subu?|sw[lr]?|xori?|wsbh|abs\\.[sd]|add\\.[sd]|alnv.ps|bc1[ft]l?|c\\.(s?f|un|u?eq|[ou]lt|[ou]le|ngle?|seq|l[et]|ng[et])\\.[sd]|(ceil|floor|round|trunc)\\.[lw]\\.[sd]|cfc1|cvt\\.d\\.[lsw]|cvt\\.l\\.[dsw]|cvt\\.ps\\.s|cvt\\.s\\.[dlw]|cvt\\.s\\.p[lu]|cvt\\.w\\.[dls]|div\\.[ds]|ldx?c1|luxc1|lwx?c1|madd\\.[sd]|mfc1|mov[fntz]?\\.[ds]|msub\\.[sd]|mth?c1|mul\\.[ds]|neg\\.[ds]|nmadd\\.[ds]|nmsub\\.[ds]|p[lu][lu]\\.ps|recip\\.fmt|r?sqrt\\.[ds]|sdx?c1|sub\\.[ds]|suxc1|swx?c1|break|cache|d?eret|[de]i|ehb|mfc0|mtc0|pause|prefx?|rdhwr|rdpgpr|sdbbp|ssnop|synci?|syscall|teqi?|tgei?u?|tlb(p|r|w[ir])|tlti?u?|tnei?|wait|wrpgpr)$/g,comments:/(#|;).*/,contains:{regexDynamic:{number:/\b(?:\b[2-9]_\d+|(?:\b\d+(?:\.\d+)?|\B\.\d+)(?:e-?\d+)?|\b0(?:[fd]_|x|b|o)[0-9a-f]+|&[0-9a-f]+)\b/g,string:/"(?:[^"\r\n]|"")*"/g,char:/'(?:[^'\r\n]{0,4}|'')'/g},regexStatic:{punctuation:/[\(\)\,\:]/g,operator:/[\+\-\*]/g}}});
-    </script>
-    <!-- Index.js -->
-    <script>
-        let WINDOW_EDITOR,TAB_SIZE,TAB_REGEX,FORMAT,toggle_terminal,create_file,create_window,__pop_up,__group_h,__group_register;window.addEventListener("load",()=>{TAB_SIZE=4,TAB_REGEX=/\t/g,FORMAT=new Format(__mipsasm_scope());const pop_menu=(e,menu)=>(close_all_menus(),menu.classList.add("active"),e.pageY+menu.offsetHeight>window.innerHeight?menu.style.top=e.pageY-menu.offsetHeight+"px":menu.style.top=e.pageY+"px",e.pageX+menu.offsetWidth>window.innerWidth?menu.style.left=e.pageX-menu.offsetWidth+"px":menu.style.left=e.pageX+"px",!1),close_all_menus=e=>{let menus=document.querySelectorAll(".menu");for(let i=0;i<menus.length;i++)menus[i].classList.contains("active")&&menus[i].classList.remove("active")};let file_manager={el:document.querySelector("#file-manager"),menu:document.querySelector("#file-manager-extra-menu")};file_manager.el.addEventListener("contextmenu",e=>(e.preventDefault(),pop_menu(e,file_manager.menu)));let execute_file={el:[],menu:document.querySelector("#execute-file-extra-menu")},file_editor={el:document.querySelector("#main-editor"),menu:document.querySelector("#file-editor-extra-menu"),disabled:execute_file.el};file_editor.el.addEventListener("contextmenu",e=>-1!==file_editor.disabled.indexOf(e.target)||(e.preventDefault(),pop_menu(e,file_editor.menu)));let terminal_editor={el:document.querySelector("#terminal"),close_dom:document.querySelector("#close-t"),menu:document.querySelector("#terminal-extra-menu")};terminal_editor.disabled=[terminal_editor.close_dom],terminal_editor.tab=terminal_editor.el.querySelectorAll(".tab"),terminal_editor.window=terminal_editor.el.querySelectorAll(".window"),terminal_editor.el.addEventListener("contextmenu",e=>-1!==terminal_editor.disabled.indexOf(e.target)||(e.preventDefault(),pop_menu(e,terminal_editor.menu)));let runner_editor={el:document.querySelector("#main-runner"),menu:execute_file.menu};runner_editor.el.addEventListener("contextmenu",e=>(e.preventDefault(),pop_menu(e,runner_editor.menu))),toggle_terminal=(type=-1,window="terminal")=>{-1===type?terminal_editor.el.classList.toggle("active"):1===type?terminal_editor.el.classList.add("active"):0===type&&terminal_editor.el.classList.remove("active"),["terminal","console","output"].includes(window)&&([...terminal_editor.tab,...terminal_editor.window].forEach(el=>{el.classList.remove("active")}),terminal_editor.el.querySelector(`header .${window}-tab`).classList.add("active"),terminal_editor.el.querySelector(`main #${window}-main`).classList.add("active"))},terminal_editor.close_dom.addEventListener("click",e=>{toggle_terminal(0)});const focus_line=(textarea,delay=-1,reset=!0)=>{let file_w=textarea.parentElement;const index=textarea.value.substring(0,textarea.selectionStart).split("\n").length,lines=[file_w.querySelector(".line-numbers-rows"),file_w.querySelector(".export-code > code")];index+delay<lines[0].children.length&&!lines[0].children[index+delay].classList.contains("active")&&(reset&&unfocus_line(textarea),lines.forEach(el=>el.children[index+delay].classList.add("active")))},unfocus_line=(textarea,all=!0,num=0)=>{let file_w=textarea.parentElement;const lines=[file_w.querySelector(".line-numbers-rows"),file_w.querySelector(".export-code > code")];all?lines.forEach(el=>{for(let i=0;i<el.children.length;i++)el.children[i].classList.remove("active")}):lines.forEach(el=>el.children[num].classList.remove("active"))},formate_code=code=>(code=code.map(line=>line.replaceAll(/&/g,"&amp").replaceAll(/</g,"&lt").replaceAll(/>/g,"&gt")),FORMAT.formateCode(code)),update_code=textarea=>{let file_w=textarea.parentElement,code;TAB_REGEX.test(textarea.value)&&(textarea.value=textarea.value.replaceAll(TAB_REGEX," ".repeat(TAB_SIZE)));const _LINES=textarea.value.split("\n");let export_code;file_w.querySelector(".export-code > code").innerHTML=formate_code(_LINES),file_w.style.setProperty("--editor-padd",_LINES.length>=100?_LINES.length>=1e3?_LINES.length>=1e4?"55px":"45px":"35px":"25px");const lineNumbers=file_w.querySelector(".line-numbers-rows");lineNumbers.innerHTML=Array(_LINES.length).fill("<span></span>").join(""),textarea===document.activeElement&&focus_line(textarea,-1,!1)};create_window=(focus_editor=!0)=>{if(focus_editor&&__group_h.open_group("editor"),WINDOW_EDITOR.current>=WINDOW_EDITOR.max)return;let __w=document.createElement("div");__w.classList.add(`w-${WINDOW_EDITOR.current}`),__w.classList.add("editor-window"),__w.addEventListener("click",()=>{WINDOW_EDITOR.active=WINDOW_EDITOR.windows.indexOf(__w)}),WINDOW_EDITOR.windows[WINDOW_EDITOR.current]=__w;let __w_header=document.createElement("div");__w_header.classList.add("window-header"),__w_header.classList.add("d-flex");let __w_file_queue=document.createElement("div");__w_file_queue.classList.add("file-queue");let __w_execute=document.createElement("div");__w_execute.classList.add("execute"),__w_execute.classList.add("d-flex");let __w_execute_file=document.createElement("a");__w_execute_file.href="./",__w_execute_file.classList.add("execute-file"),__w_execute_file.innerHTML="[run]",execute_file.el.push(__w_execute_file);let __w_execute_status=document.createElement("span");__w_execute_status.classList.add("a"),__w_execute_status.innerHTML="[status]";let __w_close=document.createElement("a");__w_close.href="./",__w_close.classList.add("close-window"),__w_close.innerHTML="[ x ]",__w_execute.appendChild(__w_execute_file),__w_execute.appendChild(__w_execute_status),__w_execute.appendChild(__w_close),__w_header.appendChild(__w_file_queue),__w_header.appendChild(__w_execute),__w.appendChild(__w_header),WINDOW_EDITOR.parent.appendChild(__w),0===WINDOW_EDITOR.files[`w${WINDOW_EDITOR.current}`].length&&create_file(WINDOW_EDITOR.current),WINDOW_EDITOR.current++,WINDOW_EDITOR.active=WINDOW_EDITOR.current-1,__w.parentElement.setAttribute("window-opened",WINDOW_EDITOR.current)},create_file=(__wnum=WINDOW_EDITOR.active,name="file",saved=!1)=>{let __w=WINDOW_EDITOR.windows[__wnum],__fw=document.createElement("div");__fw.classList.add("active"),saved||__fw.classList.add("not-saved"),__fw.classList.add(`w-${__wnum}-f-${WINDOW_EDITOR.files[`w${__wnum}`].length}`);let __fw_name=document.createElement("a");__fw_name.innerHTML=`[${name}.s]`;let __fw_close=document.createElement("a");__fw_close.classList.add("muted"),__fw_close.innerHTML="x",__fw.appendChild(__fw_name),__fw.appendChild(__fw_close),__w.querySelector(".file-queue").appendChild(__fw);let __f=document.createElement("div");__f.classList.add(`f-${WINDOW_EDITOR.files[`w${__wnum}`].length}`),__f.classList.add("editor-file"),__f.classList.add("active");let __f_line_numbers=document.createElement("span");__f_line_numbers.classList.add("line-numbers-rows"),__f_line_numbers.classList.add("no-select");let __f_line_number=document.createElement("span"),__f_textarea=document.createElement("textarea");__f_textarea.classList.add("textarea-main"),__f_textarea.spellcheck=!1,__f_textarea.outline="none",__f_textarea.autocorrect="off",__f_textarea.autocapitalize="off",__f_textarea.setAttribute("aria-label","SpimHub"),__f_textarea.tabindex=0,__f_textarea.addEventListener("input",()=>update_code(__f_textarea)),__f_textarea.addEventListener("mouseup",()=>{focus_line(__f_textarea)}),__f_textarea.addEventListener("scroll",()=>{__f_export_code.scrollTo(__f_textarea.scrollLeft,__f_textarea.scrollTop),__f_line_numbers.scrollTo(__f_textarea.scrollLeft,__f_textarea.scrollTop)}),__f_textarea.addEventListener("focusout",()=>unfocus_line(__f_textarea)),__f_textarea.addEventListener("keydown",e=>{if("Tab"==e.key||9==e.keyCode||9==e.which){e.preventDefault();const start=__f_textarea.selectionStart;__f_textarea.value=__f_textarea.value.substring(0,start)+" ".repeat(TAB_SIZE)+__f_textarea.value.substring(__f_textarea.selectionEnd),__f_textarea.selectionStart=__f_textarea.selectionEnd=start+TAB_SIZE,update_code(__f_textarea)}"ArrowUp"!=e.key&&38!=e.keyCode&&38!=e.which||focus_line(__f_textarea,delay=-2),"ArrowDown"!=e.key&&40!=e.keyCode&&40!=e.which||focus_line(__f_textarea,delay=0)});let __f_export_code=document.createElement("pre");__f_export_code.classList.add("export-code");let __f_code=document.createElement("code");__f_code.setAttribute("aria-hidden","true"),__f_code.classList.add("language-mipsasm"),__f_code.innerHTML="<p> </p>",__f_line_numbers.appendChild(__f_line_number),__f_export_code.appendChild(__f_code),__f.appendChild(__f_line_numbers),__f.appendChild(__f_textarea),__f.appendChild(__f_export_code),__w.appendChild(__f),WINDOW_EDITOR.files[`w${__wnum}`].forEach(el=>{el.forEach(e=>{e.classList.remove("active")})}),WINDOW_EDITOR.files[`w${__wnum}`].push([__fw,__f])},WINDOW_EDITOR={parent:document.querySelector("#main-editor"),max:4,min:1,current:0,active:0,label:"Window",windows:[null,null,null,null],files:{w0:[],w1:[],w2:[],w3:[]}};let window_main={el:document.querySelector("#main-files"),groups:{editor:document.querySelector("#main-editor"),runner:runner_editor.el,extensions:document.querySelector("#main-extensions")}};__group_h={open:()=>{Object.keys(window_main.groups).forEach(el=>{window_main.groups[el].classList.remove("active")})},open_group:group=>{let __groups;["editor","runner","extensions"].includes(group)&&(__group_h.open(),window_main.groups[group].classList.add("active"),__group_h.active=group)}};let extras_pop_up=document.querySelector("footer#extra-pop-up");__pop_up={open:()=>{extras_pop_up.classList.add("active"),document.querySelector("#clicker-changer").classList.add("active")}},__pop_up._save=type=>{let __type;["file","folder"].includes(type)&&(__pop_up.open(),extras_pop_up.querySelector(`.create-${type}`).classList.add("active"))};let register_window={el:document.querySelector("#register-section"),header:document.querySelector("#register-section header"),tabs:{register:document.querySelector("#register-section .tab.register"),coproc1:document.querySelector("#register-section .tab.coproc1"),coproc0:document.querySelector("#register-section .tab.coproc0")}};register_window.windows={register:register_window.el.querySelector(".runner-register"),coproc1:register_window.el.querySelector(".runner-coproc1"),coproc0:register_window.el.querySelector(".runner-coproc0")},__group_register={open:()=>{Object.keys(register_window.tabs).forEach(el=>{register_window.tabs[el].classList.remove("active"),register_window.windows[el].classList.remove("active")})},open_tab:tab=>{let __tabs;["register","coproc1","coproc0"].includes(tab)&&(__group_register.open(),register_window.tabs[tab].classList.add("active"),register_window.windows[tab].classList.add("active"))}},document.addEventListener("click",close_all_menus),document.querySelector("#clicker-changer").addEventListener("click",e=>{e.target.classList.remove("active"),extras_pop_up.classList.remove("active");for(let el of extras_pop_up.children)el.classList.remove("active")}),create_window(!1)});    
-    </script>
+    <section id="setup-init">
+        <header class="cap">
+            <div>[spimhub setup]</div>
+        </header>
+        <main>
+            <pre class="text"><span class="muted"><u>>> Reload the page to skip the setup.</u></span><br><br><br><br></pre><span class="caret no-select">&nbsp;</span>
+        </main>
+    </section>
+    
 </body>
 
 </html>

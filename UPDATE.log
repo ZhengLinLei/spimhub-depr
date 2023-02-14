@@ -25,3 +25,9 @@ Sun Feb 05 13:08:00 2023 -----  Internal disk partition with localStorage in bro
                                                                         \___ branch: fspath1.0-dev
 
 Tue Feb 07 16:18:24 2023 -----  Branch fspath1.0-dev merged with master
+
+Tue Feb 14 09:30:00 2023 -----  Happy Valentine's Day <3  --- Second snapshot trailer preview with fspath1.0-dev branch
+                                    \     \________ dir: ./docs/index.html
+                                     \________________ commit: 4f849b7b4d3070c56811a0d7a679944864f48b46
+                                                            \___ branch: fspath1.0-dev ---> merged with master
+                                                                    \___ New added: GUI_TREEVIEW: https://tinyurl.com/spimhub-storagetree

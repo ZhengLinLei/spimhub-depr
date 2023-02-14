@@ -43,7 +43,7 @@
 // ================== //
 let FILE_SYSTEM, ROOT_DIR, WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT;
 let toggle_terminal, toggle_opt,
-    create_file, create_window, open_file, open_folder, open_window, focus_file, check_file, check_folder, copy_path,
+    create_file, create_window, open_file, open_folder, change_file, change_folder, delete_file, open_window, focus_file, check_file, check_folder, copy_path,
     remove_window, new_project, set_theme,
     html_open, html_delete, html_rename;
 
@@ -284,6 +284,30 @@ window.addEventListener('load', ()=> {
         let name = (type === 'file') ? file.name : folder.name;
         // Delete x
         __pop_up._delete(type, name, _route, _files);
+
+        // Add event listener
+        document.onkeydown = (e)=> {
+            if (e.key === 'Enter') {
+                // Delete
+                let r = (type === 'file') ? __delete_file(_route, _files) : __delete_folder(_route);
+
+                if (r) {
+                    // Close pop-up
+                    __pop_up.close({target: document.querySelector('#clicker-changer')});
+
+                    // Remove event listener
+                    document.onkeydown = null;
+                }
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                // Close pop up
+                __pop_up.close({target: document.querySelector('#clicker-changer')});
+
+                // Remove event listener
+                document.onkeydown = null;
+            }
+        }
     }
     html_rename = (type) => {
         let types = ['file', 'folder'];
@@ -1216,8 +1240,8 @@ window.addEventListener('load', ()=> {
             saved: false,
             content: file.content,
             __fw,
-            __f
-
+            __f,
+            file
         }
         // Get window
         let __w = WINDOW_EDITOR.windows[__wnum];
@@ -1238,6 +1262,7 @@ window.addEventListener('load', ()=> {
             // Create file name
             let __fw_name = document.createElement('a');
             __fw_name.innerHTML = `[${file.name}]`;
+            __fw_name.classList.add('filename');
             __fw_name.addEventListener('click', () => {
                 // Focus
                 focus_file(__wnum, metadata);
@@ -1413,7 +1438,140 @@ window.addEventListener('load', ()=> {
             e.classList.add('active');
         });
     };
+
+    /**
+     * Get all file in windows with the same route + name ---> WINDOWS_EDITOR.files
+     * 
+     *
+     * @param {string} route - The route
+     * @param {string} file - The file name
+     * @return {array[:{window: :int, index: :int, data: :object}]} - An array of objects with the window, index and data
+     * 
+     * @example get_w_same_file('/home/user/', 'file.txt')
+     */
+    let get_w_same_file = (route, file) => {
+        let w = [];
+        Object.values(WINDOW_EDITOR.files).forEach((p, _w) => {
+            p.find((el, _f) => {
+                ((el.route + el.name) == (route + file))
+                ? w.push({window: _w, index: _f, data: el})
+                : null;
+            })
+        });
+        return w;
+    }
+    /**
+     * Get all file in windows with the same route ---> WINDOWS_EDITOR.files
+     * 
+     *
+     * @param {string} route - The route
+     * @return {array[:{window: :int, index: :int, data: :object}]} - An array of objects with the window, index and data
+     * 
+     * @example get_w_same_route('/home/user/')
+     */
+    let get_w_same_route = (route) => {
+        let w = [];
+        Object.values(WINDOW_EDITOR.files).forEach((p, _w) => {
+            p.find((el, _f) => {
+                (el.route  == route)
+                ? w.push({window: _w, index: _f, data: el})
+                : null;
+            })
+        });
+        return w;
+    }
+
+    /**
+     * Change all files names from the html and WINDOW_EDITOR.files
+     * This function is called before using __rename_file
+     * 
+     *
+     * @param {string} route - The route of the file
+     * @param {string} file - The name of the file
+     * @param {string} filename - The new name of the file
+     * @return {void}
+     * @see __rename_file
+     * @see get_w_same_file
+     * 
+     * @example change_file('/home/user/', 'file.txt', 'file2.txt');
+     */
+    change_file = (route, file, filename) => {
+        let w = get_w_same_file(route, file);
+        if (w.length > 0){
+            // Change name
+            w.forEach(el => {
+                el.data.name = filename;
+                el.data.__fw.setAttribute('route', route+filename);
+                el.data.__fw.querySelector('a.filename').innerHTML = `[${filename}]`;
+            });
+        }
+    }
+
+    /**
+     * Change all files route in folder from the html and WINDOW_EDITOR.files
+     * This function is called before using __rename_folder
+     * 
+     *
+     * @param {string} route - The route of the folder
+     * @param {string} new_route - The new route of the folder
+     * @return {void}
+     * @see __rename_folder
+     * @see get_w_same_route
+     * 
+     * @example change_folder('/home/user/', '/home/user2/');
+     */
+    change_folder = (route, new_route) => {
+        let w = get_w_same_route(route);
+        if (w.length > 0){
+            // Change name
+            w.forEach(el => {
+                el.data.route = new_route;
+                el.data.__fw.setAttribute('route', new_route+el.data.name);
+            });
+        }
+    }
+
+    /**
+     * Delete file from the html and WINDOW_EDITOR.files
+     * This function is called before using __delete_file
+     * 
+     *
+     * @param {string} route - The route of the file
+     * @param {string} file - The name of the file
+     * @return {void}
+     * @see __delete_file
+     * @see get_w_same_file
+     * @see get_w_same_route
+     * 
+     * @example delete_file('/home/user/', 'file.txt');
+     */
+    delete_file = (route, file) => {
+        let w = (file) ? get_w_same_file(route, file) : get_w_same_route(route);
+
+        if (w.length > 0){
+            // Delete file
+            w.forEach(el => {
+                el.data.__fw.remove();
+                el.data.__f.remove();
+
+                // Remove from files
+                WINDOW_EDITOR.files[`w${el.window}`].splice(el.index, 1);
+            });
+        }
+    }
     
+    /**
+     * Get the file to be open and create a new file window.
+     * This function is called when the user click on a file. Or when the user open it with input path.
+     * 
+     *
+     * @param {object:FILE_SYSTEM[:string].files[:num]} file The object file to be open.
+     * @return {void}
+     * @see create_file
+     * 
+     * @example open_file(FILE_SYSTEM['/'].files[0]);
+     * @example open_file({name: 'file.txt', route: 'folder/'}); // Open file with input path});
+     */
     open_file = (file) => {
         // If file is already open
         let opened = WINDOW_EDITOR.files[`w${WINDOW_EDITOR.active}`].find(el => (el.route + el.name) == (file.route + file.name));
@@ -1428,6 +1586,15 @@ window.addEventListener('load', ()=> {
         create_file(file);
     };
 
+    /**
+     * Open all files in a folder into
+     *
+     * @param {object:FILE_SYSTEM[:string]} folder The object file to be open.
+     * @return {void}
+     * @see open_file
+     * 
+     * @example open_folder(FILE_SYSTEM.files[0]);
+     */
     open_folder = (folder) => {
         // Get all files
         let files = Object.values(folder.files);
@@ -1437,6 +1604,31 @@ window.addEventListener('load', ()=> {
             open_file(file);
         });
     };
+
+    /**
+     * Check if the file exist and open it (optional).
+     * The data is extracted from the input path. 
+     * If doesn't exist, it will call the warning message.
+     * 
+     * @caller html
+     * @html 
+     *  <section class="open-file pop-up prompt">
+     *      <header class="cap">
+     *          <div>[open file]</div>
+     *      </header>
+     *      <main>
+     *          <input type="text" placeholder="/root/folder/file.asm">
+     *          <a action="open-file">[ok]</a>
+     *      </main>
+     *  </section>
+     * 
+     * @param {string} route The route to the file. ---> /root/folder/file.asm
+     * @param {boolean} open If the file should be open. ---> true
+     * @return {object:FILE_SYSTEM[:string].files[:num]} The file object.
+     * @see open_file
+     * 
+     * @example check_file('/root/folder/file.asm');
+     */
     // Check if exist and open file
     check_file = (route, open = true) => {
         // Extract filename
@@ -1466,6 +1658,29 @@ window.addEventListener('load', ()=> {
         return false;
     }
 
+    /**
+     * Check if the file exist and open it (optional).
+     * The data is extracted from the input path. 
+     * 
+     * @caller html
+     * @html 
+     *  <section class="open-folder pop-up prompt">
+     *      <header class="cap">
+     *          <div>[open folder]</div>
+     *      </header>
+     *      <main>
+     *          <input type="text" placeholder="/root/folder/">
+     *          <a action="open-folder">[ok]</a>
+     *      </main>
+     *  </section>
+     * 
+     * @param {string} route The route to the file. ---> /root/folder/
+     * @param {boolean} open If the file should be open. ---> true
+     * @return {object:FILE_SYSTEM[:string]} The file object.
+     * @see open_folder
+     * 
+     * @example check_folder('/root/folder/');
+     */
     // Check if exist and open folder
     check_folder = (route, open = true) => {
         // Check if folder exists
@@ -1506,6 +1721,20 @@ window.addEventListener('load', ()=> {
         }
     }
 
+    /**
+     * Create a new file in filesystem, and then will show it in window.
+     * 
+     *
+     * @param {string} filename The name of the file.  ---> Retrive from input
+     * @param {string} route The route to the file.  ---> Retrive from ROOT_DIR.cd
+     * @return {boolean} If the file was created.
+     * @see ROOT_DIR.clean_gui
+     * @see ROOT_DIR.get_dir_gui
+     * @see ROOT_DIR.focus_dir
+     * @see create_file
+     * 
+     * @example __new_file('file.asm', '/root/folder/');
+     */
     __new_file = (filename, route) => {
         if (!filename || !route || !FILE_SYSTEM[route]) return false;
 
@@ -1567,6 +1796,19 @@ window.addEventListener('load', ()=> {
     //         </ul>
     //     </div>
     // </li>
+    /**
+     * Create a new folder in filesystem.
+     * 
+     *
+     * @param {string} foldername The name of the folder.  ---> Retrive from input
+     * @param {string} route The route to the file.  ---> Retrive from ROOT_DIR.cd
+     * @return {boolean} If the file was created.
+     * @see ROOT_DIR.clean_gui
+     * @see ROOT_DIR.get_dir_gui
+     * @see ROOT_DIR.focus_dir
+     * 
+     * @example __new_folder('folder', '/root/folder/');
+     */
     __new_folder = (foldername, route) => {
         if (!foldername || !route) return false;
 
@@ -1612,6 +1854,7 @@ window.addEventListener('load', ()=> {
         return true;
     }
 
+
     __rename_file = (filename, route, file) => {
         if (!filename || !route || !file) return false;
 
@@ -1647,6 +1890,8 @@ window.addEventListener('load', ()=> {
 
         // Set new route
         ROOT_DIR.focus_dir(route);
+
+        change_file(route, file, filename);
 
         return true;
     }
@@ -1688,6 +1933,8 @@ window.addEventListener('load', ()=> {
  
         // Set new route
         ROOT_DIR.focus_dir(new_route);
+
+        change_folder(route, new_route);
  
         return true;
     }
@@ -1699,6 +1946,8 @@ window.addEventListener('load', ()=> {
         ROOT_DIR.clean_gui('/');
         // Create folders
         ROOT_DIR.get_dir_gui('/');
+
+        delete_file(route, file);
 
         return true;
     }
@@ -1720,7 +1969,9 @@ window.addEventListener('load', ()=> {
         ROOT_DIR.clean_gui('/');
 
         // Create folders
-        ROOT_DIR.get_dir_gui('/');   
+        ROOT_DIR.get_dir_gui('/'); 
+        
+        delete_file(route);
         
         return true;
     }
