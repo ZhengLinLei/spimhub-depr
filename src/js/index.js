@@ -184,7 +184,8 @@ window.addEventListener('load', ()=> {
     // ================== //
     if (localStorage.getItem('sh-cookies') !== 'true' || !localStorage.getItem('sh-cookies')) {
         // Enable cookies
-        localStorage.setItem('sh-cookies', 'true');
+        // localStorage.setItem('sh-cookies', 'true');
+        localStorage.removeItem('sh-cookies');
 
         // Show cookies warning
         let setup = document.querySelector('#setup-init');
