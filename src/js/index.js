@@ -779,6 +779,162 @@ window.addEventListener('load', ()=> {
         };
     });
 
+    document.querySelector('.scroll-y.terminal').addEventListener('mousedown', (e)=> {
+        let _parent = terminal_editor.el;
+
+        let _xy = _getXY(e);
+
+        // Resize terminal height
+        let _MAX = window_main.el.getBoundingClientRect()["height"];
+        let _MIN = 100;
+        let _SIZE = _parent.getBoundingClientRect()["height"];
+        let _START = _xy['y'];
+
+        // Add mousemove event
+        window.onmousemove = (e2) => {
+
+            // Remove if the event is passive
+            if(!['touchstart', 'touchmove', 'touchend', 'touchcancel'].includes(e.type)){
+                e2.preventDefault();
+            }
+            
+            // If the event is touchstart
+            let coordsM = _getXY(e2);
+
+            document.body.classList.add('row-resize');
+
+            let _NEW_SIZE = _SIZE - (coordsM['y'] - _START); // - (e.clientY - _START); ---> Because the width grows to the right
+
+            if(_NEW_SIZE > _MIN && _NEW_SIZE < _MAX){
+                // _parent.classList.add('active');
+                (document.documentElement || document.querySelector(':root')).style.setProperty('--terminal-size', `${_NEW_SIZE}px`);
+            }
+            
+            // Close if NEW_SIZE is less than MIN
+            if(_NEW_SIZE < _MIN - (_MIN / 2)){
+                _parent.classList.remove('active');
+                window_main.el.setAttribute('terminal', 0);
+            }else {
+                _parent.classList.add('active');
+                window_main.el.setAttribute('terminal', 1);
+            }
+            
+        };
+        window.onmouseup = () => {
+            document.body.classList.remove('row-resize');
+
+            window.onmousemove = null;
+            window.ontouchmove = null;
+            window.onmouseup = null;
+            window.ontouchend = null;
+
+            // Save terminal height and option width
+
+            // localStorage.setItem(
+            //     _Y ? 'terminalHeight' : 'terminalOptWidth',
+            //     _Y ? terminal.parentElement.parentElement.getBoundingClientRect().height : document.querySelector('#terminal-fast-option').getBoundingClientRect().width
+            // );
+        };
+    });
+
+    document.querySelector('.scroll-x.register').addEventListener('mousedown', (e)=> {
+        let _parent = register_window.el;
+
+        let _xy = _getXY(e);
+
+        // Resize terminal height
+        let _MAX = window.innerWidth - opt_main.el.getBoundingClientRect()["width"] - 50;
+        let _MIN = 100;
+        let _SIZE = _parent.getBoundingClientRect()["width"];
+        let _START = _xy['x'];
+
+        // Add mousemove event
+        window.onmousemove = (e2) => {
+
+            // Remove if the event is passive
+            if(!['touchstart', 'touchmove', 'touchend', 'touchcancel'].includes(e.type)){
+                e2.preventDefault();
+            }
+            
+            // If the event is touchstart
+            let coordsM = _getXY(e2);
+
+            document.body.classList.add('col-resize');
+
+            let _NEW_SIZE = _SIZE - (coordsM['x'] - _START); // - (e.clientY - _START); ---> Because the width grows to the right
+
+            if(_NEW_SIZE > _MIN && _NEW_SIZE < _MAX){
+                // _parent.classList.add('active');
+                // (document.documentElement || document.querySelector(':root')).style.setProperty('--explorer-size', `${_NEW_SIZE}px`);
+                (document.documentElement || document.querySelector(':root')).style.setProperty('--register-section-size', `${_NEW_SIZE}px`);
+            }
+        };
+        window.onmouseup = () => {
+            document.body.classList.remove('col-resize');
+
+            window.onmousemove = null;
+            window.ontouchmove = null;
+            window.onmouseup = null;
+            window.ontouchend = null;
+
+            // Save terminal height and option width
+
+            // localStorage.setItem(
+            //     _Y ? 'terminalHeight' : 'terminalOptWidth',
+            //     _Y ? terminal.parentElement.parentElement.getBoundingClientRect().height : document.querySelector('#terminal-fast-option').getBoundingClientRect().width
+            // );
+        };
+    });
+
+    document.querySelector('.scroll-y.data-segment').addEventListener('mousedown', (e)=> {
+        let _parent = data_segments.data;
+
+        let _xy = _getXY(e);
+
+        // Resize terminal height
+        let _MAX = _parent.parentElement.getBoundingClientRect()["height"] - 50;
+        let _MIN = 100;
+        let _SIZE = _parent.getBoundingClientRect()["height"];
+        let _START = _xy['y'];
+
+        // Add mousemove event
+        window.onmousemove = (e2) => {
+
+            // Remove if the event is passive
+            if(!['touchstart', 'touchmove', 'touchend', 'touchcancel'].includes(e.type)){
+                e2.preventDefault();
+            }
+            
+            // If the event is touchstart
+            let coordsM = _getXY(e2);
+
+            document.body.classList.add('row-resize');
+
+            let _NEW_SIZE = _SIZE - (coordsM['y'] - _START); // - (e.clientY - _START); ---> Because the width grows to the top
+
+            if(_NEW_SIZE > _MIN && _NEW_SIZE < _MAX){
+                // _parent.classList.add('active');
+                (document.documentElement || document.querySelector(':root')).style.setProperty('--data-segment-size', `${_NEW_SIZE}px`);
+            }
+            
+        };
+        window.onmouseup = () => {
+            document.body.classList.remove('row-resize');
+
+            window.onmousemove = null;
+            window.ontouchmove = null;
+            window.onmouseup = null;
+            window.ontouchend = null;
+
+            // Save terminal height and option width
+
+            // localStorage.setItem(
+            //     _Y ? 'terminalHeight' : 'terminalOptWidth',
+            //     _Y ? terminal.parentElement.parentElement.getBoundingClientRect().height : document.querySelector('#terminal-fast-option').getBoundingClientRect().width
+            // );
+        };
+    });
+
     // ================== //
     //  File Manager Menu //
     // ================== //
@@ -866,12 +1022,19 @@ window.addEventListener('load', ()=> {
 
     toggle_terminal = (type=-1, window="terminal")=> {
         // Toggle terminal
-        if (type === -1)
-            terminal_editor.el.classList.toggle('active');
-        else if (type === 1)
+        if (type === 1) {
             terminal_editor.el.classList.add('active');
-        else if (type === 0)
+        }
+        else if (type === 0) {
             terminal_editor.el.classList.remove('active');
+        }
+        else if (type === -1) {
+            terminal_editor.el.classList.toggle('active');
+            type = (terminal_editor.el.classList.contains('active')) ? 1 : 0; 
+        }
+
+        // If terminal is active set it to parent element
+        window_main.el.setAttribute('terminal', type);
 
         // Reject
         if (!["terminal", "console", "output"].includes(window)) return;
@@ -1060,6 +1223,14 @@ window.addEventListener('load', ()=> {
             WINDOW_EDITOR.active = 0;
         }
 
+        // Update window attributes classnames
+        for (let i = 0, j = 0; i < WINDOW_EDITOR.windows.length; i++) {
+            if (WINDOW_EDITOR.windows[i] !== null) {
+                WINDOW_EDITOR.windows[i].setAttribute('window', `w-${j}`);
+                j++;
+            }
+        }
+
         // Testing window_config
         // console.log(WINDOW_EDITOR);
     }
@@ -1110,8 +1281,8 @@ window.addEventListener('load', ()=> {
         if (WINDOW_EDITOR.current >= WINDOW_EDITOR.max) return;
 
         let __w = document.createElement('div');
-        __w.classList.add(`w-${WINDOW_EDITOR.current}`);
         __w.classList.add('editor-window');
+        __w.setAttribute('window', `w-${WINDOW_EDITOR.current}`);
 
         // Active window when the user interact with __w
         __w.addEventListener('click', () => {
@@ -2321,6 +2492,14 @@ window.addEventListener('load', ()=> {
     // Delete
     extras_pop_up.querySelector('a[action="delete-item"]').addEventListener('click', delete_dir);
 
+    // ======================= //
+    // DATA SEGMENTS
+
+    let data_segments = {
+        el: document.querySelector('#data-section'),
+        text: document.querySelector('#data-section .data-text'),
+        data: document.querySelector('#data-section .data-data'),
+    }
 
     // ======================= //
     // REGISTER LABEL CONTROL

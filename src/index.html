@@ -458,7 +458,7 @@
                         </li>
                         <hr>
                         <li>
-                            <a href="./">
+                            <a href="javascript:__group_h.open_group('runner')">
                                 <span>[open runner]</span>
                                 <span class="muted">
                                     <span class="__s-win">Alt + R</span>
@@ -467,7 +467,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="./">
+                            <a href="javascript:toggle_opt(1,'search')">
                                 <span>[search]</span>
                                 <span class="muted"></span>
                             </a>
@@ -598,7 +598,7 @@
             <div id="opt-search"></div>
             <div id="opt-extensions"></div>
         </header>
-        <main id="main-files">
+        <main id="main-files" terminal="0">
             <section id="main-editor" class="group-m" window-opened="0">
                 <!-- EDITOR OPEN -->
             </section>
@@ -688,7 +688,7 @@
                 </header>
                 <main>
                     <section id="data-section">
-                        <div>
+                        <div class="data-text">
                             <header class="cap">
                                 <div> >_ text segment</div>
                             </header>
@@ -726,7 +726,9 @@
                                 </table>
                             </main>
                         </div>
-                        <div>
+                        <div class="data-data">
+                            <!-- Scroll y -->
+                            <div class="scroll-y data-segment"></div>
                             <header class="cap">
                                 <div> >_ data segment</div>
                             </header>
@@ -797,6 +799,8 @@
                         </div>
                     </section>
                     <section id="register-section">
+                        <!-- Scroll x -->
+                        <div class="scroll-x register"></div>
                         <header class="header-tab">
                             <div class="d-flex">
                                 <a class="tab register active"
@@ -1234,6 +1238,9 @@
 
             </section>
             <section id="terminal">
+                <!-- Scroll y -->
+                <div class="scroll-y terminal"></div>
+                <!-- Terminal -->
                 <header class="header-tab">
                     <div class="d-flex">
                         <a class="terminal-tab tab" href="javascript:toggle_terminal(1)">[terminal]</a>
