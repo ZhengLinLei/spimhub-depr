@@ -41,15 +41,28 @@
 // ================== //
 //  Global Variables  //
 // ================== //
-let FILE_SYSTEM, ROOT_DIR, WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT;
+let FILE_SYSTEM, ROOT_DIR, WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT, TERMINAL;
 let toggle_terminal, toggle_opt,
-    create_file, create_window, open_file, open_folder, change_file, change_folder, delete_file, open_window, focus_file, check_file, check_folder, copy_path,
+    create_file, create_window, open_file, open_folder, change_file, change_folder, delete_file, open_window, focus_file, check_file, check_folder, copy_path, download_project,
     remove_window, new_project, set_theme,
     html_open, html_delete, html_rename;
 
 // Global functions
 let __pop_up, __group_h, __group_register,
     __new_file, __new_folder, __rename_file, __rename_folder, __delete_file, __delete_folder;
+
+
+// ================== //
+let PROJECT_VARNAME = {
+    filesystem: 'spimhub-001',
+    editor: 'spimhub-002',
+}
+
+// === LZMA =========
+// Dekete this line after the worker is built
+// var lzma = new LZMA();
+var lzma = new LZMA("./js/lzma_worker.js");  // Path: src/js/lzma_worker.js
+// ================== //
 
 function getRelativePath(source, target) {
     if (source == target) return "./";
@@ -85,6 +98,96 @@ let COPY_CLIPBOARD = (data) => {
         input.setSelectionRange(0, 99999);
         document.execCommand('Copy');
         input.remove();
+    }
+}
+
+let COMPRESS_DATA = (data, callback) => {
+    lzma.compress(data, 1, (compressed, error) => {
+        if (error) {
+            alert("Failed to compress data: " + error);
+            return;
+        }
+        let reader = new FileReader();
+        reader.onload = function () {
+            let base64 = reader.result.substr(reader.result.indexOf(",") + 1);
+
+            // Call callback function
+            callback(base64);
+        };
+        reader.readAsDataURL(new Blob([new Uint8Array(compressed)]));
+    });
+}
+let DECOMPRESS_DATA = (data, callback) => {
+    fetch("data:application/octet-stream;base64," + data)
+    .then(r => r.blob())
+    .then(blob => {
+        let reader = new FileReader();
+        reader.onload = function () {
+            var compressed_data = Array.from(new Uint8Array(reader.result));
+            lzma.decompress(compressed_data, function (plaintext, error) {
+                if (error) {
+                    alert("Failed to decompress data: " + error);
+                }
+                // Write each window
+                try {
+                    // Call callback function
+                    callback(plaintext);
+
+                } catch (error) {
+                    alert("Failed to writing data: " + error);
+                }
+            });
+        };
+        reader.readAsArrayBuffer(blob);
+    });
+}
+let SAVE_FILE_SYSTEM = () => {
+    // Save file system
+    COMPRESS_DATA(JSON.stringify(FILE_SYSTEM), (data) => {
+        localStorage.setItem(PROJECT_VARNAME.filesystem, data);
+    });
+}
+let SAVE_EDITOR_DATA = () => {
+    // Save editor data
+    let arr = Object.values(WINDOW_EDITOR.files).map(el => el.map(file => file.route + file.name));
+    let data = JSON.stringify(arr);
+    COMPRESS_DATA(data, (data) => {
+        localStorage.setItem(PROJECT_VARNAME.editor, data);
+    });
+}
+let LOAD_FILE_SYSTEM = (render=true) => {
+    // Load file system
+    let data = localStorage.getItem(PROJECT_VARNAME.filesystem);
+    if (data) {
+        DECOMPRESS_DATA(data, (data) => {
+            FILE_SYSTEM = JSON.parse(data);
+            if (render) {
+                // Init filesystem GUI
+                ROOT_DIR.get_dir_gui('/');
+            }
+        });
+    }
+}
+let LOAD_EDITOR_DATA = (render=true) => {
+    // Load file system
+    let data = localStorage.getItem(PROJECT_VARNAME.editor);
+    if (data) {
+        DECOMPRESS_DATA(data, (data) => {
+            let out = JSON.parse(data);
+            if (render) {
+                // Open all files
+                out.forEach((el, i) => {
+                    // If window is not empty create new window
+                    if (el.length > 0 && i > 0) {
+                        create_window();
+                    }
+                    el.forEach(file => {
+                        // Open all files in window
+                        check_file(file, true);
+                    });
+                });
+            }
+        });
     }
 }
 
@@ -400,18 +503,18 @@ window.addEventListener('load', ()=> {
         2. new Object({})
 
     */
-    FILE_SYSTEM = (localStorage.getItem('sh-virtual-disk')) ?
-         JSON.parse(localStorage.getItem('sh-virtual-disk')) :
-         ({
-            "/" : {
-                name: "[project]",
-                files: {},
-                folders: [],
-                active: true
-            }
-            
-        })
-    ;
+    FILE_SYSTEM = {
+        "/" : {
+            name: "[project]",
+            files: {},
+            folders: [],
+            active: true
+        }
+        
+    };
+
+    // ==========
+    // FILESYSTEM : FSPath-1.0
 
     // ROOT 
     ROOT_DIR = {
@@ -1596,6 +1699,9 @@ window.addEventListener('load', ()=> {
 
         // Update code if value is not empty
         if(file.content !== '') update_code(__f_textarea);
+
+        // Update in local storage
+        SAVE_EDITOR_DATA();
     }
 
     focus_file = (w, file) => {
@@ -1876,7 +1982,23 @@ window.addEventListener('load', ()=> {
 
         return false;
     }
+    
 
+    // =================== //
+    // PROJECT CONFIG FILE //
+    // =================== //
+    download_project = () => {
+        var content = localStorage.getItem(PROJECT_VARNAME.filesystem);
+
+        // any kind of extension (.txt,.cpp,.cs,.bat)
+        var filename = "spimhub.spim";
+
+        var blob = new Blob([content], {
+            type: "text/plain;charset=utf-8"
+        });
+
+        saveAs(blob, filename);
+    }
 
     WINDOW_EDITOR = {
         parent: document.querySelector('#main-editor'),
@@ -1933,7 +2055,6 @@ window.addEventListener('load', ()=> {
             name: filename,
             route: route,
             content: '',
-            saved: true,
         }
 
         // Add file to filesystem
@@ -1952,6 +2073,10 @@ window.addEventListener('load', ()=> {
 
         // Open file
         create_file(_file);
+
+
+        // Update localStorage
+        SAVE_FILE_SYSTEM();
         
         return true;
     }
@@ -2023,6 +2148,9 @@ window.addEventListener('load', ()=> {
 
         // Set new route
         ROOT_DIR.focus_dir(new_route);
+
+        // Update localStorage
+        SAVE_FILE_SYSTEM();
 
         return true;
     }
@@ -2183,6 +2311,17 @@ window.addEventListener('load', ()=> {
             
         }
     }
+
+
+    // ======================= //
+    /*
+     * Deprecated
+     * @solution : html changed the editor active status, now the editor will be displayed by default
+    */
+    // if (localStorage.getItem(PROJECT_VARNAME.editor) !== undefined && localStorage.getItem(PROJECT_VARNAME.editor) !== null) {
+    //     // Load editor UI
+    //     __group_h.open_group('editor');
+    // }
 
 
 
@@ -2561,12 +2700,137 @@ window.addEventListener('load', ()=> {
     document.querySelector('#clicker-changer').addEventListener('click', __pop_up.close);
 
 
+
+    // ======================= //
+    //  Terminal data          //
+    // ======================= //
+    TERMINAL = {
+        el: document.querySelector('#terminal'),
+        main: document.querySelector('#terminal-main'),
+        input: document.querySelector('#terminal-cmd'),
+        caret: document.querySelector('#terminal-caret'),
+        import: {
+            browser: document.querySelector('#terminal-browser'),
+            route: document.querySelector('#terminal-route'),
+        },
+        config: {
+            position: 0,
+        }
+    }
+
+    // Terminal input
+    TERMINAL.main.addEventListener('focus', () => {
+        // Scroll to bottom
+        TERMINAL.main.scrollTop = TERMINAL.main.scrollHeight;
+        // Blink caret
+        TERMINAL.caret.classList.add('blink');
+    });
+    TERMINAL.main.addEventListener('blur', () =>TERMINAL.caret.classList.remove('blink'));
+    TERMINAL.main.addEventListener('keydown', (e) => {
+        if(!e.ctrlKey && !e.metaKey && !e.altKey){
+            e.preventDefault();
+
+            // Write inside terminalInput
+            if(e.key.length == 1){
+                TERMINAL.config.position += 1;
+                TERMINAL.input.innerText = TERMINAL.input.innerText.slice(0, TERMINAL.config.position-1) + e.key + TERMINAL.input.innerText.slice(TERMINAL.config.position-1);
+            }
+        }
+
+        // Backspace
+        if (e.key == "Backspace" || e.key == "Delete") {
+            TERMINAL.input.innerText = TERMINAL.input.innerText.slice(0, TERMINAL.config.position-1) + TERMINAL.input.innerText.slice(TERMINAL.config.position);
+            TERMINAL.config.position -= (TERMINAL.config.position == 0) ? 0 : 1;
+        }
+
+        // ==== OPTIONS ====
+        // Move caret
+        if (e.key == "ArrowLeft") 
+            TERMINAL.config.position -= (TERMINAL.config.position > 0) ? 1 : 0;
+
+        if (e.key == "ArrowRight") 
+            TERMINAL.config.position += (TERMINAL.config.position < TERMINAL.input.innerText.length) ? 1 : 0;
+
+        if(e.key == "ArrowLeft" || e.key == "ArrowRight"){
+            // Move caret css
+            let fs = TERMINAL.caret.getBoundingClientRect().width                                                   // - caret width           
+                    - (parseFloat(getComputedStyle(TERMINAL.caret, null).getPropertyValue('border-left-width'))*2)   // - border
+                    - 0.00001;                                                                                     // - Error                       
+
+            TERMINAL.caret.style.transform = `translateX(-${((TERMINAL.input.innerText.length - TERMINAL.config.position) * fs)}px)`;
+        }
+
+        /*
+        // ==== OPTIONS ====
+        // Move caret
+        if (e.key == "ArrowLeft") 
+            TERMINAL_CONFIG.position -= (TERMINAL_CONFIG.position > 0) ? 1 : 0;
+
+        if (e.key == "ArrowRight") 
+            TERMINAL_CONFIG.position += (TERMINAL_CONFIG.position < terminalInput.innerText.length) ? 1 : 0;
+
+        if(e.key == "ArrowLeft" || e.key == "ArrowRight"){
+            // Move caret css
+            let fs = terminalCaret.getBoundingClientRect().width                                                   // - caret width           
+                    - (parseFloat(getComputedStyle(terminalCaret,null).getPropertyValue('border-left-width'))*2)   // - border
+                    - 0.00001;                                                                                      // - Error                       
+
+            terminalCaret.style.transform = `translateX(-${((terminalInput.innerText.length - TERMINAL_CONFIG.position) * fs)}px)`;
+        }
+        // History
+        if (e.key == "ArrowUp" || e.key == "ArrowDown") {
+            // History get
+            const history = _TERMINAL.getHistory();
+
+            TERMINAL_CONFIG.historyPosition += (e.key == "ArrowUp") ? ((TERMINAL_CONFIG.historyPosition >= history.length) ? 0 : 1) : ((TERMINAL_CONFIG.historyPosition <= 0) ? 0 : -1);
+
+            // History pos
+            let _w = history[history.length - TERMINAL_CONFIG.historyPosition];
+            terminalInput.innerText = _w ? _w : "";
+            TERMINAL_CONFIG.position = terminalInput.innerText.length;
+        }
+
+        // Paste
+        if (e.key == "v" && (e.ctrlKey || e.metaKey)) {
+            navigator.clipboard.readText().then(text => {
+                terminalInput.innerText = terminalInput.innerText.slice(0, TERMINAL_CONFIG.position-1) + text + terminalInput.innerText.slice(TERMINAL_CONFIG.position-1);
+                TERMINAL_CONFIG.position += text.length;
+            });
+        }
+        // Backspace
+        if (e.key == "Backspace" || e.key == "Delete") {
+            terminalInput.innerText = terminalInput.innerText.slice(0, TERMINAL_CONFIG.position-1) + terminalInput.innerText.slice(TERMINAL_CONFIG.position);
+            TERMINAL_CONFIG.position -= (TERMINAL_CONFIG.position == 0) ? 0 : 1;
+        }
+        // Enter
+        if (e.key == "Enter" || e.key == "Return" || e.key == "NumpadEnter") {
+            _ExecPush();
+        }
+        */
+    });
+
+    // ======================= //
+    //  PRELOAD                //
+    // ======================= //
+    // Preload editor data
+    /*
+     *
+     * @description  : Preload editor data, if is true, the editor will load all files and folders
+     *                 the system will check if exist file opened, if exist, the editor will be show
+     * @line : 2315
+     * 
+     * @status : Deprecated
+     * @reason : Editor loading is so slow, and it can be a problem for the user, and not visualy good. (Flashing).
+    */
+
     // ======================= //
     //  INIT                   //
     // ======================= //
+    // Load all files
+    LOAD_FILE_SYSTEM(true);
 
-    // Init filesystem GUI
-    ROOT_DIR.get_dir_gui('/');
+    // Load opened files
+    LOAD_EDITOR_DATA(true);
 
     // Create first window
     create_window(false);

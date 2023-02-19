@@ -36,7 +36,11 @@
     <script src="./js/format.js"></script>
     <!-- mipsasm.js -->
     <script src="./js/lang/mips.js"></script>
-    <!-- Index.js -->
+    <!-- file_saver.js -->
+    <script src="./js/file_saver.js"></script>
+    <!-- lzma.js -->
+    <script src="./js/lzma.js"></script>
+    <!-- index.js -->
     <script src="./js/index.js"></script>
     <!-- TITTLE -->
     <title>SpimHub - Mips CPU Simulator</title>
@@ -134,7 +138,7 @@
                         </li>
                         <hr>
                         <li>
-                            <a href="./">
+                            <a href="javascript:download_project()">
                                 <span>[save project]</span>
                                 <span class="muted">
                                     <span class="__s-win">Alt + X</span>
@@ -599,7 +603,7 @@
             <div id="opt-extensions"></div>
         </header>
         <main id="main-files" terminal="0">
-            <section id="main-editor" class="group-m" window-opened="0">
+            <section id="main-editor" class="group-m active" window-opened="0">
                 <!-- EDITOR OPEN -->
             </section>
             <section id="file-editor-extra-menu" class="menu">
@@ -676,7 +680,7 @@
             </section>
 
             <!-- RUNNER -->
-            <section id="main-runner" class="group-m active">
+            <section id="main-runner" class="group-m">
                 <header class="cap">
                     <div class="title"> >_ mips executer</div>
                     <div>
@@ -1252,14 +1256,24 @@
                     </div>
                 </header>
                 <main>
-                    <section id="terminal-main" class="window">
-                        terminal
+                    <section id="terminal-main" class="window" tabindex="0">
+                        <pre class="terminal-log"></pre>
+                        <div class="terminal-input">
+                            <div class="__f_builtin terminal-name">
+                                <span id="terminal-browser">Safari</span>@<span id="terminal-route">/</span> ~ %
+                            </div>
+                            <div class="terminal">
+                                <pre id="terminal-cmd"></pre><button id="terminal-caret" class="no-select" for="terminal-cmd">&nbsp;</button>
+                            </div>
+                        </div>
                     </section>
                     <section id="console-main" class="window">
-                        console
+                        <pre class="console-log">
+                        </pre>
                     </section>
                     <section id="output-main" class="window">
-                        Eres feo juasjuasjuas
+                        <pre class="output-log">
+                        </pre>
                     </section>
                 </main>
                 <section id="terminal-extra-menu" class="menu">
