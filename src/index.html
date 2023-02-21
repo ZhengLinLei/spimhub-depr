@@ -38,8 +38,8 @@
     <script src="./js/lang/mips.js"></script>
     <!-- file_saver.js -->
     <script src="./js/file_saver.js"></script>
-    <!-- lzma.js -->
-    <script src="./js/lzma.js"></script>
+    <!-- lzma_worker.js -->
+    <script src="./js/lzma_worker.js"></script>
     <!-- index.js -->
     <script src="./js/index.js"></script>
     <!-- TITTLE -->
@@ -156,7 +156,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="./">
+                            <a href="javascript:__pop_up._open_project()">
                                 <span>[open project]</span>
                                 <span class="muted">
                                     <span class="__s-win">Alt + Z</span>
@@ -1328,7 +1328,7 @@
         </main>
     </main>
     <!-- Extras -->
-    <footer id="extra-pop-up">
+    <footer id="extra-pop-up" class="active">
         <section class="create-file pop-up prompt">
             <header class="cap">
                 <div>[create file]</div>
@@ -1390,8 +1390,23 @@
                 <div>[new project]</div>
             </header>
             <main>
-                <span>This action will <span class="text-error"><b>destroy</b></span> all your saved data</span>
+                <span>This action will <span class="text-error"><b>destroy</b></span> all your saved data. <a href="javascript:download_project()" class="inline">[Save]</a> the project first.</span>
                 <a action="new-project">[ok]</a>
+            </main>
+        </section>
+        <section class="open-project pop-up prompt file">
+            <header class="cap">
+                <div>[open project]</div>
+            </header>
+            <main>
+                <div class="label">
+                    <span class="title">[click] or [drop] file</span>
+                    <p class="message">No file selected</p>
+                    <!-- <div class="load-bar">
+                        <div class="bar"></div>   --------- Load bar not required
+                    </div> -->
+                </div>
+                <input type="file" id="drop-file" accept=".spim,.spimhub,.spmb,.mips2,.shx">
             </main>
         </section>
         <section class="delete-item pop-up alert">

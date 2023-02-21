@@ -56,12 +56,13 @@ let __pop_up, __group_h, __group_register,
 let PROJECT_VARNAME = {
     filesystem: 'spimhub-001',
     editor: 'spimhub-002',
+    extension: ["spim", "spimhub", "spmb", "mips2", "shx"]
 }
 
 // === LZMA =========
 // Dekete this line after the worker is built
-// var lzma = new LZMA();
-var lzma = new LZMA("./js/lzma_worker.js");  // Path: src/js/lzma_worker.js
+var lzma = LZMA;
+// var lzma = new LZMA("./js/lzma_worker.js");  // Path: src/js/lzma_worker.js
 // ================== //
 
 function getRelativePath(source, target) {
@@ -83,6 +84,19 @@ function getRelativePath(source, target) {
     relPathArr.length && (relativePath += relPathArr.join(sep) + sep);
     
     return relativePath + filename;
+}
+
+function returnFileSize(number) {
+    if (number < 1024) {
+      return `${number} bytes`;
+    } else if (number >= 1024 && number < 1048576) {
+      return `${(number / 1024).toFixed(1)} KB`;
+    } else if (number >= 1048576) {
+      return `${(number / 1048576).toFixed(1)} MB`;
+    } else {
+        // GB
+        return `${(number / 1073741824).toFixed(1)} GB`; 
+    }
 }
 
 let COPY_CLIPBOARD = (data) => {
@@ -138,7 +152,19 @@ let DECOMPRESS_DATA = (data, callback) => {
                 }
             });
         };
+
         reader.readAsArrayBuffer(blob);
+    })
+    .catch(e => {
+        let warning = document.querySelector('section#warning');
+        warning.innerHTML = `<p>File corrupted [${e}], action aborted.</p>`;
+        warning.classList.add('active');
+        setTimeout(() => {
+            warning.classList.remove('active');
+        }, 10000);
+
+        // Destroy file system and remove corrupted data
+        localStorage.removeItem(PROJECT_VARNAME.filesystem);
     });
 }
 let SAVE_FILE_SYSTEM = () => {
@@ -1571,6 +1597,9 @@ window.addEventListener('load', ()=> {
                     }
                 }
 
+                // Update local storage
+                SAVE_EDITOR_DATA();
+
             });
         
         // Append file name and close to file wrapper
@@ -1784,6 +1813,9 @@ window.addEventListener('load', ()=> {
                 el.data.__fw.querySelector('a.filename').innerHTML = `[${filename}]`;
             });
         }
+
+        // Save data
+        SAVE_EDITOR_DATA();
     }
 
     /**
@@ -1808,6 +1840,9 @@ window.addEventListener('load', ()=> {
                 el.data.__fw.setAttribute('route', new_route+el.data.name);
             });
         }
+
+        // Save data
+        SAVE_EDITOR_DATA();
     }
 
     /**
@@ -1837,6 +1872,9 @@ window.addEventListener('load', ()=> {
                 WINDOW_EDITOR.files[`w${el.window}`].splice(el.index, 1);
             });
         }
+
+        // Save data
+        SAVE_EDITOR_DATA();
     }
     
     /**
@@ -1999,6 +2037,85 @@ window.addEventListener('load', ()=> {
 
         saveAs(blob, filename);
     }
+
+    let file_input = document.querySelector('input[type="file"]#drop-file');
+    let file_label = document.querySelector('.open-project .label .message');
+
+    // let load_bar = document.querySelector('.open-project .label .bar');
+
+    file_input.addEventListener('change', (e) => {
+        // Only one file
+        let file = e.target.files[0];
+
+        // Get file extension and check
+        let ext = file.name.split('.').pop();
+
+        if (PROJECT_VARNAME.extension.includes(ext)) {
+            file_label.classList.remove('text-error');
+            file_label.innerHTML = `${file.name} (${returnFileSize(file.size)})`;
+
+            // // Status Bar
+            // load_bar.parentElement.classList.add('active');
+            // load_bar.style.width = '0%';
+
+            // Read file
+            let reader = new FileReader();
+
+            reader.onload = (e) => {
+
+                // // Status Bar
+                // load_bar.style.width = '30%';
+
+                // // Load project
+                // DECOMPRESS_DATA(e.target.result, (content) => {       -----------> Loading is not fancy, load bar not required
+
+                //     // Status Bar
+                //     load_bar.style.width = '100%';
+
+                // });
+
+
+                // Write into local storage
+                localStorage.removeItem(PROJECT_VARNAME.editor);
+                localStorage.setItem(PROJECT_VARNAME.filesystem, e.target.result);
+
+                // Reload page
+                location.reload();
+            }
+
+            reader.readAsText(file);
+
+        } else {
+            file_label.classList.add('text-error');
+            file_label.innerHTML = 'Invalid file extension';
+        }
+    });
+    file_input.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Change Label Color
+        file_label.parentElement.classList.add('bg-secondary');
+    });
+    file_input.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Change Label Color
+        file_label.parentElement.classList.remove('bg-secondary');
+    });
+
+    // ================= //
+    // If user drag a file into the window
+
+    window.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Open pop-up
+        __pop_up._open_project()
+
+    });
 
     WINDOW_EDITOR = {
         parent: document.querySelector('#main-editor'),
@@ -2194,6 +2311,9 @@ window.addEventListener('load', ()=> {
 
         change_file(route, file, filename);
 
+        // Update localStorage
+        SAVE_FILE_SYSTEM();
+
         return true;
     }
 
@@ -2236,6 +2356,9 @@ window.addEventListener('load', ()=> {
         ROOT_DIR.focus_dir(new_route);
 
         change_folder(route, new_route);
+
+        // Update localStorage
+        SAVE_FILE_SYSTEM();
  
         return true;
     }
@@ -2249,6 +2372,9 @@ window.addEventListener('load', ()=> {
         ROOT_DIR.get_dir_gui('/');
 
         delete_file(route, file);
+
+        // Update localStorage
+        SAVE_FILE_SYSTEM();
 
         return true;
     }
@@ -2273,6 +2399,9 @@ window.addEventListener('load', ()=> {
         ROOT_DIR.get_dir_gui('/'); 
         
         delete_file(route);
+
+        // Update localStorage
+        SAVE_FILE_SYSTEM();
         
         return true;
     }
@@ -2394,6 +2523,11 @@ window.addEventListener('load', ()=> {
             __pop_up.open();
             extras_pop_up.querySelector(`.new-project`).classList.add('active');
         }
+    }
+    // Open project backup
+    __pop_up._open_project = () => {
+        __pop_up.open();
+        extras_pop_up.querySelector(`.open-project`).classList.add('active');
     }
 
     // Ask for delete file or folder
@@ -2717,6 +2851,11 @@ window.addEventListener('load', ()=> {
             position: 0,
         }
     }
+    // Import browser
+    // Get browser name
+    TERMINAL.import.browser.innerText = navigator.platform;
+    // Get route
+    TERMINAL.import.route.innerText = ROOT_DIR.cd;
 
     // Terminal input
     TERMINAL.main.addEventListener('focus', () => {

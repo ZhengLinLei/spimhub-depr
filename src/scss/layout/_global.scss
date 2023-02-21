@@ -132,6 +132,10 @@ a {
     &:hover {
         background: var(--color-hover) !important;
     }
+
+    &.inline {
+        display: inline-block;
+    }
 }
 
 hr{
