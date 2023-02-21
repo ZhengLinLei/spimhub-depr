@@ -36,7 +36,11 @@
     <script src="./js/format.js"></script>
     <!-- mipsasm.js -->
     <script src="./js/lang/mips.js"></script>
-    <!-- Index.js -->
+    <!-- file_saver.js -->
+    <script src="./js/file_saver.js"></script>
+    <!-- lzma_worker.js -->
+    <script src="./js/lzma_worker.js"></script>
+    <!-- index.js -->
     <script src="./js/index.js"></script>
     <!-- TITTLE -->
     <title>SpimHub - Mips CPU Simulator</title>
@@ -134,7 +138,7 @@
                         </li>
                         <hr>
                         <li>
-                            <a href="./">
+                            <a href="javascript:download_project()">
                                 <span>[save project]</span>
                                 <span class="muted">
                                     <span class="__s-win">Alt + X</span>
@@ -152,7 +156,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="./">
+                            <a href="javascript:__pop_up._open_project()">
                                 <span>[open project]</span>
                                 <span class="muted">
                                     <span class="__s-win">Alt + Z</span>
@@ -354,6 +358,37 @@
                 <a href="javascript:toggle_terminal();">[terminal]</a>
             </div>
         </div>
+        <style>
+            .preview {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 400px;
+                color: var(--color-invert);
+                padding: 10px;
+                opacity: .5;
+                z-index: 99;
+                background-color: rgba(var(--color-invert-rgb), 0.3);
+                overflow: hidden;
+            }
+            .preview h1 {
+                font-size: 18px;
+                font-family: Arial, Helvetica, sans-serif !important;
+                animation: rolling 10s infinite linear;
+                white-space: nowrap;
+            }
+            @keyframes rolling {
+                0% {
+                    transform: translateX(-105%);
+                }
+                100% {
+                    transform: translateX(110%);
+                }
+            }
+        </style>
+        <section class="preview">
+            <h1>This is a preview mode - Not functional yet</h1>
+        </section>
     </header>
     <main>
         <header id="main-folder" class="active opt-files">
@@ -458,7 +493,7 @@
                         </li>
                         <hr>
                         <li>
-                            <a href="./">
+                            <a href="javascript:__group_h.open_group('runner')">
                                 <span>[open runner]</span>
                                 <span class="muted">
                                     <span class="__s-win">Alt + R</span>
@@ -467,7 +502,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="./">
+                            <a href="javascript:toggle_opt(1,'search')">
                                 <span>[search]</span>
                                 <span class="muted"></span>
                             </a>
@@ -597,40 +632,9 @@
             </div>
             <div id="opt-search"></div>
             <div id="opt-extensions"></div>
-            <style>
-                .preview {
-                    position: fixed;
-                    bottom: 0;
-                    left: 0;
-                    width: 400px;
-                    color: var(--color-invert);
-                    padding: 10px;
-                    opacity: .5;
-                    z-index: 99;
-                    background-color: rgba(var(--color-invert-rgb), 0.3);
-                    overflow: hidden;
-                }
-                .preview h1 {
-                    font-size: 18px;
-                    font-family: Arial, Helvetica, sans-serif !important;
-                    animation: rolling 10s infinite linear;
-                    white-space: nowrap;
-                }
-                @keyframes rolling {
-                    0% {
-                        transform: translateX(-105%);
-                    }
-                    100% {
-                        transform: translateX(110%);
-                    }
-                }
-            </style>
-            <section class="preview">
-                <h1>This is a preview mode - Not functional yet</h1>
-            </section>
         </header>
-        <main id="main-files">
-            <section id="main-editor" class="group-m" window-opened="0">
+        <main id="main-files" terminal="0">
+            <section id="main-editor" class="group-m active" window-opened="0">
                 <!-- EDITOR OPEN -->
             </section>
             <section id="file-editor-extra-menu" class="menu">
@@ -707,7 +711,7 @@
             </section>
 
             <!-- RUNNER -->
-            <section id="main-runner" class="group-m active">
+            <section id="main-runner" class="group-m">
                 <header class="cap">
                     <div class="title"> >_ mips executer</div>
                     <div>
@@ -719,7 +723,7 @@
                 </header>
                 <main>
                     <section id="data-section">
-                        <div>
+                        <div class="data-text">
                             <header class="cap">
                                 <div> >_ text segment</div>
                             </header>
@@ -757,7 +761,9 @@
                                 </table>
                             </main>
                         </div>
-                        <div>
+                        <div class="data-data">
+                            <!-- Scroll y -->
+                            <div class="scroll-y data-segment"></div>
                             <header class="cap">
                                 <div> >_ data segment</div>
                             </header>
@@ -828,6 +834,8 @@
                         </div>
                     </section>
                     <section id="register-section">
+                        <!-- Scroll x -->
+                        <div class="scroll-x register"></div>
                         <header class="header-tab">
                             <div class="d-flex">
                                 <a class="tab register active"
@@ -1265,6 +1273,9 @@
 
             </section>
             <section id="terminal">
+                <!-- Scroll y -->
+                <div class="scroll-y terminal"></div>
+                <!-- Terminal -->
                 <header class="header-tab">
                     <div class="d-flex">
                         <a class="terminal-tab tab" href="javascript:toggle_terminal(1)">[terminal]</a>
@@ -1276,14 +1287,24 @@
                     </div>
                 </header>
                 <main>
-                    <section id="terminal-main" class="window">
-                        terminal
+                    <section id="terminal-main" class="window" tabindex="0">
+                        <pre class="terminal-log"></pre>
+                        <div class="terminal-input">
+                            <div class="__f_builtin terminal-name">
+                                <span id="terminal-browser">Safari</span>@<span id="terminal-route">/</span> ~ %
+                            </div>
+                            <div class="terminal">
+                                <pre id="terminal-cmd"></pre><button id="terminal-caret" class="no-select" for="terminal-cmd">&nbsp;</button>
+                            </div>
+                        </div>
                     </section>
                     <section id="console-main" class="window">
-                        console
+                        <pre class="console-log">
+                        </pre>
                     </section>
                     <section id="output-main" class="window">
-                        Eres feo juasjuasjuas
+                        <pre class="output-log">
+                        </pre>
                     </section>
                 </main>
                 <section id="terminal-extra-menu" class="menu">
@@ -1338,7 +1359,7 @@
         </main>
     </main>
     <!-- Extras -->
-    <footer id="extra-pop-up">
+    <footer id="extra-pop-up" class="active">
         <section class="create-file pop-up prompt">
             <header class="cap">
                 <div>[create file]</div>
@@ -1400,8 +1421,23 @@
                 <div>[new project]</div>
             </header>
             <main>
-                <span>This action will <span class="text-error"><b>destroy</b></span> all your saved data</span>
+                <span>This action will <span class="text-error"><b>destroy</b></span> all your saved data. <a href="javascript:download_project()" class="inline">[Save]</a> the project first.</span>
                 <a action="new-project">[ok]</a>
+            </main>
+        </section>
+        <section class="open-project pop-up prompt file">
+            <header class="cap">
+                <div>[open project]</div>
+            </header>
+            <main>
+                <div class="label">
+                    <span class="title">[click] or [drop] file</span>
+                    <p class="message">No file selected</p>
+                    <!-- <div class="load-bar">
+                        <div class="bar"></div>   --------- Load bar not required
+                    </div> -->
+                </div>
+                <input type="file" id="drop-file" accept=".spim,.spimhub,.spmb,.mips2,.shx">
             </main>
         </section>
         <section class="delete-item pop-up alert">

@@ -37,3 +37,6 @@ Tue Feb 14 17:36:00 2023 -----  Second snapshot trailer preview localStorage fix
 Tue Feb 21 15:39:00 2023 -----  Drop file created and localStorage fixed in fspath1.0-dev branch and added new features: [drop files in folders, create files and folders by opening contextmenu in files or folders]
                                         \
                                          \______ branch: fspath1.0-dev ---> merged with master
+
+
+Tue Feb 21 15:47:24 2023 -----  Third snapshot trailer preview and fixing bugs in windows device to debug.
