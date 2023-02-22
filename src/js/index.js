@@ -45,11 +45,12 @@ let FILE_SYSTEM, ROOT_DIR, WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT, TERMINAL;
 let toggle_terminal, toggle_opt,
     create_file, create_window, open_file, open_folder, change_file, change_folder, delete_file, open_window, focus_file, check_file, check_folder, copy_path, download_project,
     remove_window, new_project, set_theme,
-    html_open, html_delete, html_rename;
+    html_open, html_delete, html_rename, html_save;
 
 // Global functions
 let __pop_up, __group_h, __group_register,
-    __new_file, __new_folder, __rename_file, __rename_folder, __delete_file, __delete_folder;
+    __new_file, __new_folder, __rename_file, __rename_folder, __delete_file, __delete_folder,
+    __save_file;
 
 
 // ================== //
@@ -149,6 +150,7 @@ let DECOMPRESS_DATA = (data, callback) => {
 
                 } catch (error) {
                     alert("Failed to writing data: " + error);
+                    console.error(error)
                 }
             });
         };
@@ -394,6 +396,13 @@ window.addEventListener('load', ()=> {
         };
     }
 
+    let get_active_data = (/* File opt only for now */) => {
+        // Active window
+        let _w = WINDOW_EDITOR.files[`w${WINDOW_EDITOR.active}`];
+
+        return _w.find(el => el.active);
+    }
+
     html_open = (type) => {
         let types = ['file', 'folder'];
         if (!types.includes(type)) return;
@@ -448,6 +457,17 @@ window.addEventListener('load', ()=> {
 
         // Rename x
         __pop_up._rename(type, _route, _files);
+    }
+
+    html_save = (type) => {
+        let types = ['file', 'folder']; // Only file for now
+        if (!types.includes(type)) return;
+
+        let file = get_active_data(type);
+        let content = file.content;
+
+        // Save x
+        __save_file(file, content);
     }
 
     // Full screen
@@ -1539,12 +1559,29 @@ window.addEventListener('load', ()=> {
         let metadata = {
             name: file.name,
             route: file.route,
-            saved: false,
             content: file.content,
+            active: true,
             __fw,
             __f,
             file
         }
+
+
+        // Disabled function ---------------
+
+        // let data_active = () => {
+        //     // Disable all files active
+        //     WINDOW_EDITOR.files[`w${__wnum}`].forEach(file => {
+        //         file.active = false;
+        //     });
+
+        //     // Enable file active
+        //     metadata.active = true;
+        // }
+
+        // // Active
+        // data_active();
+
         // Get window
         let __w = WINDOW_EDITOR.windows[__wnum];
 
@@ -1568,6 +1605,9 @@ window.addEventListener('load', ()=> {
             __fw_name.addEventListener('click', () => {
                 // Focus
                 focus_file(__wnum, metadata);
+
+                // Active data
+                // data_active();
             });
 
             // Create file close
@@ -1646,7 +1686,9 @@ window.addEventListener('load', ()=> {
             __f_textarea.setAttribute('aria-label', 'SpimHub');
             __f_textarea.tabindex = 0;
 
-            __f_textarea.addEventListener('input', () => update_code(__f_textarea, metadata, file));
+            __f_textarea.addEventListener('input', () => {
+                update_code(__f_textarea, metadata, file)
+            });
             __f_textarea.addEventListener('mouseup', () =>  {
                 // Focus selected line
                 focus_line(__f_textarea)
@@ -1669,6 +1711,7 @@ window.addEventListener('load', ()=> {
                     __f_textarea.value = __f_textarea.value.substring(0, start) + " ".repeat(TAB_SIZE) + __f_textarea.value.substring(__f_textarea.selectionEnd);
                     // fix caret position
                     __f_textarea.selectionStart = __f_textarea.selectionEnd = start + TAB_SIZE;
+
 
                     // Update code
                     update_code(__f_textarea, metadata, file);
@@ -1727,7 +1770,7 @@ window.addEventListener('load', ()=> {
          __group_h.open_group('editor');
 
         // Update code if value is not empty
-        if(file.content !== '') update_code(__f_textarea);
+        if(file.content !== '') update_code(__f_textarea, metadata, file);
 
         // Update in local storage
         SAVE_EDITOR_DATA();
@@ -1739,7 +1782,12 @@ window.addEventListener('load', ()=> {
             [el.__fw, el.__f].forEach(e => {
                 e.classList.remove('active');
             });
+
+            el.active = false;
         });
+
+        // Active file
+        file.active = true;
 
         // Update active file
         [file.__fw, file.__f].forEach(e => {
@@ -1948,6 +1996,7 @@ window.addEventListener('load', ()=> {
      */
     // Check if exist and open file
     check_file = (route, open = true) => {
+
         // Extract filename
         let filename = route.split('/').pop();
 
@@ -2405,6 +2454,19 @@ window.addEventListener('load', ()=> {
         
         return true;
     }
+
+
+    __save_file = (file, content) => {
+        file.file.content = content;
+
+        file.__fw.classList.remove('not-saved');
+
+        // Update localStorage
+        SAVE_FILE_SYSTEM();
+
+        return true;
+    }
+
     // ======================= //
     //  GROUP CONTROLS    (editor, runner, extensions)     
 

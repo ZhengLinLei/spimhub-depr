@@ -472,6 +472,7 @@ body{
                         display: none;
                         background-color: var(--color-primary);
                         z-index: 2;
+                        overflow: hidden;
 
                         &.active {
                             display: block;

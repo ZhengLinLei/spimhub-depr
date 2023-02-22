@@ -8,3 +8,4 @@
 3. Remove windows not removing in the focused window and remove the latest one      ------> [Firefox, Windows]                          ✅
 4. Window classname `w-{index}` not updating after removing one                     ------> [Windows, MacOs, Linux, All Browsers]       ✅
 5. Grid destroyed after removing a window                                           ------> [Windows, MacOs, Linux, All Browsers]       ✅
+6. Scroll down broken after removing a window                                       ------> [Windows, MacOs, Linux, All Browsers]       ✅
