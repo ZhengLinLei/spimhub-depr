@@ -40,3 +40,11 @@ Tue Feb 21 15:39:00 2023 -----  Drop file created and localStorage fixed in fspa
 
 
 Tue Feb 21 15:47:24 2023 -----  Third snapshot trailer preview and fixing bugs in windows device to debug.
+                                        \
+                                         \______ branch: fspath1.0-dev ---> merged with master
+                                                        \___ commit 3c348bc4a6e474da29615442474c5aa941739449
+
+Fri Feb 24 10:22:00 2023 -----  Fourth snapshot trailer preview and fixing bugs in windows device to debug.
+                                        \
+                                         \______ branch: fspath1.0-dev ---> merged with master
+                                                        \___ commit 66af465ce628b82c4153b8fc2b1cf3734987144b
