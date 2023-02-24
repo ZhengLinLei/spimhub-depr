@@ -10,7 +10,7 @@
 <br>
 <br>
 <p align="center">
-    <img src="./docs/label-black.png" alt="SpimHub Label" />
+    <img src="./docs/img/label-black.png" alt="SpimHub Label" />
 </p>
 <br>
 <p align="center">
@@ -20,6 +20,7 @@
 </p>
 
 <hr>
+
 ```
   SpimHub - A MIPS Assembly IDE for Web Browsers
 
