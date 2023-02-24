@@ -45,7 +45,8 @@ let FILE_SYSTEM, ROOT_DIR, WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT, TERMINAL;
 let toggle_terminal, toggle_opt,
     create_file, create_window, open_file, open_folder, change_file, change_folder, delete_file, open_window, focus_file, check_file, check_folder, copy_path, download_project,
     remove_window, new_project, set_theme,
-    html_open, html_delete, html_rename, html_save;
+    html_open, html_delete, html_rename, html_save,
+    html_codesnap;
 
 // Global functions
 let __pop_up, __group_h, __group_register,
@@ -215,6 +216,20 @@ let LOAD_EDITOR_DATA = (render=true) => {
                     });
                 });
             }
+        });
+    }
+}
+
+html_codesnap = () => {
+    let file = document.querySelector(`.editor-window[window="w-${WINDOW_EDITOR.active}"] .editor-file.active`);
+
+    if (file) {
+        html2canvas(file).then(canvas => {
+            let _c = document.body.querySelector('#codesnap');
+            __pop_up.open();
+            _c.classList.add('active');
+            _c.innerHTML = '';
+            _c.appendChild(canvas);
         });
     }
 }
@@ -2536,6 +2551,9 @@ window.addEventListener('load', ()=> {
 
             // Remove warning
             document.getElementById('warning').classList.remove('active');
+
+            // Remove codesnap
+            document.getElementById('codesnap').classList.remove('active');
 
             for (let el of extras_pop_up.children) {
                 // Remove active class from all extras children

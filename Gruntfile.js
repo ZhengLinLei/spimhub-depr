@@ -9,9 +9,10 @@ module.exports = function (grunt) {
                 mangle: false
             },
             build: {
-                src: 'build/js/src/script.js',
-                dest: 'build/js/min/script.min.js'
-            }
+                files: {
+                    'build/index.min.js': ['src/js/index.js']
+                }
+            },
         },
         concat: {
             options: {
@@ -20,7 +21,7 @@ module.exports = function (grunt) {
             buildjs: {
                 src: ['src/js/*.js'],
                 dest: 'build/js/src/script.js',
-            }
+            },
         },
     });
     
@@ -35,4 +36,6 @@ module.exports = function (grunt) {
     
     // Default task(s).
     grunt.registerTask('default', ['eslint', 'concat', 'uglify']);
+
+    grunt.registerTask('docs', ['uglify']);
 };

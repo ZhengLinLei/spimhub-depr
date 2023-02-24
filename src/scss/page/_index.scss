@@ -472,7 +472,7 @@ body{
                         display: none;
                         background-color: var(--color-primary);
                         z-index: 2;
-                        overflow: hidden;
+                        // overflow: hidden;
 
                         &.active {
                             display: block;
@@ -513,14 +513,17 @@ body{
                             color: transparent;
                             // color: rgba(rgb(255, 255, 255), 0.8);
                             caret-color: var(--color-invert);
-                            padding: 10px 5px var(--editor-footer-space) calc(var(--editor-padd) + var(--editor-inner-padd)) !important;
+                            // padding: 10px 5px var(--editor-footer-space) calc(var(--editor-padd) + var(--editor-inner-padd)) !important;
+                            padding: 10px 5px 50px calc(var(--editor-padd) + var(--editor-inner-padd)) !important;
                         }
                         pre{
                             overflow: auto;
                             z-index: 0;
                             margin: 0 !important;
                             background-color: transparent !important;
-                            padding: 10px 5px var(--editor-footer-space) calc(var(--editor-padd) + var(--editor-inner-padd) - 5px) !important;                        
+                            // padding: 10px 5px var(--editor-footer-space) calc(var(--editor-padd) + var(--editor-inner-padd) - 5px) !important;
+                            padding: 10px 5px 50px calc(var(--editor-padd) + var(--editor-inner-padd) - 5px) !important;
+
                             code{
                                 color: var(--color-invert);
                                 text-shadow: none;
@@ -953,6 +956,28 @@ body{
             100% {
                 opacity: 0;
             }
+        }
+    }
+
+    #codesnap {
+        position: fixed;
+        z-index: 99;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+
+        &.active {
+            display: block;
+        }
+
+        canvas {
+            width: 50vw !important;
+            height: auto !important;
+            max-width: 900px;
+            min-width: 500px;
+            // Create a light shadow
+            box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.04);
         }
     }
 }
