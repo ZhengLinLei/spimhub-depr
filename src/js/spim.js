@@ -51,44 +51,11 @@
 class SPIM {
 
     // Internal Variables
-    _instance = {
-        // Registers
-        registers: {
-            // General Purpose Registers
-            $0:  0, $1:  0, $2:  0, $3:  0, $4:  0, $5:  0, $6:  0, $7:  0, $8:  0,
-            $9:  0, $10: 0, $11: 0, $12: 0, $13: 0, $14: 0, $15: 0, $16: 0,
-            $17: 0, $18: 0, $19: 0, $20: 0, $21: 0, $22: 0, $23: 0, $24: 0,
-            $25: 0, $26: 0, $27: 0, $28: 0, $29: 0, $30: 0, $31: 0,
-
-            // Floating Point Registers
-            $f0:  0, $f1:  0, $f2:  0, $f3:  0, $f4:  0, $f5:  0, $f6:  0, $f7:  0, $f8:  0,
-            $f9:  0, $f10: 0, $f11: 0, $f12: 0, $f13: 0, $f14: 0, $f15: 0, $f16: 0,
-            $f17: 0, $f18: 0, $f19: 0, $f20: 0, $f21: 0, $f22: 0, $f23: 0, $f24: 0,
-            $f25: 0, $f26: 0, $f27: 0, $f28: 0, $f29: 0, $f30: 0, $f31: 0,
-
-            // Control Registers
-            $pc: 0,
-            $hi: 0,
-            $lo: 0,
-            $ir: 0,
-            $psr: 0,
-            $cause: 0,
-            $epc: 0,
-            $badvaddr: 0,
-        },
-        
-        // Memory
-        memory: {
-            // Data Memory
-            data: {
-                // Data
-            },
-            // Text Memory
-            text: {
-                // Text
-            }
-        }
-    }
+    _instance = undefined;
+    // Text memory address
+    _textAddress = undefined;
+    // Data memory address
+    _dataAddress = undefined;
 
     /**
      * @desc: Constructor; creates a new SPIM instance
@@ -99,7 +66,7 @@ class SPIM {
 
         this.predata = data;
         // Parse the assembly code
-        this._data ||= this.data ||= this.parse(data);
+        this.data(data);
     }
 
 
@@ -120,9 +87,15 @@ class SPIM {
          * @note: This will also reset the SPIM instance
     */
     set data(data) {
+        this.reset();
+
         // Parse the assembly code
         this._data ||= this.data ||= this.parse(data);
-        this.reset();
+
+        // Format the assembly code
+        this._dec_data = this.decode(this._data);
+        this._instance.memory.data = this._dec_data.data;
+        this._instance.memory.text = this._dec_data.text;
     }
 
     // Internal Methods
@@ -146,12 +119,63 @@ class SPIM {
         return data;
     }
 
+    /**
+         * @desc: Decodes the assembly code
+         * @param: data {:string}- The assembly code to be run
+         * @return: data {:object}- The decoded assembly code
+    */
+    decode(data) {
+
+        // Create a new instance of the decoder
+        let decoder = {
+            // Memory
+            text: {
+                // Empty to fill
+            },
+            data: {
+                // Empty to fill
+            },
+
+            // Addresses
+            textAddr: 0x00400000,
+            dataAddr: 0x10010000,
+            textSection: false,
+            dataSection: false,
+        }
+
+        // Loop through each line
+        data.forEach((line, i) => {
+
+        });
+
+
+        return data;
+
+    }
+
+
 
 
 
     // Public Methods
     /**
-         * @desc: Runs the assembly code
+         * @desc: Runs the assembly code all at once
+         * @return: {:void} 
+    */
+    runAll() {
+        // Run all
+    }
+
+    /**
+         * @desc: Runs the assembly code step by step
+         * @return: {:void} 
+    */
+    runStep() {
+        // Run step
+    }
+
+    /**
+         * @desc: Runs the assembly code until the next breakpoint
          * @return: {:void} 
     */
     run() {
@@ -166,5 +190,47 @@ class SPIM {
     */
     reset() {
         // Reset all
+        this._instance = {
+            // Registers
+            registers: {
+                // General Purpose Registers
+                $0:  0, $1:  0, $2:  0, $3:  0, $4:  0, $5:  0, $6:  0, $7:  0, $8:  0,
+                $9:  0, $10: 0, $11: 0, $12: 0, $13: 0, $14: 0, $15: 0, $16: 0, $17: 0,
+                $18: 0, $19: 0, $20: 0, $21: 0, $22: 0, $23: 0, $24: 0, $25: 0, $26: 0,
+                $27: 0, $28: 0, $29: 0, $30: 0, $31: 0,
+
+                // Floating Point Registers
+                $f0:  0, $f1:  0, $f2:  0, $f3:  0, $f4:  0, $f5:  0, $f6:  0, $f7:  0, $f8:  0,
+                $f9:  0, $f10: 0, $f11: 0, $f12: 0, $f13: 0, $f14: 0, $f15: 0, $f16: 0, $17:  0,
+                $f18: 0, $f19: 0, $f20: 0, $f21: 0, $f22: 0, $f23: 0, $f24: 0, $f25: 0, $f26: 0,
+                $f27: 0, $f28: 0, $f29: 0, $f30: 0, $f31: 0,
+
+                // Control Registers
+                $pc: 0,
+                $hi: 0,
+                $lo: 0,
+                $status: 0,
+                $cause: 0,
+                $epc: 0,
+                $badvaddr: 0,
+            },
+
+            // Memory
+            memory: {
+                // Data Memory
+                data: {
+                    // Data
+                },
+                // Text Memory
+                text: {
+                    // Text
+                }
+            }
+        }
+
+        // Set the text memory address
+        this._textAddress = 0x00400000;
+        // Set the data memory address
+        this._dataAddress = 0x10010000;
     }
 }
