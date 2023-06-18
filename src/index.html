@@ -46,6 +46,8 @@
     <script src="./js/spim.js"></script>
     <!-- index.js -->
     <script src="./js/index.js"></script>
+    <!-- file_searcher.js -->
+    <script src="./js/file_searcher.js"></script>
     <!-- TITTLE -->
     <title>SpimHub - Mips CPU Simulator</title>
 </head>
@@ -660,12 +662,12 @@
                 </div>
                 <div class="explorer">
                     <div>
-                        <input type="text" placeholder="search">
-                        <input type="text" placeholder="replace">
+                        <input type="text" id="content-search-file" placeholder="search">
+                        <input type="text" id="content-replace-file" placeholder="replace">
                     </div>
                     <div class="d-flex both-side find-replace-btn">
-                        <a href="#" class="bg-success">[find]</a>
-                        <a href="#" class="replace-all">[replace all]</a>
+                        <a id="content-find-btn" class="bg-success">[find]</a>
+                        <a id="content-replace-btn" class="replace-all">[replace all]</a>
                     </div>
                     <hr>
                     <div class="explorer-main" id="search-manager">
@@ -1531,7 +1533,7 @@
                 <div>[open project]</div>
             </header>
             <main>
-                <div class="label">s
+                <div class="label">
                     <span class="title">[click] or [drop] file</span>
                     <p class="message">No file selected</p>
                     <!-- <div class="load-bar">
