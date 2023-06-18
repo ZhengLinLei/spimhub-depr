@@ -53,7 +53,54 @@
     <header class="bg-secondary d-flex">
         <div class="left">
             <div class="d-flex logo">
-                <a href="https://github.com/ZhengLinLei/spimhub/">[spimhub]</a>
+                <a href="https://ZhengLinLei.github.io/spimhub">[spimhub]</a>
+                <ul class="pop-menu">
+                    <li>
+                        <a href="https://github.com/ZhengLinLei/spimhub/">
+                            <span>[github]</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span>[privacy]</span>
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a href="#">
+                            <span>[license]</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span>[profile]</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span>[settings]</span>
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a href="#">
+                            <span>[version]</span>
+                            <span class="muted">v1.0.0b</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span>[built]</span>
+                            <span class="muted">52b48-50b/1</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/ZhengLinLei">
+                            <span>[author]</span>
+                            <span class="muted">ZhengLinLei</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
             <div class="d-flex">
                 <div>
@@ -370,7 +417,7 @@
             <!-- Sections -->
             <div id="opt-files">
                 <div class="runner">
-                    <a href="javascript:__group_h.open_group('runner')">
+                    <a class="header-padding" href="javascript:__group_h.open_group('runner')">
                         <span>[runner]</span>
                         <span class="muted">
                             <span class="__s-win">Alt + R</span>
@@ -379,7 +426,7 @@
                     </a>
                 </div>
                 <div class="editor">
-                    <a href="javascript:__group_h.open_group('editor')">
+                    <a class="header-padding" href="javascript:__group_h.open_group('editor')">
                         <span>[editor]</span>
                         <span class="muted">
                             <span class="__s-win">Alt + E</span>
@@ -603,7 +650,24 @@
                     </ul>
                 </section>
             </div>
-            <div id="opt-search"></div>
+            <div id="opt-search">
+                <div class="search header-padding both-side explorer-header d-flex align-center">
+                    <span>[search]</span>
+                    <div class="d-flex">
+                        <a href="#" class="muted">[refresh]</a>
+                        <a href="#" class="muted">[clear]</a>
+                    </div>
+                </div>
+                <div class="explorer">
+                    <div>
+                        <input type="text">
+                        <input type="text">
+                    </div>
+                    <div class="explorer-main" id="file-manager">
+                        
+                    </div>
+                </div>
+            </div>
             <div id="opt-extensions"></div>
         </header>
         <main id="main-files" terminal="0">
@@ -1403,7 +1467,7 @@
                 <div>[open project]</div>
             </header>
             <main>
-                <div class="label">
+                <div class="label">s
                     <span class="title">[click] or [drop] file</span>
                     <p class="message">No file selected</p>
                     <!-- <div class="load-bar">
@@ -1418,8 +1482,20 @@
                 <div>[delete]</div>
             </header>
             <main>
-                <span>Are you sure you want to delete <span class="item-name">project</span>?</span>
+                <span>Are you sure you want to delete <span class="item-name">filename/foldername</span>?</span>
                 <a action="delete-item">[ok]</a>
+            </main>
+        </section>
+        <section class="close-unsaved pop-up confirm">
+            <header class="cap">
+                <div>[unsaved]</div>
+            </header>
+            <main>
+                <span>Do you want to save the changes you made to [<span class="close-filename">file.asm</span>]?</span>
+                <div class="button">
+                    <a action="close-unsaved">[no]</a>
+                    <a action="save-unsaved">[yes]</a>
+                </div>
             </main>
         </section>
     </footer>
@@ -1427,8 +1503,23 @@
     <section id="warning" class="no-select">
         <span>Foldername or filename already exist.</span>
     </section>
+    <!-- Extra verification step before doing an action -->
+    <section id="verification-step">
+        <header class="cap">
+            <div>[verification]</div>
+        </header>
+        <main>
+            <span class="keycode">Write <b class="action-code">SPIMHUB</b> to confirm before doing this action</span>
+            <div class="prompt">
+                <main>
+                    <input type="text" placeholder="spimhub">
+                    <a action="verification">[ok]</a>
+                </main>
+            </div>
+        </main>
+    </section>
     <section id="clicker-changer">
-        <!-- When the user click this section, the footer extra option will pop-up -->
+        <!-- When the user click this section, the footer extra option will vanish -->
     </section>
     <section id="codesnap">
         <!-- Image goes here -->

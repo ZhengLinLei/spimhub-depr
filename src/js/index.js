@@ -42,10 +42,22 @@
 //  Global Variables  //
 // ================== //
 let FILE_SYSTEM, ROOT_DIR, WINDOW_EDITOR, TAB_SIZE, TAB_REGEX, FORMAT, TERMINAL;
-let toggle_terminal, toggle_opt,
-    create_file, create_window, open_file, open_folder, change_file, change_folder, delete_file, open_window, focus_file, check_file, check_folder, copy_path, download_project,
-    remove_window, new_project, set_theme,
+let 
+    // Toggle windows: terminal and options
+    toggle_terminal, toggle_opt,
+    // Create, open, rename and delete files and folders
+    create_file, create_window, open_file, open_folder, change_file, change_folder, delete_file, 
+    // Open and remove windows
+    open_window, remove_window,
+    // File, folder extras
+    check_file, check_folder, copy_path,
+    // Project config
+    download_project, reset_project,
+    // Extras
+    set_theme, verification_prompt,
+    // HTML inline call functions
     html_open, html_delete, html_rename, html_save,
+    // HTML inline call fnc extra
     html_codesnap;
 
 // Global functions
@@ -58,6 +70,7 @@ let __pop_up, __group_h, __group_register,
 let PROJECT_VARNAME = {
     filesystem: 'spimhub-001',
     editor: 'spimhub-002',
+    dataname: ['pancakes', 'dog', 'theBest', 'awesome', 'cat', 'meow'],
     extension: ["spim", "spimhub", "spmb", "mips2", "shx"]
 }
 
@@ -236,6 +249,8 @@ html_codesnap = () => {
 
 // COOKIE ACTIVATED IN BROWSER
 let COOKIE_ACTIVATED = navigator.cookieEnabled;
+let NAVIGATOR_NAME = navigator.platform || navigator.appName || 'Unknown';
+let NAVIGATOR_ALIAS = NAVIGATOR_NAME;
 // ================== //
 const setup_dialog = {
     i: 0,
@@ -411,6 +426,14 @@ window.addEventListener('load', ()=> {
         };
     }
 
+    /**
+     * Function to be called in html inline
+     * The function will get the active file and call __save_file(...) to save it
+     *
+     * @return {Object:WINDOW_EDITOR.files[:string][:num]} - Return the active file in active editor window
+     * 
+     * @example html_save('file');
+     */
     let get_active_data = (/* File opt only for now */) => {
         // Active window
         let _w = WINDOW_EDITOR.files[`w${WINDOW_EDITOR.active}`];
@@ -474,6 +497,18 @@ window.addEventListener('load', ()=> {
         __pop_up._rename(type, _route, _files);
     }
 
+    /**
+     * Function to be called in html inline
+     * The function will get the active file and call __save_file(...) to save it
+     *
+     * @param {String} type - The type of file to save: {file} one; {folder} all files in the same route
+     * ! For now only file
+     * @return {void}
+     * @see get_active_data
+     * @see __save_file
+     * 
+     * @example html_save('file');
+     */
     html_save = (type) => {
         let types = ['file', 'folder']; // Only file for now
         if (!types.includes(type)) return;
@@ -1255,6 +1290,40 @@ window.addEventListener('load', ()=> {
     // =============================
     // EDITORS
 
+    const close_file = (__wnum, metadata, close=false) => {
+        // Check if the content is saved
+        /*
+            If the file is not-saved and close = false -> show pop-up
+        */
+        if (metadata.__fw.classList.contains('not-saved') && !close) {
+            __pop_up._close_unsaved(metadata.name, {__wnum, metadata});
+            return;
+        }
+        // Close __fw
+        metadata.__fw.remove();
+
+        let i = WINDOW_EDITOR.files[`w${__wnum}`].indexOf(metadata);
+
+        // Remove file from files array
+        WINDOW_EDITOR.files[`w${__wnum}`].splice(i, 1);
+
+        // Remove file from window
+        metadata.__f.remove();
+
+        if (metadata.__fw.classList.contains('active')) {
+            // Focus on last file
+            if (WINDOW_EDITOR.files[`w${__wnum}`].length !== 0) {
+                if (i > 0)
+                    focus_file(__wnum, WINDOW_EDITOR.files[`w${__wnum}`][i-1]);
+                else if(i == 0)
+                    focus_file(__wnum, WINDOW_EDITOR.files[`w${__wnum}`][i]);
+            }
+        }
+
+        // Update local storage
+        SAVE_EDITOR_DATA();
+    }
+
     const focus_line = (textarea, delay=-1, reset = true) => {
         // Get parent
         let file_w = textarea.parentElement;
@@ -1293,6 +1362,25 @@ window.addEventListener('load', ()=> {
             // Clear selected line
             lines.forEach(el => el.children[num].classList.remove('active'));
         }
+    };
+
+    const focus_file = (w, file) => {
+        // Update active file
+        WINDOW_EDITOR.files[`w${w}`].forEach(el => {
+            [el.__fw, el.__f].forEach(e => {
+                e.classList.remove('active');
+            });
+
+            el.active = false;
+        });
+
+        // Active file
+        file.active = true;
+
+        // Update active file
+        [file.__fw, file.__f].forEach(e => {
+            e.classList.add('active');
+        });
     };
 
     const formate_code = (code) => {
@@ -1630,31 +1718,7 @@ window.addEventListener('load', ()=> {
             __fw_close.classList.add('muted');
             __fw_close.innerHTML = 'x';
             __fw_close.addEventListener('click', () => {
-                // Close __fw
-                __fw.remove();
-
-
-                let i = WINDOW_EDITOR.files[`w${__wnum}`].indexOf(metadata);
-
-                // Remove file from files array
-                WINDOW_EDITOR.files[`w${__wnum}`].splice(i, 1);
-
-                // Remove file from window
-                __f.remove();
-
-                if (metadata.__fw.classList.contains('active')) {
-                    // Focus on last file
-                    if (WINDOW_EDITOR.files[`w${__wnum}`].length !== 0) {
-                        if (i > 0)
-                            focus_file(__wnum, WINDOW_EDITOR.files[`w${__wnum}`][i-1]);
-                        else if(i == 0)
-                            focus_file(__wnum, WINDOW_EDITOR.files[`w${__wnum}`][i]);
-                    }
-                }
-
-                // Update local storage
-                SAVE_EDITOR_DATA();
-
+                close_file(__wnum, metadata);
             });
         
         // Append file name and close to file wrapper
@@ -1791,31 +1855,12 @@ window.addEventListener('load', ()=> {
         SAVE_EDITOR_DATA();
     }
 
-    focus_file = (w, file) => {
-        // Update active file
-        WINDOW_EDITOR.files[`w${w}`].forEach(el => {
-            [el.__fw, el.__f].forEach(e => {
-                e.classList.remove('active');
-            });
-
-            el.active = false;
-        });
-
-        // Active file
-        file.active = true;
-
-        // Update active file
-        [file.__fw, file.__f].forEach(e => {
-            e.classList.add('active');
-        });
-    };
-
     /**
      * Get all file in windows with the same route + name ---> WINDOWS_EDITOR.files
      * 
      *
-     * @param {string} route - The route
-     * @param {string} file - The file name
+     * @param {String} route - The route
+     * @param {String} file - The file name
      * @return {array[:{window: :int, index: :int, data: :object}]} - An array of objects with the window, index and data
      * 
      * @example get_w_same_file('/home/user/', 'file.txt')
@@ -1835,7 +1880,7 @@ window.addEventListener('load', ()=> {
      * Get all file in windows with the same route ---> WINDOWS_EDITOR.files
      * 
      *
-     * @param {string} route - The route
+     * @param {String} route - The route
      * @return {array[:{window: :int, index: :int, data: :object}]} - An array of objects with the window, index and data
      * 
      * @example get_w_same_route('/home/user/')
@@ -1857,9 +1902,9 @@ window.addEventListener('load', ()=> {
      * This function is called before using __rename_file
      * 
      *
-     * @param {string} route - The route of the file
-     * @param {string} file - The name of the file
-     * @param {string} filename - The new name of the file
+     * @param {String} route - The route of the file
+     * @param {String} file - The name of the file
+     * @param {String} filename - The new name of the file
      * @return {void}
      * @see __rename_file
      * @see get_w_same_file
@@ -1886,8 +1931,8 @@ window.addEventListener('load', ()=> {
      * This function is called before using __rename_folder
      * 
      *
-     * @param {string} route - The route of the folder
-     * @param {string} new_route - The new route of the folder
+     * @param {String} route - The route of the folder
+     * @param {String} new_route - The new route of the folder
      * @return {void}
      * @see __rename_folder
      * @see get_w_same_route
@@ -1913,8 +1958,8 @@ window.addEventListener('load', ()=> {
      * This function is called before using __delete_file
      * 
      *
-     * @param {string} route - The route of the file
-     * @param {string} file - The name of the file
+     * @param {String} route - The route of the file
+     * @param {String} file - The name of the file
      * @return {void}
      * @see __delete_file
      * @see get_w_same_file
@@ -1945,7 +1990,7 @@ window.addEventListener('load', ()=> {
      * This function is called when the user click on a file. Or when the user open it with input path.
      * 
      *
-     * @param {object:FILE_SYSTEM[:string].files[:num]} file The object file to be open.
+     * @param {Object:FILE_SYSTEM[:string].files[:num]} file The object file to be open.
      * @return {void}
      * @see create_file
      * 
@@ -1969,7 +2014,7 @@ window.addEventListener('load', ()=> {
     /**
      * Open all files in a folder into
      *
-     * @param {object:FILE_SYSTEM[:string]} folder The object file to be open.
+     * @param {Object:FILE_SYSTEM[:string]} folder The object file to be open.
      * @return {void}
      * @see open_file
      * 
@@ -2002,9 +2047,9 @@ window.addEventListener('load', ()=> {
      *      </main>
      *  </section>
      * 
-     * @param {string} route The route to the file. ---> /root/folder/file.asm
-     * @param {boolean} open If the file should be open. ---> true
-     * @return {object:FILE_SYSTEM[:string].files[:num]} The file object.
+     * @param {String} route The route to the file. ---> /root/folder/file.asm
+     * @param {Boolean} open If the file should be open. ---> true
+     * @return {Object:FILE_SYSTEM[:string].files[:num]} The file object.
      * @see open_file
      * 
      * @example check_file('/root/folder/file.asm');
@@ -2055,9 +2100,9 @@ window.addEventListener('load', ()=> {
      *      </main>
      *  </section>
      * 
-     * @param {string} route The route to the file. ---> /root/folder/
-     * @param {boolean} open If the file should be open. ---> true
-     * @return {object:FILE_SYSTEM[:string]} The file object.
+     * @param {String} route The route to the file. ---> /root/folder/
+     * @param {Boolean} open If the file should be open. ---> true
+     * @return {Object:FILE_SYSTEM[:string]} The file object.
      * @see open_folder
      * 
      * @example check_folder('/root/folder/');
@@ -2100,6 +2145,21 @@ window.addEventListener('load', ()=> {
         });
 
         saveAs(blob, filename);
+    }
+    /**
+     * Reset the environment. This function will destroy all saved progress
+     * 
+     * @return {void}
+     * 
+     * @example reset_project();
+     */
+    reset_project = () => {
+        // Remove project from local storage
+        localStorage.removeItem(PROJECT_VARNAME.filesystem);
+        localStorage.removeItem(PROJECT_VARNAME.editor);
+
+        // Reload page
+        location.reload();
     }
 
     let file_input = document.querySelector('input[type="file"]#drop-file');
@@ -2201,9 +2261,9 @@ window.addEventListener('load', ()=> {
      * Create a new file in filesystem, and then will show it in window.
      * 
      *
-     * @param {string} filename The name of the file.  ---> Retrive from input
-     * @param {string} route The route to the file.  ---> Retrive from ROOT_DIR.cd
-     * @return {boolean} If the file was created.
+     * @param {String} filename The name of the file.  ---> Retrive from input
+     * @param {String} route The route to the file.  ---> Retrive from ROOT_DIR.cd
+     * @return {Boolean} If the file was created.
      * @see ROOT_DIR.clean_gui
      * @see ROOT_DIR.get_dir_gui
      * @see ROOT_DIR.focus_dir
@@ -2279,9 +2339,9 @@ window.addEventListener('load', ()=> {
      * Create a new folder in filesystem.
      * 
      *
-     * @param {string} foldername The name of the folder.  ---> Retrive from input
-     * @param {string} route The route to the file.  ---> Retrive from ROOT_DIR.cd
-     * @return {boolean} If the file was created.
+     * @param {String} foldername The name of the folder.  ---> Retrive from input
+     * @param {String} route The route to the file.  ---> Retrive from ROOT_DIR.cd
+     * @return {Boolean} If the file was created.
      * @see ROOT_DIR.clean_gui
      * @see ROOT_DIR.get_dir_gui
      * @see ROOT_DIR.focus_dir
@@ -2470,8 +2530,33 @@ window.addEventListener('load', ()=> {
         return true;
     }
 
-
+    /**
+     * Function to save the file content into the localStorage
+     *
+     * @param {Object:WINDOW_EDITOR.files[:string][:num]} file - Object content of the file 
+     * @example file - {
+     *      __f: <div class="file active">
+            __fw: <div class="active w-0-f-0">
+            active: true
+            content: "text"
+            file: {
+                name: "code.asm",
+                route: "/",
+                content: "text"
+            }
+            name: "code.asm"
+            route: "/"
+     * }
+     * @param {String} content - The content of the file
+     * @return {Boolean}
+     * @see SAVE_FILE_SYSTEM
+     * 
+     * @example __save_file(WINDOW_EDITOR.files["w0"][0], "save text");
+     */
     __save_file = (file, content) => {
+        // Save file if file content is not saved
+        if (!file || !content || !file.__fw.classList.contains('not-saved')) return false;
+
         file.file.content = content;
 
         file.__fw.classList.remove('not-saved');
@@ -2529,6 +2614,32 @@ window.addEventListener('load', ()=> {
     //     __group_h.open_group('editor');
     // }
 
+    // ======================= //
+    // Verification prompt
+    verification_prompt = {
+        el: document.querySelector('#verification-step'),
+        input: document.querySelector('#verification-step input'),
+        callback: null,
+        button: document.querySelector('#verification-step a[action="verification"]'),
+    }
+    verification_prompt.button.onclick = ()=> {
+        if (verification_prompt.callback && verification_prompt.input.value == NAVIGATOR_ALIAS) {
+            verification_prompt.callback();
+        }
+    }
+    verification_prompt.open = (callback)=> {
+        __pop_up.open();
+        verification_prompt.el.classList.add('active');
+        verification_prompt.input.focus();
+
+        verification_prompt.callback = callback;
+    }
+    verification_prompt.setCode = (code)=> {
+        verification_prompt.el.querySelector('.action-code').innerHTML = code;
+    }
+
+    // KeyEvent enter
+    verification_prompt.input.addEventListener('keydown', e => input_enter(e, verification_prompt.button.onclick));
 
 
     // ======================= //
@@ -2554,6 +2665,9 @@ window.addEventListener('load', ()=> {
 
             // Remove codesnap
             document.getElementById('codesnap').classList.remove('active');
+
+            // Remove verification
+            verification_prompt.el.classList.remove('active');
 
             for (let el of extras_pop_up.children) {
                 // Remove active class from all extras children
@@ -2602,13 +2716,28 @@ window.addEventListener('load', ()=> {
         if (!layer) {
             __pop_up.open();
             extras_pop_up.querySelector(`.new-project`).classList.add('active');
+        }else {
+            // Redirect to reset project
+            extras_pop_up.querySelector(`.new-project`).classList.remove('active');
+
+            // Choose random name from PROJECT_VARNAME.dataname array;
+            NAVIGATOR_ALIAS = `${NAVIGATOR_NAME}/${PROJECT_VARNAME.dataname[Math.floor(Math.random() * PROJECT_VARNAME.dataname.length)]}`;
+            verification_prompt.setCode(NAVIGATOR_ALIAS);
+            verification_prompt.open(reset_project);
         }
     }
+
+    // Extra from __pop_up.new_project
+    extras_pop_up.querySelector(`.new-project a[action="new-project"]`).addEventListener('click', () => {
+        __pop_up._new_project(true);
+    });
     // Open project backup
     __pop_up._open_project = () => {
         __pop_up.open();
         extras_pop_up.querySelector(`.open-project`).classList.add('active');
     }
+
+    
 
     // Ask for delete file or folder
     __pop_up._delete = (type, name, route, file) => {
@@ -2622,6 +2751,28 @@ window.addEventListener('load', ()=> {
 
         extras_pop_up.querySelector(`.delete-item .item-name`).innerHTML = name;
     }
+
+    // Ask to save file data before closing it
+    __pop_up._close_unsaved = (filename, data) => {
+        __pop_up.open();
+        extras_pop_up.querySelector(`.close-unsaved .close-filename`).innerHTML = filename;
+        extras_pop_up.querySelector(`.close-unsaved`).classList.add('active');
+
+        // Save data
+        extras_pop_up.querySelector(`.close-unsaved a[action="save-unsaved"]`).onclick = () => {
+            __save_file(data.metadata, data.metadata.content);
+            // Close file
+            close_file(data.__wnum, data.metadata, true);
+            __pop_up.close({target: document.querySelector('#clicker-changer')});
+        };
+        // Close without saving
+        extras_pop_up.querySelector(`.close-unsaved a[action="close-unsaved"]`).onclick = () => {
+            // Close file
+            close_file(data.__wnum, data.metadata, true);
+            __pop_up.close({target: document.querySelector('#clicker-changer')});
+        }
+    }
+
 
     let input_enter = (e, fnc) => {
         if (e.keyCode == 13 || e.key == 'Enter') {
@@ -2933,7 +3084,7 @@ window.addEventListener('load', ()=> {
     }
     // Import browser
     // Get browser name
-    TERMINAL.import.browser.innerText = navigator.platform;
+    TERMINAL.import.browser.innerText = NAVIGATOR_NAME;
     // Get route
     TERMINAL.import.route.innerText = ROOT_DIR.cd;
 
