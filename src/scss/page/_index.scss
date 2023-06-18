@@ -222,8 +222,10 @@ body{
             border-right: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
             background-color: var(--color-secondary);
             display: none;
-            overflow-x: hidden;
             position: relative;
+            &.opt-files, &.opt-search {
+                overflow-x: hidden;
+            }
 
             &.active {
                 display: flex;
@@ -284,6 +286,7 @@ body{
                     // background-color: transparent;
                     background-color: var(--color-primary);
                     border-top: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                    border-right: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
                     &:active, &:focus {
                         outline: none;
                     }
@@ -377,6 +380,31 @@ body{
                 }
                 #search-manager {
                     margin-top: 10px;
+                }
+            }
+            #opt-extensions {
+                .extension-header-menu {
+                    position: relative;
+                    a:hover+ul {
+                        display: block;
+                    }
+                    .pop-menu {
+                        position: absolute;
+                        display: none;
+                        top: 100%;
+                        z-index: 999;
+                        &:hover {
+                            display: block;
+                        }
+                        li a {
+                            padding: 7px;
+                        }
+                    }
+                }
+                #extensions-manager {
+                    #extensions-manager-ui {
+                        padding: 40px;
+                    }
                 }
             }
         }

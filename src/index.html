@@ -681,8 +681,55 @@
             <div id="opt-extensions">
                 <div class="extension header-padding both-side explorer-header d-flex align-center">
                     <span>[extensions]</span>
-                    <div class="d-flex">
-                        <a href="#" class="muted">[enabled]</a>
+                    <div class="d-flex extension-header-menu">
+                        <a>[...]</a>
+                        <ul class="pop-menu">
+                            <li>
+                                <a>
+                                    <span>[enabled]</span>
+                                    <span class="muted">[0]</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <span>[installed]</span>
+                                    <span class="muted">[0]</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <span>[enabled]</span>
+                                    <span class="muted">[0]</span>
+                                </a>
+                            </li>
+                            <hr>
+                            <li>
+                                <a>
+                                    <span>[settings]</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <span>[marketplace]</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="explorer">
+                    <div>
+                        <input type="text" placeholder="search">
+                    </div>
+                    <div class="explorer-main" id="extensions-manager">
+                        <div class="header-padding both-side">
+                            <span>[result]</span>
+                            <div class="d-flex">
+                                <span class="muted">[0 APIs]</span>
+                            </div>
+                        </div>
+                        <div class="text-center" id="extensions-manager-ui">
+                            <span class="text-error">Unable to connect marketplace server.</span>
+                        </div>
                     </div>
                 </div>
             </div>
