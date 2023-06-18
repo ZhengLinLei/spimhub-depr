@@ -262,11 +262,33 @@ body{
                     > div {
                         a{
                             padding: 10px;
-
                             &:hover {
                                 color: var(--color-invert);
                             }
                         }
+                    }
+                }
+
+                a.bg-success {
+                    // Succes color
+                    background-color: var(--color-success);
+                    &:hover {
+                        background-color: var(--color-success-hover) !important;
+                    }
+                }
+
+                input {
+                    border: 0;
+                    width: 100%;
+                    padding: 10px;
+                    // background-color: transparent;
+                    background-color: var(--color-primary);
+                    border-top: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
+                    &:active, &:focus {
+                        outline: none;
+                    }
+                    &:last-child{
+                        border-bottom: .5px solid #{ rgba(var(--color-invert-rgb), 0.3) };
                     }
                 }
             }
@@ -343,6 +365,18 @@ body{
                             z-index: 1;
                         }
                     }
+                }
+            }
+            #opt-search {
+                .find-replace-btn {
+                    a {
+                        flex: 1;
+                        text-align: center;
+                        padding: 10px;
+                    }
+                }
+                #search-manager {
+                    margin-top: 10px;
                 }
             }
         }

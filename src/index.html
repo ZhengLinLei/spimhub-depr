@@ -660,15 +660,32 @@
                 </div>
                 <div class="explorer">
                     <div>
-                        <input type="text">
-                        <input type="text">
+                        <input type="text" placeholder="search">
+                        <input type="text" placeholder="replace">
                     </div>
-                    <div class="explorer-main" id="file-manager">
-                        
+                    <div class="d-flex both-side find-replace-btn">
+                        <a href="#" class="bg-success">[find]</a>
+                        <a href="#" class="replace-all">[replace all]</a>
+                    </div>
+                    <hr>
+                    <div class="explorer-main" id="search-manager">
+                        <div class="header-padding both-side">
+                            <span>[result]</span>
+                            <div class="d-flex">
+                                <span class="muted">[0 files]</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div id="opt-extensions"></div>
+            <div id="opt-extensions">
+                <div class="extension header-padding both-side explorer-header d-flex align-center">
+                    <span>[extensions]</span>
+                    <div class="d-flex">
+                        <a href="#" class="muted">[enabled]</a>
+                    </div>
+                </div>
+            </div>
         </header>
         <main id="main-files" terminal="0">
             <section id="main-editor" class="group-m active" window-opened="0">
