@@ -380,6 +380,19 @@ body{
                 }
                 #search-manager {
                     margin-top: 10px;
+                    #search-manager-ui {
+                        .level {
+                            margin-left: var(--explorer-level-left);
+                            border-left: .5px solid rgba(var(--color-invert-rgb), 0.3);
+                        }
+                        .level-file {
+                            margin-left: calc(-1*var(--explorer-level-left) - .5px);
+                            background-color: var(--color-folder-bg);
+                            &::before {
+                                content: "- ";
+                            }
+                        }
+                    }
                 }
             }
             #opt-extensions {
