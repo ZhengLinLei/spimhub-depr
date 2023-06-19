@@ -384,6 +384,12 @@ body{
                         .level {
                             margin-left: var(--explorer-level-left);
                             border-left: .5px solid rgba(var(--color-invert-rgb), 0.3);
+                            .occurence-position {
+                                overflow-x: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+
+                            }
                         }
                         .level-file {
                             margin-left: calc(-1*var(--explorer-level-left) - .5px);

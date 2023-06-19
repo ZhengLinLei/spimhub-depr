@@ -54,7 +54,7 @@ let
     // Project config
     download_project, reset_project,
     // Extras
-    set_theme, verification_prompt,
+    set_theme, verification_prompt, focus_lile, unfocus_line,
     // HTML inline call functions
     html_open, html_delete, html_rename, html_save,
     // HTML inline call fnc extra
@@ -1324,7 +1324,8 @@ window.addEventListener('load', ()=> {
         SAVE_EDITOR_DATA();
     }
 
-    const focus_line = (textarea, delay=-1, reset = true) => {
+    focus_line = (textarea, delay=-1, reset = true) => {
+        console.log(textarea);
         // Get parent
         let file_w = textarea.parentElement;
 
@@ -1346,7 +1347,7 @@ window.addEventListener('load', ()=> {
             lines.forEach(el => el.children[index+delay].classList.add('active'));
         }
     }
-    const unfocus_line = (textarea, all = true, num = 0) => {
+    unfocus_line = (textarea, all = true, num = 0) => {
         // Get parent
         let file_w = textarea.parentElement;
         const lines = [file_w.querySelector('.line-numbers-rows'), file_w.querySelector('.export-code > code')];
