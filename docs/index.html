@@ -761,6 +761,11 @@
                     font-family: Arial, Helvetica, sans-serif !important;
                     animation: rolling 10s infinite linear;
                     white-space: nowrap;
+                    margin-bottom: 10px;
+                }
+                .preview a {
+                    margin-top: 5px;
+                    padding: 5px;
                 }
                 @keyframes rolling {
                     0% {
@@ -773,7 +778,33 @@
             </style>
             <section class="preview">
                 <h1>This is a preview mode - Not functional yet</h1>
+                <a onclick="themes_html()" class="switch-theme bg-success">[Switch Theme]</a>
+                <a onclick="clearcookies_html()" class="switch-theme bg-success">[Clear cookies]</a>
+                <a onclick="setExample()" class="switch-theme bg-success">[Example code]</a>
             </section>
+            <script>
+                let themes_html = () => {
+                    //if <html> theme == 'light' then switch to 'dark'
+                    if (document.documentElement.getAttribute('theme') == 'light') {
+                        document.documentElement.setAttribute('theme', 'dark');
+                    } else {
+                        document.documentElement.setAttribute('theme', 'light');
+                    }
+                }
+
+                let clearcookies_html = () => {
+                    // remove cookies and localStorage
+                    localStorage.clear();
+                    location.reload();
+                }
+
+                let setExample = () => {
+                    let text = `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`;
+                    localStorage.removeItem(PROJECT_VARNAME.editor);
+                    localStorage.setItem(PROJECT_VARNAME.filesystem, text);
+                    location.reload();
+                }
+            </script>
         </header>
         <main id="main-files" terminal="0">
             <section id="main-editor" class="group-m active" window-opened="0">
