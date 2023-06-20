@@ -1269,6 +1269,8 @@ window.addEventListener('load', ()=> {
         if (type === -1) {
             if (opt_main.el.classList.contains(`opt-${window}`)) {
                 opt_main.el.classList.toggle('active');
+            } else {
+                opt_main.el.classList.add('active');
             }
         }else if (type === 1)
             opt_main.el.classList.add('active');
@@ -1285,6 +1287,9 @@ window.addEventListener('load', ()=> {
 
         // Active window
         opt_main.el.classList.add(`opt-${window}`);
+
+        // Scroll top
+        opt_main.el.scrollTop = 0;
     };
 
     // =============================
@@ -1325,7 +1330,6 @@ window.addEventListener('load', ()=> {
     }
 
     focus_line = (textarea, delay=-1, reset = true) => {
-        console.log(textarea);
         // Get parent
         let file_w = textarea.parentElement;
 

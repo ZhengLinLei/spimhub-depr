@@ -129,7 +129,6 @@ window.addEventListener('load', function () {
                                     let next_new_line = file[0].content.indexOf('\n', index);
                                     // Put the index to first char of word \n or \s or \t
                                     let subindex = file[0].content.lastIndexOf(' ', index);
-                                    console.log(subindex);
                                     // If the next \n is not found, get the substring to the end of the string
                                     let substring = file[0].content.substring(subindex, (next_new_line == -1) ? file[0].content.length : next_new_line);
                                     // Replace the occurence with a span with style
