@@ -867,7 +867,13 @@ body{
             }
         }
     }
-
+    #extra-pop-up {
+        // Exposed in some devices, hide it with -5px and then when it's active set it to 0
+        top: -5px; // ----> Issue #4 (https://github.com/ZhengLinLei/spimhub/issues/4)
+        &.active {
+            top: .5px;
+        }
+    }
     > footer, #verification-step {
         position: fixed;
         top: 0;
