@@ -37,7 +37,34 @@
     WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ========================================================================== */
 
+// Import for nodejs
+// const { escape } = require("grunt");
+
+let SEARCH_PARAMS = {
+    insensitive: false,
+    regex: false,
+}
 window.addEventListener('load', function () {
+
+    // Search params
+    document.querySelectorAll('.flag-case').forEach((el) => {
+        el.addEventListener('click', () => {
+            // Get attribute flag
+            let flag = el.getAttribute('flag');
+
+            // Change the flag
+            SEARCH_PARAMS[flag] = !SEARCH_PARAMS[flag];
+        
+            // Change the class
+            if (SEARCH_PARAMS[flag]) {
+                el.classList.add('active');
+            } else {
+                el.classList.remove('active');
+            }
+        });
+    });
+    
+    // Input buttons
     let find_content_input = document.getElementById('content-search-file');
     find_content_input.addEventListener('keyup', (event) => {
         if (event.keyCode === 13 || event.key === 'Enter') {
@@ -48,12 +75,14 @@ window.addEventListener('load', function () {
 
     let replace_content_input = document.getElementById('content-replace-file');
 
+    // Occurences list html DOM
     let occurences_list = document.querySelector('.file-occurences-list');
 
     // Button
     document.getElementById('content-find-btn').addEventListener('click', () => {
         if (find_content_input.value != '') {
-            let occurences = find_files(find_content_input.value);
+            let occurence_value = find_content_input.value;
+            let occurences = find_files(occurence_value);
             document.querySelector('.file-occurences').innerHTML = `${occurences.length}`;
 
             occurences_list.innerHTML = '';
@@ -95,19 +124,30 @@ window.addEventListener('load', function () {
                                 let li2 = document.createElement('li');
                                     let a = document.createElement('a');
                                     a.classList.add('occurence-position');
+                                    // console.log(file);
                                     // Get substring from index to next \n or end of string
                                     let next_new_line = file[0].content.indexOf('\n', index);
                                     // Put the index to first char of word \n or \s or \t
                                     let subindex = file[0].content.lastIndexOf(' ', index);
+                                    console.log(subindex);
                                     // If the next \n is not found, get the substring to the end of the string
                                     let substring = file[0].content.substring(subindex, (next_new_line == -1) ? file[0].content.length : next_new_line);
                                     // Replace the occurence with a span with style
-                                    substring = substring.replace(find_content_input.value, `<span class="bg-warning">${find_content_input.value}</span>`);
+                                    // If the REGEX flag is true, replace all occurences with regex
+                                    // Else, replace the first occurence with index to index + occurence_value.length.
+                                    // Replace all occurences
+                                    // console.log([...substring.matchAll(occurence_value, 'gi')]);
+                                    regex_occurence = (SEARCH_PARAMS.regex) ? `(${occurence_value})` : `(${escapeRegExp(occurence_value)})`;
+                                    substring = substring.replace(
+                                                                new RegExp(regex_occurence, `g${(SEARCH_PARAMS.insensitive) ? 'i' : ''}`)
+                                                                ,
+                                                                '<span class="bg-warning">$1</span>'
+                                                                );
                                     a.innerHTML = substring;
                                     a.addEventListener('click', () => {
                                         // Open the file
                                         open_file(file[0]);
-                                        focus_occurence(file[0], index, find_content_input.value);
+                                        focus_occurence(file[0], index, occurence_value, SEARCH_PARAMS.regex);
                                     });
                                 li2.appendChild(a);
                                 ul.appendChild(li2);
@@ -130,6 +170,9 @@ window.addEventListener('load', function () {
     });
 });
 
+function escapeRegExp(string){
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+ }
 /**
  * Find files in the file system with the content
  *
@@ -147,7 +190,7 @@ const find_files = (content, dir = "/") => {
     let occurrences = [];
 
     for (let i = 0; i < files.length; i++) {
-        let content_index = getIndicesOf(content, files[i].content, false);
+        let content_index = getIndicesOf(content, files[i].content, SEARCH_PARAMS.insensitive, SEARCH_PARAMS.regex);
         if (content_index.length > 0) {
             occurrences.push([files[i], content_index]);
         }
@@ -176,7 +219,7 @@ const find_files = (content, dir = "/") => {
  * @example getIndicesOf("text", "text text", true)
  * 
 */
-function getIndicesOf(searchStr, str, caseInsensitive=false) {
+function getIndicesOf(searchStr, str, caseInsensitive=false, regex=false) {
     var searchStrLen = searchStr.length;
     if (searchStrLen == 0) {
         return [];
@@ -186,12 +229,16 @@ function getIndicesOf(searchStr, str, caseInsensitive=false) {
         str = str.toLowerCase();
         searchStr = searchStr.toLowerCase();
     }
-    // while ((index = str.indexOf(searchStr, startIndex)) > -1) {    ---> Lineal Search
-    //     indices.push(index);
-    //     startIndex = index + searchStrLen;
-    // }
 
-    indices = [...str.matchAll(new RegExp(searchStr, 'g'))].map(a => a.index)
+    if (regex) {
+        indices = [...str.matchAll(searchStr, 'g')].map(a => a.index)
+    
+    } else {
+        while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+            indices.push(index);
+            startIndex = index + searchStrLen;
+        }
+    }
     return indices;
 }
 
@@ -204,7 +251,7 @@ function getIndicesOf(searchStr, str, caseInsensitive=false) {
  * 
  * @example focus_occurence(FILE_SYSTEM["/"]["code.asm"].files[0], 0)
 */
-const focus_occurence = (file, index, content) => {
+const focus_occurence = (file, index, content, regex=false) => {
     // The file is already open
     let opened = WINDOW_EDITOR.files[`w${WINDOW_EDITOR.active}`].find(el => (el.route + el.name) == (file.route + file.name));
     let textarea = opened.__f.querySelector('textarea');
@@ -213,7 +260,7 @@ const focus_occurence = (file, index, content) => {
         textarea.focus();
         // Set cursor to index
         textarea.selectionStart = index;
-        textarea.selectionEnd = index + content.length;
+        textarea.selectionEnd = index + ((regex) ? 0 : content.length);
         focus_line(textarea);
     }
 };
