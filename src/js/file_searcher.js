@@ -176,13 +176,13 @@ const find_files = (content, dir = "/") => {
  * @example getIndicesOf("text", "text text", true)
  * 
 */
-function getIndicesOf(searchStr, str, caseSensitive) {
+function getIndicesOf(searchStr, str, caseInsensitive=false) {
     var searchStrLen = searchStr.length;
     if (searchStrLen == 0) {
         return [];
     }
     var startIndex = 0, index, indices = [];
-    if (!caseSensitive) {
+    if (caseInsensitive) {
         str = str.toLowerCase();
         searchStr = searchStr.toLowerCase();
     }
@@ -191,7 +191,7 @@ function getIndicesOf(searchStr, str, caseSensitive) {
     //     startIndex = index + searchStrLen;
     // }
 
-    indices = [...str.matchAll(new RegExp(searchStr, 'gi'))].map(a => a.index)
+    indices = [...str.matchAll(new RegExp(searchStr, 'g'))].map(a => a.index)
     return indices;
 }
 
