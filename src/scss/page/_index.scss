@@ -401,6 +401,7 @@ body{
                         .level-file {
                             margin-left: calc(-1*var(--explorer-level-left) - .5px);
                             background-color: var(--color-folder-bg);
+                            border-right: .5px solid rgba(var(--color-invert-rgb), 0.3);
                             &::before {
                                 content: "- ";
                             }

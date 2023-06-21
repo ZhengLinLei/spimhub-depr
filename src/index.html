@@ -662,12 +662,16 @@
                 </div>
                 <div class="explorer">
                     <div>
-                        <input type="text" id="content-search-file" placeholder="search">
-                        <input type="text" id="content-replace-file" placeholder="replace">
+                        <input type="text" id="content-search-file" value="a" placeholder="search">
+                        <input type="text" id="content-replace-file" value=" " placeholder="replace">
                     </div>
                     <div class="d-flex both-side find-replace-btn">
                         <a id="content-find-btn" class="bg-success">[find]</a>
                         <a id="content-replace-btn" class="replace-all">[replace all]</a>
+                    </div>
+                    <hr>
+                    <div class="find-replace-btn">
+                        <a id="content-next-btn" class="replace-next">[replace next]</a>
                     </div>
                     <hr>
                     <div class="explorer-main" id="search-manager">
@@ -680,8 +684,7 @@
                         <div id="search-manager-ui">
                             <div class="level">
                                 <ul class="file-occurences-list">
-                                    <!-- FILES OCCURENCES -->
-                                    
+                                    <!-- FILES OCCURENCES -->        
                                 </ul>
                             </div>
                         </div>

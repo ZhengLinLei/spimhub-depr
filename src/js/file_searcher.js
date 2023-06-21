@@ -43,6 +43,8 @@
 let SEARCH_PARAMS = {
     insensitive: false,
     regex: false,
+    search: null,
+    occurences: [],
 }
 window.addEventListener('load', function () {
 
@@ -83,6 +85,10 @@ window.addEventListener('load', function () {
         if (find_content_input.value != '') {
             let occurence_value = find_content_input.value;
             let occurences = find_files(occurence_value);
+
+            // Set the occurences
+            SEARCH_PARAMS.occurences = occurences;
+
             document.querySelector('.file-occurences').innerHTML = `${occurences.length}`;
 
             occurences_list.innerHTML = '';
@@ -137,6 +143,9 @@ window.addEventListener('load', function () {
                                     // Replace all occurences
                                     // console.log([...substring.matchAll(occurence_value, 'gi')]);
                                     regex_occurence = (SEARCH_PARAMS.regex) ? `(${occurence_value})` : `(${escapeRegExp(occurence_value)})`;
+                                    // Save the search syntax
+                                    SEARCH_PARAMS.search = regex_occurence;
+                                    // Replace all occurences
                                     substring = substring.replace(
                                                                 new RegExp(regex_occurence, `g${(SEARCH_PARAMS.insensitive) ? 'i' : ''}`)
                                                                 ,
@@ -148,6 +157,9 @@ window.addEventListener('load', function () {
                                         open_file(file[0]);
                                         focus_occurence(file[0], index, occurence_value, SEARCH_PARAMS.regex);
                                     });
+                                // Add HTML Dom to be controlled after
+                                file[2] = li2;
+                                // Append
                                 li2.appendChild(a);
                                 ul.appendChild(li2);
                             });
@@ -163,12 +175,28 @@ window.addEventListener('load', function () {
             occurences_list.innerHTML = '';
         }
     });
-
     document.getElementById('content-replace-btn').addEventListener('click', () => {
+        while(SEARCH_PARAMS.occurences.length > 0) {
+            replaceNextOccurence(find_content_input.value, replace_content_input.value);
+        }
+    });
 
+    document.getElementById('content-next-btn').addEventListener('click', () => {
+        // Replace next 
+        replaceNextOccurence(find_content_input.value, replace_content_input.value);
     });
 });
 
+/**
+ * Escape the regex
+ * 
+ * @param {String} string - String to escape
+ * 
+ * @return {String}
+ * 
+ * @example escapeRegExp("[0-9]")
+ * 
+*/
 function escapeRegExp(string){
     return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
  }
@@ -263,3 +291,36 @@ const focus_occurence = (file, index, content, regex=false) => {
         focus_line(textarea);
     }
 };
+
+/**
+ * Replace the next occurence
+ * 
+ * @param {String:find_content_input} value - Value to replace
+ * @param {String:replace_content_input} replace - Value to replace with
+ * 
+ * @example replaceNextOccurence("text", "text2")
+*/
+function replaceNextOccurence(value, replace) {
+    if (SEARCH_PARAMS.occurences.length > 0 && value != '' && replace != '' && SEARCH_PARAMS.search != null) {
+        // Get First occurence
+        let occurence = SEARCH_PARAMS.occurences[0];
+        // Get opened file in window editor
+        let opened = WINDOW_EDITOR.files[`w${WINDOW_EDITOR.active}`].find(el => (el.route + el.name) == (occurence[0].route + occurence[0].name));
+
+        // Change the content
+        let textarea = opened.__f.querySelector('textarea');
+        // Replace first occurence
+        textarea.value = textarea.value.replace(new RegExp(SEARCH_PARAMS.search, `${(SEARCH_PARAMS.insensitive) ? 'i' : ''}`), replace);
+        // Update the content
+        update_code(textarea, opened, occurence);
+        
+
+        // Remove the first index from occurence[1]
+        occurence[1].shift();
+
+        // Remove the first occurence from SERACH_PARAMS.occurences
+        if (SEARCH_PARAMS.occurences[0][1].length == 0) {
+            SEARCH_PARAMS.occurences.shift();
+        }
+    }
+}

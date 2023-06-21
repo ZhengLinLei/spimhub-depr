@@ -50,7 +50,7 @@ let
     // Open and remove windows
     open_window, remove_window,
     // File, folder extras
-    check_file, check_folder, copy_path,
+    update_code, check_file, check_folder, copy_path,
     // Project config
     download_project, reset_project,
     // Extras
@@ -1401,7 +1401,8 @@ window.addEventListener('load', ()=> {
         return FORMAT.formateCode(code);
     };
 
-    const update_code = (textarea, metadata, file) => {
+    update_code = (textarea, metadata, file) => {
+        // console.log(textarea, metadata, file); ---> Testing
         // Get parent
         let file_w = textarea.parentElement;
         
