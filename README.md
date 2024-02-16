@@ -1,3 +1,7 @@
+> [!CAUTION]
+> This version of Spimhub is obsolet, please migrate to [SpimHub Classic](https://github.com/ZhengLinLei/spimhub)
+
+
 > #### Beta version
 > - This is a beta version, it is not recommended to use it in production environments.
 > - Support us by giving a star to the project and pulling request to update.
